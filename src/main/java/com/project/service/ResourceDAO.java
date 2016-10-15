@@ -6,53 +6,42 @@ package com.project.service;
  */
 
 import javax.transaction.Transactional;
-
-//import org.hibernate.Criteria;
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-//import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import com.project.model.ResourcesModel;
-
 import com.project.model.ResourcesVO;
 
-import java.util.List;
 @Repository("resourceDAO")
 @Transactional
 public class ResourceDAO {
 
-	
-	//To create a session for the database operation
-		@Autowired
-		private SessionFactory sessionFactory;
+	// To create a session for the database operation
+	@Autowired
+	private SessionFactory sessionFactory;
 
-		public SessionFactory getSessionFactory() {
-			return sessionFactory;
-		}
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
 
-		public void setSessionFactory(SessionFactory sessionFactory) {
-			this.sessionFactory = sessionFactory;
-		}
-		
-		
-		@SuppressWarnings("unchecked")
-		public List<ResourcesVO> allResourceList(){
-			
-		 Session session = sessionFactory.openSession();
-			
-			
-			//Getting the result
-			return session.createCriteria(ResourcesModel.class).list();
-		}
-		
-		/*public ResourcesVO getResourceById(){
-			
-			 Session session = sessionFactory.openSession();
-				
-				
-				//Getting the result 
-				return session.createCriteria(ResourcesModel.class).list(); //working on it
-			}*/
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
+	/**
+	 * Following function fires query to database to get the required result(i.e
+	 * get all the available resources)
+	 * @return the list of all available resources .
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ResourcesModel> allResourceList() {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		// Getting the result
+		return session.createCriteria(ResourcesModel.class).list();
+	}
+
 }

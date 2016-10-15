@@ -18,17 +18,15 @@ public class ResourceFacade {
 
 	@Autowired
 	private ResourceService resourceService;
-	
+
 	@Autowired
-	private ApplicationContext context;	//To get the beans
-	
+	private ApplicationContext context; // To get the beans
+
 	/**
-	 * To validate the custom login user credentials
-	 * @param userVO - The User VO containing the credentials
-	 * @return - True if the credentials are right else false
+	 * To get the list of all available resources from ResourceService class
+	 * @return - List of all the available resources
 	 */
 	public List<ResourcesVO> allResourceList() {
 		return resourceService.allResourceList();
 	}
-	
 }
