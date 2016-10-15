@@ -1,4 +1,4 @@
-package com.project.service;
+package com.project.service; 
 
 /**
  * Class To implement the service layer for the Users
@@ -97,6 +97,7 @@ public class BookingsService {
 		
 		ResourcesVO resourcesVO = context.getBean(ResourcesVO.class);
 		BeanUtils.copyProperties(resourcesModel, resourcesVO );
+		System.out.println(resourcesVO.hashCode());
 		bookingsVO.setResourceDetails(resourcesVO);						//2
 		
 		// Getting the current date and time
@@ -120,7 +121,7 @@ public class BookingsService {
 		bookingsVO.setUserDetails(usersVO);								//7
 		
 		bookingsVO.setStatus(bookingsModel.getStatus());				//8
-		
+		System.out.println(bookingsVO);
 		return bookingsVO;
 	}
 	
@@ -137,9 +138,10 @@ public class BookingsService {
 		try {
 			// Getting the result from the database
 			bookingsList =  bookingsDAO.approvedBookingsList();
-			
+			System.out.println(bookingsList.size()+"Response from dao");
+			System.out.println(bookingsList);
 			for (BookingsModel bookingsModelLocal : bookingsList) {
-				
+				System.out.println("In the loop");
 				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
 			
 			}

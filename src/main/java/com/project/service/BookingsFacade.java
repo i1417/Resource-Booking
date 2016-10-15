@@ -1,4 +1,3 @@
-
 package com.project.service;
 
 /**
@@ -36,7 +35,9 @@ public class BookingsFacade {
 	 * @return List of bookings having status = pending
 	 */
 	public List<BookingsVO> approvedBookingsList() {
-		return bookingsService.approvedBookingsList();
+		List f = bookingsService.approvedBookingsList();
+		System.out.println(f.size()+"Reply from service layer");
+		return f;
 	}
 	
 }
