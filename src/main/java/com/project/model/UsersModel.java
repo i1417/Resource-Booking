@@ -19,6 +19,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -58,6 +60,7 @@ public class UsersModel {
 	private List<ResourcesModel> adminOfResources;
 	
 	@OneToMany(mappedBy = "userDetails")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference
 	private List<BookingsModel> bookingsMade;
 

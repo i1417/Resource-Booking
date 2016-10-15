@@ -15,6 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -43,10 +45,12 @@ public class ResourcesModel {
 	@JoinTable(name = "admins",
 	joinColumns = {@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")},
 	inverseJoinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "employee_id")})*/
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
 	private List<UsersModel> resourceAdmins;
 	
 	@OneToMany(mappedBy = "resourceDetails")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonBackReference
 	private List<BookingsModel> bookedList;
 	
