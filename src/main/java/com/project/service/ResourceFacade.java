@@ -29,4 +29,34 @@ public class ResourceFacade {
 	public List<ResourcesVO> allResourceList() {
 		return resourceService.allResourceList();
 	}
+
+	/**
+	 * Following function helps in creates a new resource
+	 * @param resourcesVO contains the information regarding new resource.
+	 * @return true/false whether resource created successfully or not.
+	 */
+	public boolean createResource(ResourcesVO resourcesVO) {
+		
+		
+		return resourceService.createResource(resourcesVO);
+	}
+
+	/**
+	 * Following function helps in deleting a existing resource
+	 * @param resourcesVO contains the information regarding the resource to be deleted.
+	 * @return true/false whether resource deleted successfully or not.
+	 */
+	public boolean deleteResource(ResourcesVO resourcesVO) {
+
+		return resourceService.deleteResource(resourcesVO);
+	}
+
+	/**
+	 * Following function helps in edits a existing resource
+	 * @param resourcesVO contains the information regarding resource and edited data.
+	 * @return true/false whether resource edited successfully or not.
+	 */
+	public boolean editResource(ResourcesVO resourcesVO) {
+		return resourceService.editResource(resourcesVO);
+	}
 }

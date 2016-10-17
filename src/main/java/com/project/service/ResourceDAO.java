@@ -6,11 +6,14 @@ package com.project.service;
  */
 
 import javax.transaction.Transactional;
+
 import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import com.project.model.ResourcesModel;
 import com.project.model.ResourcesVO;
 
@@ -42,6 +45,85 @@ public class ResourceDAO {
 
 		// Getting the result
 		return session.createCriteria(ResourcesModel.class).list();
+	}
+
+
+	/**
+	 * Following function helps in creating a new resource. 
+	 * @param resourcesModel contains the information of the new resource.
+	 * @return true/false whether resource created successfully or not.
+	 */
+	public boolean createResource(ResourcesModel resourceModel) {
+		//Creating a new session
+				Session session = sessionFactory.openSession();
+				
+				try {
+					//Starting a new transaction
+					session.beginTransaction();
+					
+					//Inserting the Users Details in the database
+					session.save(resourceModel);
+					
+					//Committing the current transaction
+					session.getTransaction().commit();
+					
+					return true;
+				} catch (Exception e) {
+					session.getTransaction().rollback();
+					return false;
+				}
+	}
+
+	/**
+	 * Following function helps in deleting an existing resource. 
+	 * @param resourcesModel contains the information of resource to be deleted.
+	 * @return true/false whether resource deleted successfully or not.
+	 */
+	public boolean deleteResource(ResourcesModel resourceModel) {
+		//Creating a new session
+		Session session = sessionFactory.openSession();
+		
+		try {
+			//Starting a new transaction
+			session.beginTransaction();
+			
+			//Inserting the Users Details in the database
+			session.delete(resourceModel);
+			
+			//Committing the current transaction
+			session.getTransaction().commit();
+			
+			return true;
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		}
+	}
+
+	/**
+	 * Following function helps in updating the existing resource. 
+	 * @param resourcesModel contains the information of the resource to be updated.
+	 * @return true/false whether resource updated successfully or not.
+	 */
+	public boolean editResource(ResourcesModel resourceModel) {
+		//Creating a new session
+				Session session = sessionFactory.openSession();
+				
+				try {
+					//Starting a new transaction
+					session.beginTransaction();
+					
+					//Inserting the Users Details in the database
+					session.update(resourceModel);
+					
+					//Committing the current transaction
+					session.getTransaction().commit();
+					
+					return true;
+				} catch (Exception e) {
+					session.getTransaction().rollback();
+					return false;
+				}
 	}
 
 }

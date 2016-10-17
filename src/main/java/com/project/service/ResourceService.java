@@ -44,14 +44,49 @@ public class ResourceService {
 		List<ResourcesVO> resourcesVO = new ArrayList<ResourcesVO>(
 				resourcesModel.size());
 		ResourcesVO resourceVO = context.getBean(ResourcesVO.class);
-		System.out.println(" model data" + resourcesModel.size());  //DEBUG
+		System.out.println(" model data" + resourcesModel.size());
 		for (int i = 0; i < resourcesModel.size(); i++) {
 			BeanUtils.copyProperties(resourcesModel.get(i), resourceVO);
 			resourcesVO.add(resourceVO);
 		}
 
-		System.out.println("vo data" + resourcesVO);	//DEBUG
+		System.out.println("vo data" + resourcesVO);
 		return resourcesVO;
+	}
+
+	/**
+	 * Following function helps in creating a new resource. 
+	 * @param resourcesVO contains the information of the new resource.
+	 * @return true/false whether resource created successfully or not.
+	 */
+	public boolean createResource(ResourcesVO resourcesVO) {
+		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		return resourceDAO.createResource(resourceModel);
+	}
+
+
+	/**
+	 * Following function helps in deleting an existing resource. 
+	 * @param resourcesVO contains the information of resource to be deleted.
+	 * @return true/false whether resource deleted successfully or not.
+	 */
+	public boolean deleteResource(ResourcesVO resourcesVO) {
+		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		return resourceDAO.deleteResource(resourceModel);
+	}
+
+
+	/**
+	 * Following function helps in updating the existing resource. 
+	 * @param resourcesVO contains the information of the resource to be updated.
+	 * @return true/false whether resource updated successfully or not.
+	 */
+	public boolean editResource(ResourcesVO resourcesVO) {
+		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		return resourceDAO.editResource(resourceModel);
 	}
 
 }
