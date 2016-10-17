@@ -44,13 +44,13 @@ public class ResourceService {
 		List<ResourcesVO> resourcesVO = new ArrayList<ResourcesVO>(
 				resourcesModel.size());
 		ResourcesVO resourceVO = context.getBean(ResourcesVO.class);
-		System.out.println(" model data" + resourcesModel.size());
+		System.out.println(" model data" + resourcesModel.size());  //DEBUG
 		for (int i = 0; i < resourcesModel.size(); i++) {
 			BeanUtils.copyProperties(resourcesModel.get(i), resourceVO);
 			resourcesVO.add(resourceVO);
 		}
 
-		System.out.println("vo data" + resourcesVO);
+		System.out.println("vo data" + resourcesVO);	//DEBUG
 		return resourcesVO;
 	}
 
