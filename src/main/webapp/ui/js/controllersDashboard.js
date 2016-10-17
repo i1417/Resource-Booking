@@ -1,9 +1,9 @@
 var homePage = angular.module('homePage', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'dataFactory']);
 var personalDetailsPage = angular.module('personalDetailsPage', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp']);
 
-if(sessionStorage.length == 0) {
-	window.location = "http://localhost:8080/Project-Authentication/";
-}
+//if(sessionStorage.length == 0) {
+//	window.location = "http://localhost:8080/Project-Authentication/";
+//}
 
 homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter, userDetails, utilityFunctions) {
 	console.log(userDetails.getCurrentUser());
@@ -32,7 +32,6 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityFunctions) {
 	$rootScope.$on("populateResources", function(){
        $scope.allResources = utilityFunctions.getAllResources();
-       console.log("Called");
 	   $scope.showCalendar();
     });
 
@@ -44,6 +43,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 		   selectable: true,
 		   eventLimit: true, // allow "more" link when too many events
 		   snapDuration: {minutes: 15},
+		   timezone : 'Asia/Kolkata',
 		   header: {
 			   left: 'prev,next today',
 			   center: 'title',
@@ -82,8 +82,8 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 //			   console.log($($scope.currentUser.bookingsMade).length);
 			   $($scope.currentUser.bookingsMade).each(function() {
 				   var res = $(this).attr('resourceDetails');
-				   var startTime = $(this).attr('date')+'T'+$(this).attr('startTime');
-				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime');
+				   var startTime = $(this).attr('date')+'T'+$(this).attr('startTime')+'+05:30';
+				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
 				   events.push({
 					   title: $(this).attr('bookingId'),
 					   start: startTime, // will be parsed

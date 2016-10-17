@@ -1,24 +1,31 @@
 var topbarApp = angular.module('topbarApp', ['dataFactory', 'dataShareFactory']);
 
+if(sessionStorage.length == 0) {
+	localStorage.setItem('getSessionStorage', "Getting");
+}
+
 window.addEventListener('storage', function(event) {
-
-	console.log('storage event', event);
-
+	console.log(event);
 	if (event.key == 'getSessionStorage') {
 		// Some tab asked for the sessionStorage -> send it
+		localStorage.setItem('user', sessionStorage.getItem('user'));
+		localStorage.setItem('url', event.url);
+		console.log("Topbar.js");
+	}
 
-		localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
-		
-
-	} else if (event.key == 'sessionStorage' && !sessionStorage.length) {
-		// sessionStorage is empty -> fill it
-
+	if (event.key == 'user' && !sessionStorage.length) {
 		var data = JSON.parse(event.newValue),
 					value;
+		sessionStorage.setItem('user', localStorage.getItem('user'));
+		var redirect = localStorage.getItem('url');
+		localStorage.clear();
 
-		for (key in data) {
-			sessionStorage.setItem(key, data[key]);
-		}
+		window.location = redirect;
+	}
+
+	if(event.key == 'signout') {
+		sessionStorage.clear();
+		window.location = "index.html";
 	}
 });
 

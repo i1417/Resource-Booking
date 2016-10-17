@@ -10,15 +10,23 @@ function hideURLbar() {
 }
 
 if(sessionStorage.length != 0) {
-	if(typeof sessionStorage.user != 'undefined') {
-		window.location = "admin/index.html";
-	}
+	window.location = "admin/index.html";
 } else {
-	console.log("empty");
-	localStorage.setItem('getSessionStorage', Date.now());
-	sessionStorage.setItem('user', angular.toJson(localStorage.getItem('sessionStorage')));
-	//localStorage.removeItem('sessionStorage');
+	console.log("Here");
+	localStorage.setItem('getSessionStorage', "Getting");
+	console.log(localStorage);
 }
+
+window.addEventListener('storage', function(event) {
+	console.log("Called");
+	if (event.key == 'user' && !sessionStorage.length) {
+		var data = JSON.parse(event.newValue),
+					value;
+		sessionStorage.setItem('user', localStorage.getItem('user'));
+	}
+	localStorage.clear();
+	window.location = "admin/index.html";
+});
 
 landingPage.controller('loginForm', function($scope, $http, $window, $rootScope, userDetails, md5) {
 	$scope.user = {};
@@ -137,7 +145,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
 				if(response.status == 400) {
 					alert(response.message);
 				} else {
-					// $window.location.href = '/view/index.jsp';
+					location = "#tologin"
 				}
 	        }).error(function(response) {
 				alert("Connection Error");
