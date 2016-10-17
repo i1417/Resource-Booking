@@ -149,4 +149,6 @@ public String getDescription() {
 	public void setNumberOfParticipants(int numberOfParticipants) {
 		this.numberOfParticipants = numberOfParticipants;
 	}
+
+	
 }

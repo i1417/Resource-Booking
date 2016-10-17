@@ -4,6 +4,9 @@
  */
 package com.project.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
@@ -11,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.project.model.ResourcesModel;
+import com.project.model.ResourcesVO;
 import com.project.model.UsersModel;
 import com.project.model.UsersVO;
 
@@ -98,6 +103,11 @@ public class UsersService {
 		return userDetails;
 	}
 
+	/**
+	 * Following function checks for users existence on the website.
+	 * @param userDetails contains the details of the user to be checked.
+	 * @return true/false whether user exists or not
+	 */
 	public boolean checkUserExist(UsersVO userDetails) {
 		// Getting the Users Model Object
 		UsersModel userDetailsModel = context.getBean(UsersModel.class);
@@ -114,6 +124,11 @@ public class UsersService {
 		}
 	}
 
+	/**
+	 * Following function update the user details in the database.
+	 * @param userDetails contains the updated information of the existing user
+  	 * @return true/false whether user details has been updated successfully.
+	 */
 	public boolean updateUserDetails(UsersVO userDetails) {
 		// Getting the Users Model Object
 		UsersModel userDetailsModel = context.getBean(UsersModel.class);
@@ -122,5 +137,23 @@ public class UsersService {
 		BeanUtils.copyProperties(userDetails, userDetailsModel);
 
 		return usersDAO.updateUserDetails(userDetailsModel);
+	}
+
+	public List<UsersVO> getAllUsers() {
+		List<UsersModel> usersModel = new ArrayList<UsersModel>();
+
+		usersModel = usersDAO.getAllUsers();
+		List<UsersVO> usersVO = new ArrayList<UsersVO>(
+				usersModel.size());
+		UsersVO userVO;
+		System.out.println(" model data" + usersModel.size());
+		for (int i = 0; i <usersModel.size(); i++) {
+			userVO = context.getBean(UsersVO.class);
+			BeanUtils.copyProperties(usersModel.get(i), userVO);
+			usersVO.add(userVO);
+		}
+
+		System.out.println("vo data" + usersVO);
+		return usersVO;
 	}
 }

@@ -4,6 +4,8 @@
  */
 package com.project.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -53,5 +55,10 @@ public class UsersFacade {
 		} else {
 			return null;
 		} 
+	}
+
+	public List<UsersVO> getAllUsers() {
+		
+		return usersService.getAllUsers();
 	}
 }

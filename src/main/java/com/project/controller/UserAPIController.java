@@ -4,6 +4,8 @@
  */
 package com.project.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -125,4 +127,24 @@ public class UserAPIController {
 			return new Response(403, "User details not correct");
 		}
 	}
+	
+	/**
+	 * To fetch the list of all users
+	 * @return the response object containing the list of all users
+	 */
+	@RequestMapping(value = "/users/getAll", method = RequestMethod.GET)
+	public @ResponseBody Response getAllUsers() {
+		//Getting the result from the facade
+		List<UsersVO> result = usersFacade.getAllUsers();
+		
+		//Sending back the response to the client
+		if(result != null) {
+			System.out.println("OK");
+			return new Response(200, result);
+		} else {
+			System.out.println("Wrong");
+			return new Response(400, "Wrong Credentials");
+		}
+	}
+	
 }

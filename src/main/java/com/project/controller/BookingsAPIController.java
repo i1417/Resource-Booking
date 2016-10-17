@@ -73,4 +73,26 @@ public class BookingsAPIController {
 		}
 	}
 	
+	/**
+	 * Following function updates the status of bookings(accepted/cancelled)
+	 * @param bookingsVO contains the information related to the booking
+	 * @return 
+	 */
+	@RequestMapping(value = "/bookings/updateBookingsStatus", method = RequestMethod.POST)
+	public @ResponseBody Response updateBookingsStatus(@RequestBody BookingsVO bookingsVO) {
+		//Getting the result from the facade
+		
+		boolean result = bookingsFacade.updateBookingsStatus(bookingsVO);
+		System.out.println("Updation result : "+result+" Reply from facade");
+		
+		//Sending back the response to the client
+		if(result == true) {
+			System.out.println("Updated successfully");
+			return new Response(200, result);
+		} else {
+			System.out.println("Couldn't update");
+			return new Response(400, "Couldn't update");
+		}
+	}
+	
 }

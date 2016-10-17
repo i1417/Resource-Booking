@@ -35,7 +35,7 @@ public class BookingsService {
 	private ApplicationContext context;
 	
 	/**
-	 * To get the list of pending bookings
+	 * To get the list of pending bookings using resource id from BookingsDAO class
 	 * @return List of bookings having status = pending
 	 */
 	public List<BookingsVO> pendingBookingsListById(ResourcesVO resourcesVO) {
@@ -127,7 +127,7 @@ public class BookingsService {
 	
 	
 	/**
-	 * To get the list of approved bookings for specific Resource
+	 * To get the list of approved bookings from BookingsDAO class
 	 * @return List of bookings having status = Approved
 	 */
 	public List<BookingsVO> approvedBookingsList() {
@@ -157,5 +157,21 @@ public class BookingsService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * Following function updates the status of bookings(accepted/cancelled)
+	 * @param bookingsVO contains the information related to the booking
+	 * @return true/false whether booking status has been updated successfully.
+	 */
+	public boolean updateBookingsStatus(BookingsVO bookingsVO){
+		
+		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
+		//copying the bookingsVO data to the bookingsModel
+		BeanUtils.copyProperties(bookingsVO, bookingsModel);
+		//getting the result from the database
+		boolean result = bookingsDAO.updateBookingsStatus(bookingsModel);
+		
+		return result;
 	}
 }
