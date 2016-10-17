@@ -1,3 +1,4 @@
+
 package com.project.service;
 
 /**
@@ -24,20 +25,31 @@ public class BookingsFacade {
 	
 	
 	/**
-	 * To get the list of pending bookings
+	 * To get the list of pending bookings corresponding to particular resource ID
 	 * @return List of bookings having status = pending
 	 */
 	public List<BookingsVO> pendingBookingsListById(ResourcesVO resourcesVO) {
 		return bookingsService.pendingBookingsListById(resourcesVO);
 	}
 	/**
-	 * To get the list of pending bookings
-	 * @return List of bookings having status = pending
+	 * Following function fetches the list of all approved bookings
+	 * @return List of bookings having status = Approved
 	 */
 	public List<BookingsVO> approvedBookingsList() {
-		List f = bookingsService.approvedBookingsList();
-		System.out.println(f.size()+"Reply from service layer");
-		return f;
+		List<BookingsVO> list = bookingsService.approvedBookingsList();
+		System.out.println(list.size()+"Reply from service layer");
+		return list;
+	}
+	
+	/**
+	 * Following function updates the status of bookings(accepted/cancelled)
+	 * @param bookingsVO contains the information related to the booking
+	 * @return true/false whether booking status has been updated successfully.
+	 */
+	public boolean updateBookingsStatus(BookingsVO bookingsVO){
+		
+		boolean result = bookingsService.updateBookingsStatus(bookingsVO);
+		return result;
 	}
 	
 }
