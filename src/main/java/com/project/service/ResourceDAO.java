@@ -15,6 +15,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.project.model.BookingsModel;
 import com.project.model.ResourcesModel;
 import com.project.model.ResourcesVO;
 import com.project.model.UsersModel;
@@ -133,8 +134,44 @@ public class ResourceDAO {
 	public boolean createResourceAdmin(ResourcesModel resourceModel,
 			UsersModel usersModel) {
 		
+		Session session = sessionFactory.openSession();
+
 		
-		return false;
+		try{
+			//Starting a new transaction
+			session.beginTransaction();
+			
+			
+			
+			ResourcesModel updateResource = (ResourcesModel) session.get(ResourcesModel.class, resourceModel.getResourceId());
+			List<UsersModel> resourceAdmins = updateResource.getResourceAdmins();
+			resourceAdmins.add(usersModel);
+			
+			//DEBUG
+			updateResource.setResourceAdmins(resourceAdmins);
+			
+			/*UsersModel updateUsers = (UsersModel) session.get(UsersModel.class, usersModel.getEmail());
+			List<ResourcesModel> userAsAdminForResources = updateUsers.getAdminOfResources();
+			userAsAdminForResources.add(resourceModel);
+			*/
+			//DEBUG
+			/*updateUsers.setAdminOfResources(userAsAdminForResources);*/
+			
+			System.out.println("started 2");
+			//DEBUG
+			session.getTransaction().commit();
+			
+			System.out.println("End");	
+			//DEBUG
+			return true;
+			
+		} catch (Exception e) 
+			{
+			session.getTransaction().rollback();
+			
+			return false;
+			}
+		
 	}
 
 }
