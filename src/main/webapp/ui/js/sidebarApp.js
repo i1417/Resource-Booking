@@ -6,9 +6,9 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, userDetails, utilit
     $scope.resources = {};
 
     if($scope.currentUser.role != 'admin') {
-    	$('#resources').hide();
+    	$('#resourcesMgmt').hide();
     	if($scope.currentUser.role != 'res_admin') {
-    		$('#request').hide();
+    		$('#pendingRequest').hide();
     	}
     } else {
         $http({

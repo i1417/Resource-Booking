@@ -43,9 +43,9 @@ public class ResourceService {
 		resourcesModel = resourceDAO.allResourceList();
 		List<ResourcesVO> resourcesVO = new ArrayList<ResourcesVO>(
 				resourcesModel.size());
-		ResourcesVO resourceVO = context.getBean(ResourcesVO.class);
-		System.out.println(" model data" + resourcesModel.size());
+		ResourcesVO resourceVO;
 		for (int i = 0; i < resourcesModel.size(); i++) {
+			resourceVO = context.getBean(ResourcesVO.class);
 			BeanUtils.copyProperties(resourcesModel.get(i), resourceVO);
 			resourcesVO.add(resourceVO);
 		}

@@ -187,7 +187,7 @@ label.uname span,label.youpasswd span,label.youmail span {
 }
 /* all the input except submit and checkbox */
 #wrapper input:not([type="checkbox"]){
-	width: 93%;
+	width: 98%;
 	letter-spacing:1px;
 	color:#fff;
     margin-top: 10px;
@@ -548,7 +548,7 @@ p.agileits {
     width: 55%;
 }
 #wrapper input:not([type="checkbox"]) {
-    width: 89%;
+    width: 98%;
 }
 #wrapper p.change_link a {
     margin-left: 100px;
@@ -557,7 +557,7 @@ p.agileits {
 
 @media (max-width: 736px) {
 #wrapper input:not([type="checkbox"]) {
-    width: 88%;
+    width: 98%;
 }
 #wrapper p.change_link a {
     margin-left: 67px;
@@ -619,7 +619,7 @@ h1.w3ls {
     width: 80%;
 }
 #wrapper input:not([type="checkbox"]) {
-	width:86%;
+	width:98%;
 }
 #wrapper input:not([type="checkbox"]),#wrapper p.button input,#wrapper p.change_link a {
 	z-index:999;
@@ -645,7 +645,7 @@ h1.w3ls {
 }
 #wrapper input:not([type="checkbox"]) {
     font-size: 11px;
-	width:85%;
+	width:98%;
 }
 }
 
@@ -676,7 +676,7 @@ h1.w3ls {
     width: 90%;
 }
 #wrapper input:not([type="checkbox"]) {
-	width:84%;
+	width:98%;
 }
 #wrapper p.button input {
     font-size: 15px;
