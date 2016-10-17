@@ -35,10 +35,11 @@ public class BookingsAPIController {
 	 * Following function returns the list of all pending bookings.
 	 * @return Response object showing the list of all pending bookings.
 	 */
-	@RequestMapping(value = "/bookings/getPendingbookings", method = RequestMethod.GET)
+	@RequestMapping(value = "/bookings/getPendingbookings", method = RequestMethod.POST)
 	public @ResponseBody Response getPendingBookingsList(@RequestBody ResourcesVO resourcesVO) {
 		//Getting the result from the facade
 		List<BookingsVO> result = bookingsFacade.pendingBookingsListById(resourcesVO);
+		
 		
 		//Sending back the response to the client
 		if(result != null) {
@@ -58,14 +59,39 @@ public class BookingsAPIController {
 	public @ResponseBody Response getApprovedBookingsList() {
 		//Getting the result from the facade
 		List<BookingsVO> result = bookingsFacade.approvedBookingsList();
-		
+		System.out.println(result.size()+"Reply from facade");
+		for(BookingsVO b : result) {
+			System.out.println(b);
+		}
 		//Sending back the response to the client
 		if(result != null) {
-			System.out.println("OK");
+			System.out.println("OK"+"API controller");
 			return new Response(200, result);
 		} else {
 			System.out.println("Wrong");
 			return new Response(400, "No Pending bookings");
+		}
+	}
+	
+	/**
+	 * Following function updates the status of bookings(accepted/cancelled)
+	 * @param bookingsVO contains the information related to the booking
+	 * @return 
+	 */
+	@RequestMapping(value = "/bookings/updateBookingsStatus", method = RequestMethod.POST)
+	public @ResponseBody Response updateBookingsStatus(@RequestBody BookingsVO bookingsVO) {
+		//Getting the result from the facade
+		
+		boolean result = bookingsFacade.updateBookingsStatus(bookingsVO);
+		System.out.println("Updation result : "+result+" Reply from facade");
+		
+		//Sending back the response to the client
+		if(result == true) {
+			System.out.println("Updated successfully");
+			return new Response(200, result);
+		} else {
+			System.out.println("Couldn't update");
+			return new Response(400, "Couldn't update");
 		}
 	}
 	
