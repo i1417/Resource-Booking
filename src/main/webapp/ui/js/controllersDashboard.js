@@ -26,6 +26,36 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 	}).error(function(response) {
 		alert("Connection Error");
 	});
+	
+		// datetime picker
+	$scope.pickDateTime = function() {
+		console.log("hellohello");
+		$('#dtPicker1').datetimepicker({
+
+			icons : {
+				up : "fa fa-chevron-circle-up",
+				down : "fa fa-chevron-circle-down",
+				next : 'fa fa-chevron-circle-right',
+				previous : 'fa fa-chevron-circle-left',
+				time : "fa fa-clock-o",
+				date : "fa fa-calendar",
+			}
+		});
+
+		$('#dtPicker2').datetimepicker({
+			format : 'LT',
+
+			icons : {
+				up : "fa fa-chevron-circle-up",
+				down : "fa fa-chevron-circle-down",
+				next : 'fa fa-chevron-circle-right',
+				previous : 'fa fa-chevron-circle-left',
+				time : "fa fa-clock-o",
+				date : "fa fa-calendar",
+			}
+		});
+
+	}
 
 });
 
