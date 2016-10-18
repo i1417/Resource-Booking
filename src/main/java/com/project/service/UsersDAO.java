@@ -4,6 +4,8 @@
  */
 package com.project.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
@@ -122,5 +124,17 @@ public class UsersDAO {
 			session.getTransaction().rollback();
 			return false;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<UsersModel> getAllUsers() {
+		//Creating a new session
+		Session session = sessionFactory.openSession();
+		
+		Criteria cr  = session.createCriteria(UsersModel.class);
+		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		return cr.list();
+	
 	}
 }

@@ -30,6 +30,16 @@ public class BookingsVO {
 		this.bookingId = bookingId;
 	}
 	
+	@Override
+	public String toString() {
+		return "BookingsVO [bookingId=" + bookingId + ", userDetails="
+				+ userDetails + ", resourceDetails=" + resourceDetails
+				+ ", title=" + title + ", description=" + description
+				+ ", date=" + date + ", startTime=" + startTime + ", endTime="
+				+ endTime + ", status=" + status + ", numberOfParticipants="
+				+ numberOfParticipants + "]";
+	}
+
 	public UsersVO getUserDetails() {
 		return userDetails;
 	}

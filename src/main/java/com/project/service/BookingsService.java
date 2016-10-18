@@ -5,9 +5,11 @@ package com.project.service;
  * @author Pratap Singh Ranawat and Vivek Mittal
  */
 
+import java.sql.Date;
+import java.sql.Time;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+
 import com.project.model.BookingsModel;
 import com.project.model.BookingsVO;
 import com.project.model.ResourcesModel;
@@ -173,5 +176,45 @@ public class BookingsService {
 		boolean result = bookingsDAO.updateBookingsStatus(bookingsModel);
 		
 		return result;
+	}
+	
+	public boolean createBooking(BookingsVO bookingsVO) {
+		BookingsModel bookingsModel;
+				
+		bookingsModel = BookingsVoToModel(bookingsVO);
+		
+		//getting the result from the database
+		/*return */bookingsDAO.createBooking(bookingsModel);
+		return true;
+	}
+	
+	public BookingsModel BookingsVoToModel(BookingsVO bookingsVO) {
+		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
+		UsersModel usersModel = context.getBean(UsersModel.class);
+		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
+		
+		bookingsModel.setTitle(bookingsVO.getTitle());
+		bookingsModel.setDescription(bookingsVO.getDescription());
+		bookingsModel.setNumberOfParticipants(bookingsVO.getNumberOfParticipants());
+		
+		BeanUtils.copyProperties(bookingsVO.getUserDetails(), usersModel);
+		BeanUtils.copyProperties(bookingsVO.getResourceDetails(), resourcesModel);
+		
+		bookingsModel.setUserDetails(usersModel);
+		bookingsModel.setResourceDetails(resourcesModel);
+		
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			bookingsModel.setDate(new Date(dateFormat.parse(bookingsVO.getDate()).getTime()));
+			
+			dateFormat = new SimpleDateFormat("HH:mm:ss");
+			bookingsModel.setStartTime(new Time(dateFormat.parse(bookingsVO.getStartTime()).getTime()));
+			bookingsModel.setEndTime(new Time(dateFormat.parse(bookingsVO.getEndTime()).getTime()));
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return bookingsModel;
 	}
 }

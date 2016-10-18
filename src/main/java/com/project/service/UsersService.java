@@ -4,6 +4,9 @@
  */
 package com.project.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
@@ -116,5 +119,23 @@ public class UsersService {
 		BeanUtils.copyProperties(userDetails, userDetailsModel);
 		
 		return usersDAO.updateUserDetails(userDetailsModel);
+	}
+	
+	public List<UsersVO> getAllUsers() {
+		List<UsersModel> usersModel = new ArrayList<UsersModel>();
+
+		usersModel = usersDAO.getAllUsers();
+		List<UsersVO> usersVO = new ArrayList<UsersVO>(
+				usersModel.size());
+		UsersVO userVO;
+		System.out.println(" model data" + usersModel.size());
+		for (int i = 0; i <usersModel.size(); i++) {
+			userVO = context.getBean(UsersVO.class);
+			BeanUtils.copyProperties(usersModel.get(i), userVO);
+			usersVO.add(userVO);
+		}
+
+		System.out.println("vo data" + usersVO);
+		return usersVO;
 	}
 }

@@ -5,27 +5,22 @@ package com.project.service;
  * @author Pratap Singh Ranawat and Vivek Mittal
  */
 
-import javax.transaction.Transactional;
-
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
-import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.model.BookingsModel;
-import com.project.model.BookingsModel;
-import com.project.model.UsersModel;
 
 @Repository("bookingsDAO")
 @Transactional
@@ -171,10 +166,6 @@ public class BookingsDAO {
 	 */
 	public boolean updateBookingsStatus(BookingsModel bookingsModel) {
 		Session session = sessionFactory.openSession();
-
-		
-		
-		
 		
 		System.out.println("booking Model "+ bookingsModel);	//DEBUG
 		try{
@@ -203,6 +194,46 @@ public class BookingsDAO {
 			
 			return false;
 			}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean createBooking(BookingsModel bookingsModel) {
+		Session session = sessionFactory.openSession();
+		
+		try {
+			session.beginTransaction();
+			Criteria criteria = session.createCriteria(BookingsModel.class);
+			
+			criteria.add(Restrictions.and(Restrictions.eq("date", bookingsModel.getDate()),
+					Restrictions.eq("status", "approved"),
+					Restrictions.between("startTime", bookingsModel.getStartTime(), bookingsModel.getEndTime()),
+					Restrictions.between("endTime", bookingsModel.getStartTime(), bookingsModel.getEndTime())));
+			
+			List<BookingsModel> forStatus = criteria.list();
+			if(forStatus.size() == 0) {
+				bookingsModel.setStatus("Approved");
+			} else {
+				bookingsModel.setStatus("Pending");
+			}
+			
+			criteria = session.createCriteria(BookingsModel.class);
+			criteria.add(Restrictions.eq("date", bookingsModel.getDate()));
+			forStatus = criteria.list();
+			
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String dt = dateFormat.format(bookingsModel.getDate());
+			
+			bookingsModel.setBookingId(bookingsModel.getResourceDetails().getResourceName() + 
+					dt + "-" + (forStatus.size()+1));
+			System.out.println("ID"+bookingsModel.getBookingId());
+			session.save(bookingsModel);
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+			return false;
+		}
 	}
 	
 	

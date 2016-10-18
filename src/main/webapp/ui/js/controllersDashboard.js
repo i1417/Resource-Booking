@@ -6,8 +6,8 @@ var personalDetailsPage = angular.module('personalDetailsPage', ['ngRoute', 'dat
 //}
 
 homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetails, utilityFunctions) {
-	
-	
+
+
 	$scope.booking={};
 	$scope.booking.resource={};
 	$scope.booking.currentUser = userDetails.getCurrentUser();
@@ -18,7 +18,7 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 			$('#datePicker').datetimepicker({
 				format: 'YYYY/MM/DD',
 				minDate: new Date(),
-				
+
 				icons : {
 					up : "fa fa-chevron-circle-up",
 					down : "fa fa-chevron-circle-down",
@@ -43,11 +43,11 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 
 		}
 		//end of datetimepicker
-		
-		
+
+
 		$scope.bookResource=function(){
 		console.log($scope.booking);
-		
+
 			$http({
 	            method : 'POST',
 	            url : 'http://localhost:8080/Project-Authentication/bookings/createBooking',
@@ -56,7 +56,7 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 	        }).success(function(response) {
 	            console.log(response);
 	            if(response.status == 200 ) {
-	            	
+
 	            	$window.location.href = 'admin/index.html';
 	            } else {
 	            	console.log(response.errorMessage);
@@ -90,7 +90,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 	}).error(function(response) {
 		alert("Connection Error");
 	});
-	
+
 });
 
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityFunctions) {

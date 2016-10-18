@@ -10,9 +10,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.model.BookingsVO;
@@ -64,11 +66,9 @@ public class BookingsAPIController {
 			System.out.println(b);
 		}
 		//Sending back the response to the client
-		if(result != null) {
-			System.out.println("OK"+"API controller");
+		if(result.size() != 0) {
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "No Pending bookings");
 		}
 	}
@@ -86,7 +86,31 @@ public class BookingsAPIController {
 		System.out.println("Updation result : "+result+" Reply from facade");
 		
 		//Sending back the response to the client
-		if(result == true) {
+		if(result) {
+			System.out.println("Updated successfully");
+			return new Response(200, result);
+		} else {
+			System.out.println("Couldn't update");
+			return new Response(400, "Couldn't update");
+		}
+	}
+	
+	/**
+	 * To create a new booking
+	 * @param bookingsVO - The view object containing the bookings details
+	 * @return Booking confirmation
+	 */
+	@RequestMapping(value = "/bookings/createBooking", method = RequestMethod.POST)
+	public @ResponseBody Response createBooking(@RequestBody BookingsVO bookingsVO) {
+//		System.out.println(resourceVO);
+//		bookingsVO.setResourceDetails(resourceVO);
+		System.out.println(bookingsVO);
+		//Getting the result from the facade
+		boolean result = bookingsFacade.createBooking(bookingsVO);
+//		boolean result = false;
+		
+		//Sending back the response to the client
+		if(result) {
 			System.out.println("Updated successfully");
 			return new Response(200, result);
 		} else {

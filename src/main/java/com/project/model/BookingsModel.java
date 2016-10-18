@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class BookingsModel {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "booking_id")
 	private String bookingId;
 	

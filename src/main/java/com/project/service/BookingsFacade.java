@@ -52,4 +52,8 @@ public class BookingsFacade {
 		return result;
 	}
 	
+	public boolean createBooking(BookingsVO bookingsVO) {
+		return bookingsService.createBooking(bookingsVO);
+	}
+	
 }
