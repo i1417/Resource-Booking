@@ -229,3 +229,6 @@ ul.alert-dropdown {
 #datePicker, #startTime, #endTime{
 	cursor:pointer;
 }
+.btnClass{
+	border-radius: 24px;
+}
