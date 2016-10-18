@@ -25,8 +25,7 @@
 	type="text/css">
 
 <!--datepicker css  -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css"></script>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -121,7 +120,7 @@
 						<form role="form" ng-submit="bookResource()" ng-controller="bookingCtrl">
 							<div class="form-group">
 
-								<select class="selectpicker form-control" ng-model="booking.resource.resourceName" required>
+								<select class="selectpicker form-control" ng-model="booking.resourceDetails.resourceName" required>
 									<option data-hidden="true" value="">Select a Resource</option>
 									<option data-ng-repeat="r in allResources">{{r.resourceName}}</option>
 								</select>
@@ -131,7 +130,7 @@
 							<div class="form-group">
 								<div class='input-group date' id='datePicker'>
 									<input type='text' class="form-control"
-										placeholder="Booking date" ng-model="booking.date" required /> <span class="input-group-addon">
+										placeholder="Booking date" ng-model="booking.date" required  pattern="^[0-9/]+$"/> <span class="input-group-addon">
 										<span class="fa fa-calendar"> </span>
 									</span>
 								</div>
@@ -147,7 +146,7 @@
 							<div class="form-group">
 								<div class='input-group date' id='endTime'>
 									<input type='text' class="form-control"
-										placeholder="Select end time" ng-model="booking.endTime" required/> <span
+										placeholder="Select end time" ng-model='booking.endTime' required/> <span
 										class="input-group-addon"> <span class="fa fa-clock-o"></span>
 									</span>
 								</div>
@@ -178,7 +177,7 @@
 			</div>
 			<!--Model End -->
 		</div>
-
+		
 
 	<!-- /#wrapper -->
 
@@ -187,8 +186,7 @@
 	<!-- Bootstrap Core JavaScript -->
 	<script src="ui/js/bootstrap.min.js"></script>
 	<!-- Bootstrap datetimepicker jsvascript-->
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
 	<!-- Morris Charts JavaScript -->
 	<!-- <script src="ui/js/plugins/morris/raphael.min.js"></script>
     <script src="ui/js/plugins/morris/morris.min.js"></script>
