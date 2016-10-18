@@ -6,19 +6,17 @@ var personalDetailsPage = angular.module('personalDetailsPage', ['ngRoute', 'dat
 //}
 
 homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetails, utilityFunctions) {
-
-
+	
+	
 	$scope.booking={};
-	$scope.booking.resource={};
-	$scope.booking.currentUser = userDetails.getCurrentUser();
+	$scope.booking.resourceDetails={};
+	$scope.booking.userDetails = userDetails.getCurrentUser();
 
 		// datetime picker
 		$scope.pickDateTime = function() {
-			console.log("hellohello");
-			$('#datePicker').datetimepicker({
+			 $('#datePicker').datetimepicker({
 				format: 'YYYY/MM/DD',
 				minDate: new Date(),
-
 				icons : {
 					up : "fa fa-chevron-circle-up",
 					down : "fa fa-chevron-circle-down",
@@ -30,7 +28,7 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 			});
 
 			 $('#startTime,#endTime').datetimepicker({
-				 format : 'hh:mm:00',
+				 format : 'HH:mm:00',
 					icons : {
 						up : "fa fa-chevron-circle-up",
 						down : "fa fa-chevron-circle-down",
@@ -43,11 +41,10 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 
 		}
 		//end of datetimepicker
-
-
+		
+		
 		$scope.bookResource=function(){
 		console.log($scope.booking);
-
 			$http({
 	            method : 'POST',
 	            url : 'http://localhost:8080/Project-Authentication/bookings/createBooking',
@@ -56,7 +53,7 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 	        }).success(function(response) {
 	            console.log(response);
 	            if(response.status == 200 ) {
-
+	            	
 	            	$window.location.href = 'admin/index.html';
 	            } else {
 	            	console.log(response.errorMessage);
@@ -90,7 +87,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 	}).error(function(response) {
 		alert("Connection Error");
 	});
-
+	
 });
 
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityFunctions) {
@@ -160,6 +157,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 		   },
 
 		   select: function(start, end, jsEvent, view, resource) {
+		
 			   console.log(
 				   'select',
 				   start.format(),
