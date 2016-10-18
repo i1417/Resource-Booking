@@ -86,7 +86,7 @@
 
                             <div class="form-group">
                                 <label for="resourceName">Resource Name</label>
-                                <input class="form-control" id="resourceName" type="text" pattern="[a-zA-Z0-9\s]{2,30}" placeholder="Resource Name" ng-model="resource.resourceName" title="It must be between 2-30 characters" required/>
+                                <input class="form-control" id="resourceName" type="text" pattern="[a-zA-Z0-9-\s]{2,30}" placeholder="Resource Name" ng-model="resource.resourceName" title="It must be between 2-30 characters" required/>
                             </div>
 
                             <div class="form-group">
@@ -115,6 +115,14 @@
                                 </select>
                                 <br/>
                                 <button type="button" class="btn btn-success" ng-click="addAdmin()">Add</button>
+                            </div>
+
+                            <div class="form-group" id="resType">
+                                <label for="type">Resource Type</label>
+                                <!-- ng-options="admin as admin.name for admin in resource.resourceAdmins track by admin.email"  -->
+                                <select class="form-control" id="type" ng-model="resource.type" required>
+                                    <option ng-repeat="res in distinct" value="{{res}}">{{res}}</option>
+                                </select>
                             </div>
 
                             <button type="submit" class="btn btn-default">Update</button>

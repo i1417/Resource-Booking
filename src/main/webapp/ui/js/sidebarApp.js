@@ -22,6 +22,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetail
                 console.log(response.errorMessage);
             } else {
                 $scope.currentUser.adminOfResources = response.data;
+                userDetails.setCurrentUser($scope.currentUser);
                 console.log(response);
             }
         }).error(function(response) {
@@ -61,4 +62,9 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetail
         console.log(utilityFunctions.getResourceDetails());
 		$window.location.href = "resourceEdit.html";
 	}
+
+    $scope.newResource = function() {
+        utilityFunctions.setResourceDetails(null);
+        $window.location.href = "resourceEdit.html";
+    }
 });

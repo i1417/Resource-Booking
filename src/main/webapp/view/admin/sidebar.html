@@ -21,6 +21,9 @@
                 <li ng-repeat="resource in currentUser.adminOfResources">
                     <a href="" ng-click="fetchResourceDetails(resource)">{{resource.resourceName}}</a>
                 </li>
+                <li>
+                    <a href="" ng-click="newResource()">Create a Resource</a>
+                </li>
             </ul>
         </li>
         <!-- <li>
