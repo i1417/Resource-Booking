@@ -5,6 +5,70 @@ var personalDetailsPage = angular.module('personalDetailsPage', ['ngRoute', 'dat
 //	window.location = "http://localhost:8080/Project-Authentication/";
 //}
 
+homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetails, utilityFunctions) {
+	
+	
+	$scope.booking={};
+	$scope.booking.resource={};
+	$scope.booking.currentUser = userDetails.getCurrentUser();
+
+		// datetime picker
+		$scope.pickDateTime = function() {
+			console.log("hellohello");
+			$('#datePicker').datetimepicker({
+				format: 'YYYY/MM/DD',
+				minDate: new Date(),
+				
+				icons : {
+					up : "fa fa-chevron-circle-up",
+					down : "fa fa-chevron-circle-down",
+					next : 'fa fa-chevron-circle-right',
+					previous : 'fa fa-chevron-circle-left',
+					time : "fa fa-clock-o",
+					date : "fa fa-calendar",
+				}
+			});
+
+			 $('#startTime,#endTime').datetimepicker({
+				 format : 'hh:mm:00',
+					icons : {
+						up : "fa fa-chevron-circle-up",
+						down : "fa fa-chevron-circle-down",
+						next : 'fa fa-chevron-circle-right',
+						previous : 'fa fa-chevron-circle-left',
+						time : "fa fa-clock-o",
+						date : "fa fa-calendar",
+					}
+			    });
+
+		}
+		//end of datetimepicker
+		
+		
+		$scope.bookResource=function(){
+		console.log($scope.booking);
+		
+			$http({
+	            method : 'POST',
+	            url : 'http://localhost:8080/Project-Authentication/bookings/createBooking',
+	            data : $scope.booking,
+	            headers : {'Content-Type': 'application/json'}
+	        }).success(function(response) {
+	            console.log(response);
+	            if(response.status == 200 ) {
+	            	
+	            	$window.location.href = 'admin/index.html';
+	            } else {
+	            	console.log(response.errorMessage);
+	            }
+	        }).error(function(response) {
+				alert("Connection Error");
+			});
+		}
+
+});
+
+
 homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter, userDetails, utilityFunctions) {
 	console.log(userDetails.getCurrentUser());
 	$scope.currentUser = userDetails.getCurrentUser();
@@ -27,41 +91,11 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 		alert("Connection Error");
 	});
 	
-		// datetime picker
-	$scope.pickDateTime = function() {
-		console.log("hellohello");
-		$('#dtPicker1').datetimepicker({
-
-			icons : {
-				up : "fa fa-chevron-circle-up",
-				down : "fa fa-chevron-circle-down",
-				next : 'fa fa-chevron-circle-right',
-				previous : 'fa fa-chevron-circle-left',
-				time : "fa fa-clock-o",
-				date : "fa fa-calendar",
-			}
-		});
-
-		$('#dtPicker2').datetimepicker({
-			format : 'LT',
-
-			icons : {
-				up : "fa fa-chevron-circle-up",
-				down : "fa fa-chevron-circle-down",
-				next : 'fa fa-chevron-circle-right',
-				previous : 'fa fa-chevron-circle-left',
-				time : "fa fa-clock-o",
-				date : "fa fa-calendar",
-			}
-		});
-
-	}
-
 });
 
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityFunctions) {
 	$rootScope.$on("populateResources", function(){
-       $scope.allResources = utilityFunctions.getAllResources();
+		 $scope.allResources = utilityFunctions.getAllResources();
 	   $scope.showCalendar();
     });
 
