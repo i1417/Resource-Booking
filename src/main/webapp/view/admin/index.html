@@ -82,7 +82,7 @@
 					<div class="col-lg-12">
 						<h1 class="page-header">
 							Dashboard <small>Resource Bookings</small>
-							<button type="button" ng-controller="bookingCtrl" class="btn btn-primary btn-md pull-right"
+							<button type="button" ng-controller="bookingCtrl" class="btn btn-primary btnClass btn-md pull-right"
 								data-toggle="modal" data-target="#bookingModal"
 								ng-click="pickDateTime()">New Booking</button>
 						</h1>
@@ -153,39 +153,33 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="control-label">Title</label> <input type="text"
+							 <input type="text"
 									class="form-control" placeholder="Purpose of Booking" ng-model="booking.title" required/>
 
 							</div>
 							<div class="form-group">
-								<label class="control-label">Description</label> <input
+								<input
 									type="text" class="form-control"
 									placeholder="Describe your purpose" ng-model="booking.description" required/>
 							</div>
 							<div class="form-group">
-								<label class="control-label">Participants</label> <input
+								 <input
 									type="number" class="form-control"
 									placeholder="Number of participants" ng-model="booking.numberOfParticipants"  min="2" required/>
 							</div>
 
-							<button type="submit" class="btn btn-primary">Book</button>
+							<button type="submit" class="btn btnClass btn-block btn-primary">Book</button>
+							<button type="button" class="btn btnClass btn-block btn-default"  data-dismiss="modal">Cancel</button>
 						</form>
 					</div>
-
-					<!-- Modal Footer -->
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary">Book
-							Resource</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">
-							Close</button>
-
 					</div>
 
 				</div>
 			</div>
+			<!--Model End -->
 		</div>
-		<!--Model End -->
-	</div>
+		
+
 	<!-- /#wrapper -->
 
 
