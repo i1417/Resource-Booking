@@ -1,6 +1,6 @@
 var sidebarApp = angular.module('sidebarApp', ['dataShareFactory', 'dataFactory']);
 
-sidebarApp.controller('sidebarCtrl', function($scope, $http, userDetails, utilityFunctions) {
+sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetails, utilityFunctions) {
     console.log("fsfs");
     $scope.currentUser = userDetails.getCurrentUser();
     $scope.resources = {};
@@ -11,6 +11,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, userDetails, utilit
     		$('#pendingRequest').hide();
     	}
     } else {
+        console.log("hello");
         $http({
             method : 'GET',
             url : 'http://localhost:8080/Project-Authentication/resources/getAll',
@@ -21,6 +22,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, userDetails, utilit
                 console.log(response.errorMessage);
             } else {
                 $scope.currentUser.adminOfResources = response.data;
+                console.log(response);
             }
         }).error(function(response) {
             alert("Connection Error");
@@ -38,6 +40,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, userDetails, utilit
             headers : {'Content-Type': 'application/json'}
         }).success(function(response) {
             console.log(response);
+
             //console.log(response.data);
             // $scope.user.password = "";
             // if(response.status == 200 ) {
@@ -52,7 +55,10 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, userDetails, utilit
 		});
 	}
 
-	$scope.fetchResourceDetails = function(resourceId) {
-		console.log(resourceId);
+	$scope.fetchResourceDetails = function(resource) {
+        //console.log(resource);
+		utilityFunctions.setResourceDetails(resource);
+        console.log(utilityFunctions.getResourceDetails());
+		$window.location.href = "resourceEdit.html";
 	}
 });

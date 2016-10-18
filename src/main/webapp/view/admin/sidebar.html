@@ -19,7 +19,7 @@
             <a href="javascript:;" data-toggle="collapse" data-target="#resources"><i class="fa fa-fw fa-database"></i> Resources <i class="fa fa-fw fa-caret-down"></i></a>
             <ul id="resources" class="collapse">
                 <li ng-repeat="resource in currentUser.adminOfResources">
-                    <a href="#" ng-click="fetchResourceDetails(resource.resourceId)">{{resource.resourceName}}</a>
+                    <a href="" ng-click="fetchResourceDetails(resource)">{{resource.resourceName}}</a>
                 </li>
             </ul>
         </li>

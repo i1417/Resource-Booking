@@ -85,12 +85,12 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 			console.log(response);
 			if(response.status == 200) {
 				userDetails.setCurrentUser(response.data);
-				// $window.location.href = 'admin/index.html';
+				$window.location.href = 'admin/index.html';
 			} else {
 				profileDetails.name = profile.getName();
 				userDetails.setUser(profileDetails);
-				// $rootScope.$emit("setUserDetails", {});
-				// location = "#toregister";
+				$rootScope.$emit("setUserDetails", {});
+				location = "#toregister";
 			}
 		}).error(function(response) {
 			alert("Connection Error");
@@ -145,6 +145,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
 				if(response.status == 400) {
 					alert(response.message);
 				} else {
+					$("input[type='email']").prop('readonly', "false");
 					location = "#tologin"
 				}
 	        }).error(function(response) {
@@ -180,6 +181,7 @@ function onFailure(error) {
 
 function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
+	console.log(auth2);
 	auth2.signOut().then(function () {
 		console.log('User signed out.');
 	});

@@ -3,8 +3,6 @@ angular.module('dataShareFactory',[]).factory('userDetails', function($window) {
 
     var user = [];
 
-    var currentUser = {};
-
     userFunctions.setUser = function(data) {
         user.push(data);
     }
@@ -12,8 +10,6 @@ angular.module('dataShareFactory',[]).factory('userDetails', function($window) {
     userFunctions.getUser = function() {
         return user.pop();
     }
-
-    var currentUser = [];
 
     userFunctions.setCurrentUser = function(data) {
         $window.sessionStorage.setItem('user', angular.toJson(data));

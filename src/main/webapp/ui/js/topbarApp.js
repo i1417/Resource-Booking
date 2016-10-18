@@ -32,6 +32,9 @@ window.addEventListener('storage', function(event) {
 topbarApp.controller('topbarCtrl', function($scope, $window, userDetails, utilityFunctions) {
     $scope.currentUser = userDetails.getCurrentUser();
     $scope.signOut = function() {
+    	//gapi.auth2.init();
+        var auth2 = gapi.auth2.getAuthInstance();
+        console.log(auth2);
 		console.log("Called");
 		utilityFunctions.performSignOut();
 	}
