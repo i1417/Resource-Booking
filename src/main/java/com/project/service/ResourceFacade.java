@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.project.model.ResourcesVO;
+import com.project.model.UsersVO;
 
 @Service("resourceFacade")
 public class ResourceFacade {
@@ -46,11 +47,11 @@ public class ResourceFacade {
 	 * @param resourcesVO contains the information regarding the resource to be deleted.
 	 * @return true/false whether resource deleted successfully or not.
 	 */
-	public boolean deleteResource(ResourcesVO resourcesVO) {
+	/*public boolean deleteResource(ResourcesVO resourcesVO) {
 
 		return resourceService.deleteResource(resourcesVO);
 	}
-
+*/
 	/**
 	 * Following function helps in edits a existing resource
 	 * @param resourcesVO contains the information regarding resource and edited data.
@@ -59,4 +60,8 @@ public class ResourceFacade {
 	public boolean editResource(ResourcesVO resourcesVO) {
 		return resourceService.editResource(resourcesVO);
 	}
+
+	/*public boolean createResourceAdmin(ResourcesVO resourcesVO, UsersVO usersVO) {
+		return resourceService.createResourceAdmin(resourcesVO, usersVO);
+	}*/
 }
