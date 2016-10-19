@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
+
+
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
@@ -16,8 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.project.model.BookingsModel;
+import com.project.model.BookingsVO;
 import com.project.model.ResourcesModel;
 import com.project.model.ResourcesVO;
+import com.project.model.UsersModel;
+import com.project.model.UsersVO;
 
 @Service("resourceService")
 @Transactional
@@ -44,6 +53,7 @@ public class ResourceService {
 		List<ResourcesVO> resourcesVO = new ArrayList<ResourcesVO>(
 				resourcesModel.size());
 		ResourcesVO resourceVO;
+		System.out.println(" model data" + resourcesModel.size());
 		for (int i = 0; i < resourcesModel.size(); i++) {
 			resourceVO = context.getBean(ResourcesVO.class);
 			BeanUtils.copyProperties(resourcesModel.get(i), resourceVO);
@@ -71,11 +81,11 @@ public class ResourceService {
 	 * @param resourcesVO contains the information of resource to be deleted.
 	 * @return true/false whether resource deleted successfully or not.
 	 */
-	public boolean deleteResource(ResourcesVO resourcesVO) {
+	/*public boolean deleteResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
 		BeanUtils.copyProperties(resourcesVO, resourceModel);
 		return resourceDAO.deleteResource(resourceModel);
-	}
+	}*/
 
 
 	/**
@@ -85,8 +95,62 @@ public class ResourceService {
 	 */
 	public boolean editResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
-		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		resourceModel = convertResourcesVOToResourcesModel(resourcesVO);
 		return resourceDAO.editResource(resourceModel);
 	}
+
+	private ResourcesModel convertResourcesVOToResourcesModel(
+			ResourcesVO resourcesVO) {
+		
+		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		UsersModel usersModel;
+		List<UsersModel> usersModelList = new ArrayList<UsersModel>();
+		
+		resourceModel.setResourceId(resourcesVO.getResourceId());
+		resourceModel.setResourceName(resourcesVO.getResourceName());
+		resourceModel.setType(resourcesVO.getType());
+		resourceModel.setCapacity(resourcesVO.getCapacity());
+		
+		for ( UsersVO  userVO : resourcesVO.getResourceAdmins() ) {
+			
+			usersModel = context.getBean(UsersModel.class);
+			
+			BeanUtils.copyProperties(userVO, usersModel);
+			
+			usersModelList.add(usersModel);
+			
+		}
+		
+		
+		
+		resourceModel.setResourceAdmins(usersModelList);
+		
+		
+		BookingsModel bookingsModel;
+		List<BookingsModel> bookingsModelList = new ArrayList<BookingsModel>();
+		
+		for ( BookingsVO  bookingsVO : resourcesVO.getBookedList() ) {
+			
+			bookingsModel = context.getBean(BookingsModel.class);
+			
+			BeanUtils.copyProperties(bookingsVO, bookingsModel);
+			
+			bookingsModelList.add(bookingsModel);
+			
+		}
+		
+		resourceModel.setBookedList(bookingsModelList);
+		
+		return resourceModel;
+	}
+
+	/*public boolean createResourceAdmin(ResourcesVO resourcesVO, UsersVO usersVO) {
+		
+		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		UsersModel usersModel = context.getBean(UsersModel.class);
+		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		BeanUtils.copyProperties(usersVO, usersModel);
+		return resourceDAO.createResourceAdmin(resourceModel, usersModel);
+	}*/
 
 }
