@@ -19,7 +19,7 @@ public class MailService {
 	private JavaMailSenderImpl mailSender;
 	private SimpleMailMessage message;
 
-	public void sendMail(UsersVO userDeatils) {
+	public void sendMail(UsersVO userDeatils, String mailSubject, String mailMessage) {
 
 		mailSender = new JavaMailSenderImpl();
 		message = new SimpleMailMessage();
@@ -43,11 +43,11 @@ public class MailService {
 
 		message.setFrom("resourcebooking.project@gmail.com");
 		message.setTo(userDeatils.getEmail());
-		message.setSubject("Profile Updation");
+		message.setSubject(mailSubject);
 
 		//MESSAGE BODY
 		message.setText(String.format("Dear " + userDeatils.getName()
-				+ "\n Your Profile is Updated..!!"));
+				+ ",\n\n"+mailMessage));
 		
 		mailSender.send(message);
 	}
