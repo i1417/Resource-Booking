@@ -123,10 +123,10 @@ public class BookingsService {
 		BeanUtils.copyProperties(usersModel, usersVO);
 		bookingsVO.setUserDetails(usersVO);								//7
 		
-		bookingsVO.setStatus(bookingsModel.getStatus());	//8
+		bookingsVO.setStatus(bookingsModel.getStatus());				//8
 		
-		bookingsVO.setTitle(bookingsModel.getTitle());     //9
-		bookingsVO.setDescription(bookingsModel.getDescription());   //10  
+		bookingsVO.setTitle(bookingsModel.getTitle());
+		bookingsVO.setDescription(bookingsModel.getDescription());
 		
 		System.out.println(bookingsVO);
 		return bookingsVO;
@@ -145,12 +145,9 @@ public class BookingsService {
 		try {
 			// Getting the result from the database
 			bookingsList =  bookingsDAO.approvedBookingsList();
-			System.out.println(bookingsList.size()+"Response from dao");
-			System.out.println(bookingsList);
-			for (BookingsModel bookingsModelLocal : bookingsList) {
-				System.out.println("In the loop");
-				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
 			
+			for (BookingsModel bookingsModelLocal : bookingsList) {
+				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
 			}
 
 			// Checking if the user with the given credentials exist or not
@@ -199,6 +196,7 @@ public class BookingsService {
 		
 		bookingsModel.setTitle(bookingsVO.getTitle());
 		bookingsModel.setDescription(bookingsVO.getDescription());
+		
 		bookingsModel.setNumberOfParticipants(bookingsVO.getNumberOfParticipants());
 		
 		BeanUtils.copyProperties(bookingsVO.getUserDetails(), usersModel);
