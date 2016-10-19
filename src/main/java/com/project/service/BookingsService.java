@@ -80,6 +80,101 @@ public class BookingsService {
 	}
 	
 	
+	
+	
+	
+	/**
+	 * To get the list of approved bookings from BookingsDAO class
+	 * @return List of bookings having status = Approved
+	 */
+	public List<BookingsVO> approvedBookingsList() {
+		
+		List<BookingsModel> bookingsList;
+		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
+		
+		try {
+			// Getting the result from the database
+			bookingsList =  bookingsDAO.approvedBookingsList();
+			
+			for (BookingsModel bookingsModelLocal : bookingsList) {
+				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
+			}
+
+			// Checking if the user with the given credentials exist or not
+			if (bookingsVOList.size() == 0) {
+				return null;
+			} else {
+				// Copying the properties from Model to VO Object
+				return bookingsVOList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Following function updates the status of bookings(accepted/cancelled)
+	 * @param bookingsVO contains the information related to the booking
+	 * @return true/false whether booking status has been updated successfully.
+	 */
+	public boolean updateBookingsStatus(BookingsVO bookingsVO){
+		
+		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
+		//copying the bookingsVO data to the bookingsModel
+		BeanUtils.copyProperties(bookingsVO, bookingsModel);
+		//getting the result from the database
+		
+		return bookingsDAO.updateBookingsStatus(bookingsModel);
+	}
+	
+	public BookingsVO createBooking(BookingsVO bookingsVO) {
+		BookingsModel bookingsModel;
+				
+		bookingsModel = BookingsVoToModel(bookingsVO);
+		bookingsModel = bookingsDAO.createBooking(bookingsModel);
+		
+		if(bookingsModel != null) {
+			bookingsVO = convertBookingsModelToBookingsVO(bookingsModel);
+			return bookingsVO;
+		} else {
+			return null;
+		}
+		
+		//getting the result from the database
+	}
+	
+	public BookingsModel BookingsVoToModel(BookingsVO bookingsVO) {
+		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
+		UsersModel usersModel = context.getBean(UsersModel.class);
+		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
+		
+		bookingsModel.setTitle(bookingsVO.getTitle());
+		bookingsModel.setDescription(bookingsVO.getDescription());
+		
+		bookingsModel.setNumberOfParticipants(bookingsVO.getNumberOfParticipants());
+		
+		BeanUtils.copyProperties(bookingsVO.getUserDetails(), usersModel);
+		BeanUtils.copyProperties(bookingsVO.getResourceDetails(), resourcesModel);
+		
+		bookingsModel.setUserDetails(usersModel);
+		bookingsModel.setResourceDetails(resourcesModel);
+		
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			bookingsModel.setDate(new Date(dateFormat.parse(bookingsVO.getDate()).getTime()));
+			
+			dateFormat = new SimpleDateFormat("HH:mm:ss");
+			bookingsModel.setStartTime(new Time(dateFormat.parse(bookingsVO.getStartTime()).getTime()));
+			bookingsModel.setEndTime(new Time(dateFormat.parse(bookingsVO.getEndTime()).getTime()));
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return bookingsModel;
+	}
+	
 	/**
 	 * To convert BookingsModel to BookingsVO
 	 * @return BookingsVO
@@ -130,93 +225,5 @@ public class BookingsService {
 		
 		System.out.println(bookingsVO);
 		return bookingsVO;
-	}
-	
-	
-	/**
-	 * To get the list of approved bookings from BookingsDAO class
-	 * @return List of bookings having status = Approved
-	 */
-	public List<BookingsVO> approvedBookingsList() {
-		
-		List<BookingsModel> bookingsList;
-		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
-		
-		try {
-			// Getting the result from the database
-			bookingsList =  bookingsDAO.approvedBookingsList();
-			
-			for (BookingsModel bookingsModelLocal : bookingsList) {
-				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
-			}
-
-			// Checking if the user with the given credentials exist or not
-			if (bookingsVOList.size() == 0) {
-				return null;
-			} else {
-				// Copying the properties from Model to VO Object
-				return bookingsVOList;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * Following function updates the status of bookings(accepted/cancelled)
-	 * @param bookingsVO contains the information related to the booking
-	 * @return true/false whether booking status has been updated successfully.
-	 */
-	public boolean updateBookingsStatus(BookingsVO bookingsVO){
-		
-		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
-		//copying the bookingsVO data to the bookingsModel
-		BeanUtils.copyProperties(bookingsVO, bookingsModel);
-		//getting the result from the database
-		boolean result = bookingsDAO.updateBookingsStatus(bookingsModel);
-		
-		return result;
-	}
-	
-	public boolean createBooking(BookingsVO bookingsVO) {
-		BookingsModel bookingsModel;
-				
-		bookingsModel = BookingsVoToModel(bookingsVO);
-		
-		//getting the result from the database
-		/*return */bookingsDAO.createBooking(bookingsModel);
-		return true;
-	}
-	
-	public BookingsModel BookingsVoToModel(BookingsVO bookingsVO) {
-		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
-		UsersModel usersModel = context.getBean(UsersModel.class);
-		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
-		
-		bookingsModel.setTitle(bookingsVO.getTitle());
-		bookingsModel.setDescription(bookingsVO.getDescription());
-		
-		bookingsModel.setNumberOfParticipants(bookingsVO.getNumberOfParticipants());
-		
-		BeanUtils.copyProperties(bookingsVO.getUserDetails(), usersModel);
-		BeanUtils.copyProperties(bookingsVO.getResourceDetails(), resourcesModel);
-		
-		bookingsModel.setUserDetails(usersModel);
-		bookingsModel.setResourceDetails(resourcesModel);
-		
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			bookingsModel.setDate(new Date(dateFormat.parse(bookingsVO.getDate()).getTime()));
-			
-			dateFormat = new SimpleDateFormat("HH:mm:ss");
-			bookingsModel.setStartTime(new Time(dateFormat.parse(bookingsVO.getStartTime()).getTime()));
-			bookingsModel.setEndTime(new Time(dateFormat.parse(bookingsVO.getEndTime()).getTime()));
-			
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return bookingsModel;
 	}
 }

@@ -48,11 +48,10 @@ public class BookingsFacade {
 	 */
 	public boolean updateBookingsStatus(BookingsVO bookingsVO){
 		
-		boolean result = bookingsService.updateBookingsStatus(bookingsVO);
-		return result;
+		return bookingsService.updateBookingsStatus(bookingsVO);
 	}
 	
-	public boolean createBooking(BookingsVO bookingsVO) {
+	public BookingsVO createBooking(BookingsVO bookingsVO) {
 		return bookingsService.createBooking(bookingsVO);
 	}
 	

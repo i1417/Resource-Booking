@@ -5,20 +5,16 @@ package com.project.service;
  * @author Pratap Singh Ranawat and Vivek Mittal
  */
 
-import javax.transaction.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.transaction.Transactional;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.project.model.BookingsModel;
 import com.project.model.ResourcesModel;
-import com.project.model.ResourcesVO;
 import com.project.model.UsersModel;
 
 @Repository("resourceDAO")

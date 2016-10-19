@@ -10,16 +10,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.model.BookingsVO;
 import com.project.model.ResourcesVO;
 import com.project.service.BookingsFacade;
+import com.project.service.MailService;
 
 
 @Controller
@@ -28,6 +27,9 @@ public class BookingsAPIController {
 	//To interact with the facade layer
 	@Autowired
 	private BookingsFacade  bookingsFacade;
+	
+	@Autowired
+	private MailService mailService;
 	
 	//To get the beans
 	@Autowired
@@ -80,12 +82,16 @@ public class BookingsAPIController {
 		//Getting the result from the facade
 		
 		boolean result = bookingsFacade.updateBookingsStatus(bookingsVO);
-		System.out.println("Updation result : "+result+" Reply from facade");
 		
 		//Sending back the response to the client
 		if(result) {
-			System.out.println("Updated successfully");
-			return new Response(200, result);
+			String mailMessage = "Your booking with ID : " + bookingsVO.getBookingId() + 
+					"\nThe current booking status is : " + bookingsVO.getStatus() + 
+					"\n\nRegards\nResource Booking Team";
+			
+			mailService.sendMail(bookingsVO.getUserDetails(), "Booking Status Changed", mailMessage);
+			
+			return new Response(200, true);
 		} else {
 			System.out.println("Couldn't update");
 			return new Response(400, "Couldn't update");
@@ -102,17 +108,24 @@ public class BookingsAPIController {
 //		System.out.println(resourceVO);
 //		bookingsVO.setResourceDetails(resourceVO);
 		System.out.println(bookingsVO);
+		
 		//Getting the result from the facade
-		boolean result = bookingsFacade.createBooking(bookingsVO);
+		bookingsVO = bookingsFacade.createBooking(bookingsVO);
 //		boolean result = false;
 		
 		//Sending back the response to the client
-		if(result) {
+		if(bookingsVO != null) {
+			String mailMessage = "Your booking for resource : " + bookingsVO.getResourceDetails().getResourceName() +
+					"\n is registered with us with booking ID : " + bookingsVO.getBookingId() + 
+					"\nThe current booking status is : " + bookingsVO.getStatus() + 
+					"\n\nRegards\nResource Booking Team";
+			
+			mailService.sendMail(bookingsVO.getUserDetails(), "Booking Confirmation", mailMessage);
 			System.out.println("Updated successfully");
-			return new Response(200, result);
+			return new Response(200, true);
 		} else {
 			System.out.println("Couldn't update");
-			return new Response(400, "Couldn't update");
+			return new Response(400, "Error in booking creation");
 		}
 	}
 	

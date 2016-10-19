@@ -36,17 +36,17 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, uti
             var unique = {};
             $scope.distinct = [];
             $scope.currentUser.adminOfResources.forEach(function (x) {
-              if (!unique[x.type]) {
-                $scope.distinct.push(x.type);
-                unique[x.type] = true;
-              }
+                if (!unique[x.type]) {
+                    $scope.distinct.push(x.type);
+                    unique[x.type] = true;
+                }
             });
             $('button[type="submit"]').html("Save");
             $('#resAdmin').prop('required', 'true');
             $scope.resource = {};
             $scope.resource.resourceAdmins = [];
         }
-        
+
         var foundItem = $filter('filter')($scope.allUsers, { email: $scope.currentUser.email  }, true)[0];
         var index = $scope.allUsers.indexOf(foundItem);
         $scope.allUsers.splice(index, 1);

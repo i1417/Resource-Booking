@@ -126,7 +126,7 @@ public class UserAPIController {
 		
 		//Checking if the user exists or not
 		if(userDetails != null) {
-			mailService.sendMail(userDetails);
+//			mailService.sendMail(userDetails);
 			return new Response(200, userDetails);
 		} else {
 			return new Response(403, "User details not correct");

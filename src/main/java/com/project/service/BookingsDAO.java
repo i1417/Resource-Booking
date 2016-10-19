@@ -180,7 +180,6 @@ public class BookingsDAO {
 			//DEBUG
 			objectToUpdate.setStatus(status);
 			
-			System.out.println("started 2");
 			//DEBUG
 			session.getTransaction().commit();
 			
@@ -197,7 +196,7 @@ public class BookingsDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean createBooking(BookingsModel bookingsModel) {
+	public BookingsModel createBooking(BookingsModel bookingsModel) {
 		Session session = sessionFactory.openSession();
 		
 		try {
@@ -231,11 +230,12 @@ public class BookingsDAO {
 			System.out.println("ID"+bookingsModel.getBookingId());
 			session.save(bookingsModel);
 			session.getTransaction().commit();
-			return true;
+			
+			return bookingsModel;
 		} catch (Exception e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
-			return false;
+			return null;
 		}
 	}
 	

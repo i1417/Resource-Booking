@@ -74,7 +74,7 @@ public class ResourceAPIController {
 	 * @param resourcesVO contains the details of the new resource
 	 * @return Response object confirming the deletion of resource
 	 */
-	@RequestMapping(value = "/resources/deleteResource", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/resources/deleteResource", method = RequestMethod.POST)
 	public @ResponseBody Response deleteResource(@RequestBody ResourcesVO resourcesVO) {
 		// Getting the result from the facade
 		boolean result = resourceFacade.deleteResource(resourcesVO);
@@ -87,7 +87,7 @@ public class ResourceAPIController {
 			System.out.println("Wrong");
 			return new Response(400, "No Resource Available");
 		}
-	}
+	}*/
 	
 	/**
 	 * Following function edits a existing resource

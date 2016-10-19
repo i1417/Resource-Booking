@@ -48,7 +48,6 @@ public class ResourceFacade {
 	 * @return true/false whether resource deleted successfully or not.
 	 */
 	/*public boolean deleteResource(ResourcesVO resourcesVO) {
-
 		return resourceService.deleteResource(resourcesVO);
 	}
 */

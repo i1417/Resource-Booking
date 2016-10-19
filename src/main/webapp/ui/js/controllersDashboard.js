@@ -11,6 +11,8 @@ homePage.controller('bookingCtrl', function($scope, $http, $window, userDetails,
 	$scope.booking.resourceDetails = {};
 	$scope.booking.userDetails = {};
 	$scope.booking.userDetails.employeeId = userDetails.getCurrentUser().employeeId;
+	$scope.booking.userDetails.name = userDetails.getCurrentUser().name;
+	$scope.booking.userDetails.email = userDetails.getCurrentUser().email;
 
 		// datetime picker
 		$scope.pickDateTime = function() {
@@ -104,7 +106,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityFunctions) {
 	$rootScope.$on("populateResources", function(){
 		$scope.allResources = utilityFunctions.getAllResources();
-		
+
 		$http({
 			method : 'GET',
 			url : 'http://localhost:8080/Project-Authentication/bookings/getApprovedBookings',
@@ -120,8 +122,8 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 		}).error(function(response) {
 			alert("Connection Error");
 		});
-		
-		
+
+
     });
 
 	$scope.showCalendar = function() {
@@ -173,7 +175,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 				   var res = $(this).attr('resourceDetails');
 				   var startTime = $(this).attr('date')+'T'+$(this).attr('startTime')+'+05:30';
 				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
-				   
+
 				   events.push({
 					   title: $(this).attr('title')+"\n"+$(this).attr('description'),
 					   start: startTime, // will be parsed
@@ -181,12 +183,12 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 					   resourceId : $(res).attr('resourceId')
 				   });
 			   });
-			   
+
 			   $($scope.allApprovedBookings).each(function() {
 				   var res = $(this).attr('resourceDetails');
 				   var startTime = $(this).attr('date')+'T'+$(this).attr('startTime')+'+05:30';
 				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
-				   
+
 				   events.push({
 					   title: $(this).attr('title')+"\n"+$(this).attr('description'),
 					   start: startTime, // will be parsed
@@ -205,16 +207,14 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 				   resource ? resource.id : '(no resource)'
 			   );
 		   },
-	
-			eventAllow: function(dropLocation, draggedEvent) {
-			   if (dropLocation.resourceId == draggedEvent.resourceId) {
-			        return true;
-			    }
-			    else {
-			        return false;
-			    }
-			},
-			
+		   eventAllow: function(dropLocation, draggedEvent) {
+ 			   if (dropLocation.resourceId == draggedEvent.resourceId) {
+ 			        return true;
+ 			    }
+ 			    else {
+ 			        return false;
+ 			    }
+ 			},
 //		   dayClick: function(date, jsEvent, view, resource) {
 //			   console.log(
 //				   'dayClick',
