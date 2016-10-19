@@ -205,6 +205,16 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 				   resource ? resource.id : '(no resource)'
 			   );
 		   },
+	
+			eventAllow: function(dropLocation, draggedEvent) {
+			   if (dropLocation.resourceId == draggedEvent.resourceId) {
+			        return true;
+			    }
+			    else {
+			        return false;
+			    }
+			},
+			
 //		   dayClick: function(date, jsEvent, view, resource) {
 //			   console.log(
 //				   'dayClick',
