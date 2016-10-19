@@ -205,8 +205,10 @@ public class BookingsDAO {
 			
 			criteria.add(Restrictions.and(Restrictions.eq("date", bookingsModel.getDate()),
 					Restrictions.eq("status", "approved"),
-					Restrictions.between("startTime", bookingsModel.getStartTime(), bookingsModel.getEndTime()),
-					Restrictions.between("endTime", bookingsModel.getStartTime(), bookingsModel.getEndTime())));
+					Restrictions.or(Restrictions.between("startTime", bookingsModel.getStartTime(), bookingsModel.getEndTime()),
+							Restrictions.between("endTime", bookingsModel.getStartTime(), bookingsModel.getEndTime()),
+							Restrictions.and(Restrictions.ge("endTime", bookingsModel.getEndTime())),
+								Restrictions.le("startTime", bookingsModel.getStartTime()))));
 			
 			List<BookingsModel> forStatus = criteria.list();
 			if(forStatus.size() == 0) {
