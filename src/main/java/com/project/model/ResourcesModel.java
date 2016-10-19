@@ -27,6 +27,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "resources")
 public class ResourcesModel {
 
+	@Override
+	public String toString() {
+		return "ResourcesModel [resourceId=" + resourceId + ", resourceName="
+				+ resourceName + ", type=" + type + ", capacity=" + capacity
+				+ "]";
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "resource_id")

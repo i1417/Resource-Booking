@@ -5,18 +5,21 @@ var personalDetailsPage = angular.module('personalDetailsPage', ['ngRoute', 'dat
 //	window.location = "http://localhost:8080/Project-Authentication/";
 //}
 
-homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetails, utilityFunctions) {
-	
-	
-	$scope.booking={};
-	$scope.booking.resourceDetails={};
-	$scope.booking.userDetails = userDetails.getCurrentUser();
+homePage.controller('bookingCtrl', function($scope, $http, $window, userDetails, utilityFunctions) {
+
+	$scope.booking = {};
+	$scope.booking.resourceDetails = {};
+	$scope.booking.userDetails = {};
+	$scope.booking.userDetails.employeeId = userDetails.getCurrentUser().employeeId;
 
 		// datetime picker
 		$scope.pickDateTime = function() {
-			 $('#datePicker').datetimepicker({
-				format: 'YYYY/MM/DD',
-				minDate: new Date(),
+			console.log("hellohello");
+			$('#datePicker').datetimepicker({
+				format: 'YYYY-MM-DD',
+				minDate : new Date(),
+				ignoreReadonly : true,
+
 				icons : {
 					up : "fa fa-chevron-circle-up",
 					down : "fa fa-chevron-circle-down",
@@ -27,24 +30,33 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 				}
 			});
 
-			 $('#startTime,#endTime').datetimepicker({
-				 format : 'HH:mm:00',
-					icons : {
-						up : "fa fa-chevron-circle-up",
-						down : "fa fa-chevron-circle-down",
-						next : 'fa fa-chevron-circle-right',
-						previous : 'fa fa-chevron-circle-left',
-						time : "fa fa-clock-o",
-						date : "fa fa-calendar",
-					}
-			    });
+			$('#startTime,#endTime').datetimepicker({
+				format : 'HH:mm:00',
+				ignoreReadonly : true,
+				stepping : 15,
+
+				icons : {
+					up : "fa fa-chevron-circle-up",
+					down : "fa fa-chevron-circle-down",
+					next : 'fa fa-chevron-circle-right',
+					previous : 'fa fa-chevron-circle-left',
+					time : "fa fa-clock-o",
+					date : "fa fa-calendar",
+				}
+			});
 
 		}
 		//end of datetimepicker
-		
-		
-		$scope.bookResource=function(){
-		console.log($scope.booking);
+
+
+		$scope.bookResource=function() {
+			$scope.booking.date = $('#datePickerInput').val();
+			$scope.booking.startTime = $('#startTimeInput').val();
+			$scope.booking.endTime = $('#endTimeInput').val();
+			$scope.booking.resourceDetails.resourceId = $('#resSelect :selected').val();
+			$scope.booking.resourceDetails.resourceName = $('#resSelect :selected').text();
+			console.log($scope.booking);
+
 			$http({
 	            method : 'POST',
 	            url : 'http://localhost:8080/Project-Authentication/bookings/createBooking',
@@ -53,8 +65,8 @@ homePage.controller('bookingCtrl', function($rootScope, $scope, $http, userDetai
 	        }).success(function(response) {
 	            console.log(response);
 	            if(response.status == 200 ) {
-	            	
-	            	$window.location.href = 'admin/index.html';
+
+	            	$window.location.href = 'index.html';
 	            } else {
 	            	console.log(response.errorMessage);
 	            }
@@ -75,7 +87,6 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 	$http({
 		method : 'GET',
 		url : 'http://localhost:8080/Project-Authentication/resources/getAll',
-		data : $scope.currentUser,
 		headers : {'Content-Type': 'application/json'}
 	}).success(function(response) {
 		if(response.status == 403) {
@@ -87,13 +98,30 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $http, $filter
 	}).error(function(response) {
 		alert("Connection Error");
 	});
-	
+
 });
 
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityFunctions) {
 	$rootScope.$on("populateResources", function(){
-		 $scope.allResources = utilityFunctions.getAllResources();
-	   $scope.showCalendar();
+		$scope.allResources = utilityFunctions.getAllResources();
+		
+		$http({
+			method : 'GET',
+			url : 'http://localhost:8080/Project-Authentication/bookings/getApprovedBookings',
+			headers : {'Content-Type': 'application/json'}
+		}).success(function(response) {
+			if(response.status == 400) {
+				console.log(response.errorMessage);
+			} else {
+				$scope.allApprovedBookings = response.data;
+				console.log($scope.allApprovedBookings);
+			}
+			$scope.showCalendar();
+		}).error(function(response) {
+			alert("Connection Error");
+		});
+		
+		
     });
 
 	$scope.showCalendar = function() {
@@ -145,19 +173,31 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, utilityF
 				   var res = $(this).attr('resourceDetails');
 				   var startTime = $(this).attr('date')+'T'+$(this).attr('startTime')+'+05:30';
 				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
+				   
 				   events.push({
-					   title: $(this).attr('bookingId'),
+					   title: $(this).attr('title')+"\n"+$(this).attr('description'),
 					   start: startTime, // will be parsed
 					   end : endTime,
 					   resourceId : $(res).attr('resourceId')
 				   });
-				   console.log(events);
+			   });
+			   
+			   $($scope.allApprovedBookings).each(function() {
+				   var res = $(this).attr('resourceDetails');
+				   var startTime = $(this).attr('date')+'T'+$(this).attr('startTime')+'+05:30';
+				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
+				   
+				   events.push({
+					   title: $(this).attr('title')+"\n"+$(this).attr('description'),
+					   start: startTime, // will be parsed
+					   end : endTime,
+					   resourceId : $(res).attr('resourceId')
+				   });
 			   });
 			   callback(events);
 		   },
 
 		   select: function(start, end, jsEvent, view, resource) {
-		
 			   console.log(
 				   'select',
 				   start.format(),

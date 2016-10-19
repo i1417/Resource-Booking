@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import com.project.model.BookingsModel;
+import com.project.model.BookingsVO;
 import com.project.model.UsersModel;
 import com.project.model.UsersVO;
 
@@ -49,8 +51,19 @@ public class UsersService {
 			if(userCredentials == null) {
 				return null;
 			} else {
+				List<BookingsModel> bookingList = userCredentials.getBookingsMade();
+				for (int i = 0; i < bookingList.size();) {
+					BookingsModel bookingsModel = bookingList.get(i);
+					if(!bookingsModel.getStatus().equalsIgnoreCase("approved")) {
+						bookingList.remove(i);
+					} else {
+						i++;
+					}
+				}
+
 				//Copying the properties from Model to VO Object
 				BeanUtils.copyProperties(userCredentials, userVO);
+				
 				userVO.setPassword(null);
 				return userVO;
 			}

@@ -61,15 +61,12 @@ public class BookingsAPIController {
 	public @ResponseBody Response getApprovedBookingsList() {
 		//Getting the result from the facade
 		List<BookingsVO> result = bookingsFacade.approvedBookingsList();
-		System.out.println(result.size()+"Reply from facade");
-		for(BookingsVO b : result) {
-			System.out.println(b);
-		}
+		
 		//Sending back the response to the client
 		if(result.size() != 0) {
 			return new Response(200, result);
 		} else {
-			return new Response(400, "No Pending bookings");
+			return new Response(400, "No new bookings");
 		}
 	}
 	

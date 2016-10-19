@@ -220,8 +220,11 @@ public class BookingsDAO {
 			criteria.add(Restrictions.eq("date", bookingsModel.getDate()));
 			forStatus = criteria.list();
 			
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 			String dt = dateFormat.format(bookingsModel.getDate());
+			
+			System.out.println(bookingsModel.getResourceDetails());
+			System.out.println(bookingsModel.getResourceDetails().getResourceName());
 			
 			bookingsModel.setBookingId(bookingsModel.getResourceDetails().getResourceName() + 
 					dt + "-" + (forStatus.size()+1));

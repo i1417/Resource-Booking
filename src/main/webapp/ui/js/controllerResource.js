@@ -23,6 +23,7 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, uti
 	});
 
     $scope.determineAdmin = function() {
+        $scope.currentUser = userDetails.getCurrentUser();
         if($scope.resource != null) {
             angular.forEach($scope.resource.resourceAdmins, function(obj) {
             	var foundItem = $filter('filter')($scope.allUsers, { email: obj.email  }, true)[0];
@@ -34,7 +35,6 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, uti
         } else {
             var unique = {};
             $scope.distinct = [];
-            $scope.currentUser = userDetails.getCurrentUser();
             $scope.currentUser.adminOfResources.forEach(function (x) {
               if (!unique[x.type]) {
                 $scope.distinct.push(x.type);
@@ -46,6 +46,10 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, uti
             $scope.resource = {};
             $scope.resource.resourceAdmins = [];
         }
+        
+        var foundItem = $filter('filter')($scope.allUsers, { email: $scope.currentUser.email  }, true)[0];
+        var index = $scope.allUsers.indexOf(foundItem);
+        $scope.allUsers.splice(index, 1);
     }
 
     $scope.removeAdmin = function() {
