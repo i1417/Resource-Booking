@@ -241,5 +241,46 @@ public class BookingsDAO {
 		}
 	}
 	
+	/*  edit booking request */
+	public boolean editBooking(BookingsModel bookingsModel) {
+		Session session = sessionFactory.openSession();
+		try {
+			session.beginTransaction();
+			BookingsModel bookingsModelDB = (BookingsModel) session.
+					get(BookingsModel.class, bookingsModel.getBookingId());
+			
+			bookingsModelDB.setDate(bookingsModel.getDate());
+			bookingsModelDB.setStartTime(bookingsModel.getStartTime());
+			bookingsModelDB.setEndTime(bookingsModel.getEndTime());
+			bookingsModelDB.setNumberOfParticipants(bookingsModel.getNumberOfParticipants());
+			bookingsModelDB.setTitle(bookingsModel.getTitle());
+			bookingsModelDB.setDescription(bookingsModel.getDescription());
+			
+			Criteria criteria = session.createCriteria(BookingsModel.class);
+			
+			criteria.add(Restrictions.and(Restrictions.eq("date", bookingsModel.getDate()),
+					Restrictions.eq("status", "approved"),
+					Restrictions.or(Restrictions.between("startTime", bookingsModel.getStartTime(), bookingsModel.getEndTime()),
+							Restrictions.between("endTime", bookingsModel.getStartTime(), bookingsModel.getEndTime()),
+							Restrictions.and(Restrictions.ge("endTime", bookingsModel.getEndTime())),
+								Restrictions.le("startTime", bookingsModel.getStartTime()))));
+			
+			List<BookingsModel> forStatus = criteria.list();
+			if(forStatus.size() == 0) {
+				bookingsModelDB.setStatus("Approved");
+			} else {
+				bookingsModelDB.setStatus("Pending");
+			}
+			session.update(bookingsModelDB);
+			
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+			return false;
+		}
+	}	
+	
 	
 }
