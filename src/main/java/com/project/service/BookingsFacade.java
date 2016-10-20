@@ -55,4 +55,11 @@ public class BookingsFacade {
 		return bookingsService.createBooking(bookingsVO);
 	}
 	
+	/* edit booking */
+	public boolean editBooking(BookingsVO bookingsVO) {
+		
+		boolean result = bookingsService.editBooking(bookingsVO);
+		return result;
+	}
+	
 }
