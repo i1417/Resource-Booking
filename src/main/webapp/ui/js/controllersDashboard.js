@@ -7,6 +7,8 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 	$scope.booking.resourceDetails = {};
 	$scope.booking.userDetails = {};
 	$scope.booking.userDetails.employeeId = userDetails.getCurrentUser().employeeId;
+	$scope.booking.userDetails.email =  userDetails.getCurrentUser().email;
+	$scope.booking.userDetails.name = userDetails.getCurrentUser().name;
 	$scope.allResources = utilityFunctions.getAllResources();
 	
 	 $scope.sTime= itemObj.startTime;
@@ -77,8 +79,25 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 					date : "fa fa-calendar",
 				}
 			});
-
-			$('#startTime,#endTime').datetimepicker({
+			
+			
+			$('#startTime').datetimepicker({
+				format : 'HH:mm:00',
+				ignoreReadonly : true,
+				stepping : 15,
+				icons : {
+					up : "fa fa-chevron-circle-up",
+					down : "fa fa-chevron-circle-down",
+					next : 'fa fa-chevron-circle-right',
+					previous : 'fa fa-chevron-circle-left',
+					time : "fa fa-clock-o",
+					date : "fa fa-calendar",
+				}
+			}).on('dp.change',function(event){
+				$('#endTime').data('DateTimePicker').minDate(event.date);
+			});
+			 
+			$('#endTime').datetimepicker({
 				format : 'HH:mm:00',
 				ignoreReadonly : true,
 				stepping : 15,
@@ -249,7 +268,12 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 			   var startT= start.format().substring(11);
 			   var endT =  end.format().substring(11);
 			   var dateFormat = start.format().substring(0,10);
-			   var resourceId = resource.id
+			   if(!angular.isUndefined(resource)){
+				   var resourceId = resource.id;
+			   }else{
+				   var resourceId = "";
+			   }
+			   
 			   var title="";
 			   var description="";
 			   var bookBtn = "new";
