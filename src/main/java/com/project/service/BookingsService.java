@@ -64,14 +64,9 @@ public class BookingsService {
 				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
 			
 			}
-
-			// Checking if the user with the given credentials exist or not
-			if (bookingsVOList.size() == 0) {
-				return null;
-			} else {
-				// Copying the properties from Model to VO Object
-				return bookingsVOList;
-			}
+			
+		
+			return bookingsVOList;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -79,10 +74,37 @@ public class BookingsService {
 		
 	}
 	
-	
-	
-	
-	
+	/**
+	 * To get the list of pending bookings using employee ID from BookingsDAO class
+	 * @return List of bookings having status = pending
+	 */
+    public List<BookingsVO> pendingBookingsListByEmployeeId(UsersVO usersVO) {
+		
+		UsersModel usersModel = context.getBean(UsersModel.class);
+		List<BookingsModel> bookingsList;
+		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
+		
+		
+		BeanUtils.copyProperties(usersVO,usersModel );
+		
+		try {
+			// Getting the result from the database
+			bookingsList =  bookingsDAO.pendingBookingsListByEmployeeId(usersModel);
+			
+			for (BookingsModel bookingsModelLocal : bookingsList) {
+				
+				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
+			
+			}
+			
+		
+			return bookingsVOList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 	/**
 	 * To get the list of approved bookings from BookingsDAO class
 	 * @return List of bookings having status = Approved
@@ -99,17 +121,10 @@ public class BookingsService {
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 				bookingsVOList.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
 			}
-
-			// Checking if the user with the given credentials exist or not
-			if (bookingsVOList.size() == 0) {
-				return null;
-			} else {
-				// Copying the properties from Model to VO Object
-				return bookingsVOList;
-			}
+			return bookingsVOList;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new ArrayList<BookingsVO>();
 		}
 	}
 
@@ -142,14 +157,6 @@ public class BookingsService {
 		}
 		
 		//getting the result from the database
-	}
-	
-	/*  edit booking */
-	public boolean editBooking(BookingsVO bookingsVO) {
-		BookingsModel bookingsModel;
-		
-		bookingsModel = BookingsVoToModel(bookingsVO);
-		return bookingsDAO.editBooking(bookingsModel);
 	}
 	
 	public BookingsModel BookingsVoToModel(BookingsVO bookingsVO) {
@@ -228,10 +235,18 @@ public class BookingsService {
 		
 		bookingsVO.setStatus(bookingsModel.getStatus());				//8
 		
-		bookingsVO.setTitle(bookingsModel.getTitle());
-		bookingsVO.setDescription(bookingsModel.getDescription());
+		bookingsVO.setTitle(bookingsModel.getTitle());                 //9
+		bookingsVO.setDescription(bookingsModel.getDescription());     //10
 		
 		System.out.println(bookingsVO);
 		return bookingsVO;
 	}
+	
+	/*  edit booking */
+	public boolean editBooking(BookingsVO bookingsVO) {
+				BookingsModel bookingsModel;
+	
+		 		bookingsModel = BookingsVoToModel(bookingsVO);
+		 		return bookingsDAO.editBooking(bookingsModel);
+		 	}
 }

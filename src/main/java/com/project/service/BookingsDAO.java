@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.model.BookingsModel;
+import com.project.model.UsersModel;
 
 @Repository("bookingsDAO")
 @Transactional
@@ -80,6 +81,42 @@ public class BookingsDAO {
 		@SuppressWarnings("unchecked")
 		List<BookingsModel> results = cr.list();
 		System.out.println(results.size());
+		// Getting the result
+		return results;
+	}
+	
+	/**
+	 * Following function fetches the list of all pending bookings corresponding
+	 * to particular employeeID
+	 * 
+	 * @param bookings
+	 *            is a object of BookingsModel.
+	 * @return the list of all pending bookings corresponding to specific
+	 *         resource ID
+	 * @throws ParseException 
+	 */
+	public List<BookingsModel> pendingBookingsListByEmployeeId(UsersModel usersModel) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		String currentDate = dateFormat.format(cal.getTime());
+		Date date = null;
+		try {
+			date = dateFormat.parse(currentDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		Criteria cr = session.createCriteria(BookingsModel.class);
+		cr.add(Restrictions.and(Restrictions.ge("date", date),
+				Restrictions.eq("status", "pending"),
+				Restrictions.eq("userDetails",usersModel)));
+		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+		@SuppressWarnings("unchecked")
+		List<BookingsModel> results = cr.list();
 		// Getting the result
 		return results;
 	}
@@ -281,6 +318,4 @@ public class BookingsDAO {
 			return false;
 		}
 	}	
-	
-	
 }

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.project.model.BookingsVO;
 import com.project.model.ResourcesVO;
+import com.project.model.UsersModel;
+import com.project.model.UsersVO;
 @Service("bookingsFacade")
 public class BookingsFacade {
 
@@ -30,6 +32,14 @@ public class BookingsFacade {
 	 */
 	public List<BookingsVO> pendingBookingsListById(ResourcesVO resourcesVO) {
 		return bookingsService.pendingBookingsListById(resourcesVO);
+	}
+	
+	/**
+	 * To get the list of pending bookings corresponding to particular employeeId
+	 * 	 * @return List of bookings having status = pending
+	 */
+	public List<BookingsVO> pendingBookingsListByEmployeeId(UsersVO usersVO) {
+		return bookingsService.pendingBookingsListByEmployeeId(usersVO);
 	}
 	/**
 	 * Following function fetches the list of all approved bookings
@@ -56,10 +66,9 @@ public class BookingsFacade {
 	}
 	
 	/* edit booking */
-	public boolean editBooking(BookingsVO bookingsVO) {
-		
-		boolean result = bookingsService.editBooking(bookingsVO);
-		return result;
-	}
-	
+	 	public boolean editBooking(BookingsVO bookingsVO) {
+	 		
+	 		boolean result = bookingsService.editBooking(bookingsVO);
+	 		return result;
+	 	}
 }
