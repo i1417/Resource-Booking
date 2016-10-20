@@ -144,6 +144,14 @@ public class BookingsService {
 		//getting the result from the database
 	}
 	
+	/*  edit booking */
+	public boolean editBooking(BookingsVO bookingsVO) {
+		BookingsModel bookingsModel;
+		
+		bookingsModel = BookingsVoToModel(bookingsVO);
+		return bookingsDAO.editBooking(bookingsModel);
+	}
+	
 	public BookingsModel BookingsVoToModel(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		UsersModel usersModel = context.getBean(UsersModel.class);
