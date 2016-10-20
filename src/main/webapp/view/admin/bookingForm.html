@@ -12,7 +12,7 @@
                     <form role="form" ng-submit="bookResource()">
                         <div class="form-group">
 
-                            <select id="resSelect" class="selectpicker form-control" ng-model="resourceValue" required>
+                            <select id="resSelect" class="selectpicker form-control" ng-model="resourceValue" ng-readonly="{{truefalse}}" required>
                                 <option data-hidden="true" value="">Select a Resource</option>
                                 <option data-ng-repeat="r in allResources" value="{{r.resourceId}}">{{r.resourceName}}</option>
                             </select>
@@ -59,7 +59,7 @@
                                 placeholder="Number of participants" ng-model="booking.numberOfParticipants"  min="1" required/>
                         </div>
 
-                        <button type="submit" class="btn btnClass btn-block btn-primary">Book</button>
+                        <button type="submit" class="btn btnClass btn-block btn-primary">{{bookBtn}}</button>
                         <button type="button" class="btn btnClass btn-block btn-default"  data-dismiss="modal" ng-click="cancel()">Cancel</button>
                     </form>
                 </div>
