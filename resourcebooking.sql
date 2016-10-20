@@ -6,7 +6,7 @@ CREATE TABLE users (
     employee_id INT(5) NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     designation VARCHAR(30) NOT NULL,
-    email VARCHAR(30) NOT NULL UNIQUE,
+    email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(50),
     mobile_number BIGINT(11) NOT NULL,
     role ENUM('user', 'res_admin', 'admin') NOT NULL,
