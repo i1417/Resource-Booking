@@ -1,15 +1,15 @@
 var pendingRequestsApp = angular.module('pendingRequestsApp',['ngRoute', 'dataShareFactory', 'dataFactory', 'topbarApp', 'sidebarApp']);
 
 pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, userDetails, utilityFunctions,$location) {
-	
+
 	$scope.resources={};
     $scope.response={};
     $scope.updateData={};
 	var resourceId = utilityFunctions.getResourceDetails();
     $scope.currentUser = userDetails.getCurrentUser();
-	
+
 	$scope.fetchPendingBookings =  function() {
-	
+
 		$scope.resources.resourceId = resourceId;
 		$http({
             method : 'POST',
@@ -30,17 +30,17 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
 			console.log(response);
 		});
 	}
-	
+
 	//method to update pending request status--Approved or Rejected
 	$scope.updateRequest  =  function(bookingId,employeeId,employeeName,email,bookingStatus){
-		    
+
 		$scope.updateData.bookingId=bookingId;
 		$scope.updateData.userDetails={};
 		$scope.updateData.userDetails.employeeId=employeeId;
 		$scope.updateData.userDetails.name=employeeName;
 		$scope.updateData.userDetails.email=email;
 		$scope.updateData.status=bookingStatus;
-		
+
 		$http({
             method : 'POST',
             url : 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
@@ -60,9 +60,9 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
 					alert('Error'+status);
 				});
 };
-	
+
 	 angular.element(document).ready(function () {
 		$scope.fetchPendingBookings();
 	    });
-	
+
 });

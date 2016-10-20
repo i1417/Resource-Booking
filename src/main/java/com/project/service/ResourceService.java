@@ -14,6 +14,7 @@ import java.util.List;
 
 
 
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
@@ -96,6 +97,13 @@ public class ResourceService {
 	public boolean editResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
 		resourceModel = convertResourcesVOToResourcesModel(resourcesVO);
+		List<UsersModel> newResAdmins = resourceModel.getResourceAdmins();
+		
+		resourceDAO.deleteResourceAdmin(resourceModel);
+		
+		for (UsersModel usersModel : newResAdmins) {
+			resourceDAO.addResourceAdmin(resourceModel, usersModel);
+		}
 		return resourceDAO.editResource(resourceModel);
 	}
 

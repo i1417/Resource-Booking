@@ -31,11 +31,22 @@ window.addEventListener('storage', function(event) {
 
 topbarApp.controller('topbarCtrl', function($scope, $window, userDetails, utilityFunctions) {
     $scope.currentUser = userDetails.getCurrentUser();
-    $scope.signOut = function() {
-    	//gapi.auth2.init();
-        var auth2 = gapi.auth2.getAuthInstance();
-        console.log(auth2);
-		console.log("Called");
-		utilityFunctions.performSignOut();
-	}
+    
+    $scope.onLoad = function() {
+        gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+    
+    $scope.logOut=function() {
+    	
+    	 var auth2 = gapi.auth2.getAuthInstance();
+         auth2.signOut().then(function () {
+        	 alert('signed out');
+        	 sessionStorage.clear();
+        	 $window.location.href='http://localhost:8080/Project-Authentication/';
+             console.log('User signed out.');
+         });
+    
+    }
 });

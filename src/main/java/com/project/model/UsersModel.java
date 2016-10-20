@@ -21,12 +21,14 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Component
+@Scope("prototype")
 @Table(name = "users")
 public class UsersModel {
 	
@@ -59,6 +61,12 @@ public class UsersModel {
 	inverseJoinColumns = {@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")})
 	private List<ResourcesModel> adminOfResources;
 	
+	@Override
+	public String toString() {
+		return "UsersModel [employeeId=" + employeeId + ", name=" + name
+				+ ", email=" + email + "]";
+	}
+
 	@OneToMany(mappedBy = "userDetails")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference

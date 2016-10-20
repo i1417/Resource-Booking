@@ -101,7 +101,7 @@
                                     <option ng-repeat="admin in resource.resourceAdmins" value="{{admin.email}}">{{admin.name}}</option>
                                 </select>
                                 <br/>
-                                <button type="button" class="btn btn-danger" ng-click="removeAdmin()">Delete</button>
+                                <button type="button" id="removeAdminBtn" class="btn btn-danger" ng-click="removeAdmin()">Delete</button>
                             </div>
 
                             <div class="form-group">
@@ -114,7 +114,7 @@
                                 	</option>
                                 </select>
                                 <br/>
-                                <button type="button" class="btn btn-success" ng-click="addAdmin()">Add</button>
+                                <button type="button" id="addAdminBtn" class="btn btn-success" ng-click="addAdmin()">Add</button>
                             </div>
 
                             <div class="form-group" id="resType">

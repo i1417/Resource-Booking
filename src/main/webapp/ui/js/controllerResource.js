@@ -1,6 +1,6 @@
 var resourceEdit = angular.module('resourceEditApp', ['ngRoute', 'dataFactory', 'dataShareFactory', 'topbarApp', 'sidebarApp']);
 
-resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, utilityFunctions, userDetails) {
+resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $filter, utilityFunctions, userDetails) {
 //    $scope.resource = {};
     $scope.resource = utilityFunctions.getResourceDetails();
     console.log(utilityFunctions.getResourceDetails());
@@ -56,17 +56,30 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, uti
         var index = $("#resourceAdmin option:selected").index();
         $scope.allUsers.push($scope.resource.resourceAdmins[index]);
         $scope.resource.resourceAdmins.splice(index, 1);
+
+        $('#addAdminBtn').attr('disabled', false);
+        if($scope.resource.resourceAdmins.length == 0) {
+            $('#removeAdminBtn').attr('disabled', true);
+        }
     }
 
     $scope.addAdmin = function() {
-        var index = $("#userList option:selected").index();
-        $scope.resource.resourceAdmins.push($scope.allUsers[index]);
-        $scope.allUsers.splice(index, 1);
+        console.log($("#userList option:selected").index());
+        if($("#userList option:selected").index() >= 0) {
+	        var index = $("#userList option:selected").index();
+	        $scope.resource.resourceAdmins.push($scope.allUsers[index]);
+	        $scope.allUsers.splice(index, 1);
+        }
+
+        $('#removeAdminBtn').attr('disabled', false);
+        if($scope.allUsers.length == 0) {
+            $('#addAdminBtn').attr('disabled', true);
+        }
     }
 
     $scope.updateResource = function() {
         console.log($scope.resource);
-        if($scope.currentUser == undefined) {
+        // if($scope.currentUser == undefined) {
             $http({
         		method : 'POST',
         		url : 'http://localhost:8080/Project-Authentication/resources/editResource',
@@ -84,6 +97,6 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $filter, uti
         	}).error(function(response) {
         		alert("Connection Error");
         	});
-        }
+        // }
     }
 });

@@ -53,17 +53,62 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 		});
     }
 
-	$scope.renderButton = function() {
-		gapi.signin2.render('my-signin2', {
-			'scope': 'profile email',
-			'longtitle': true,
-			'theme': 'dark',
-			'onsuccess': onSignIn,
-			'onfailure': onFailure
-		});
+	var googleUser = {};
+	$scope.startApp = function() {
+		gapi.load('auth2', function(){
+	    // Retrieve the singleton for the GoogleAuth library and set up the client.
+	    auth2 = gapi.auth2.init({
+	      client_id: '170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com',
+	      cookiepolicy: 'single_host_origin',
+	      // Request scopes in addition to 'profile' and 'email'
+	      //scope: 'additional_scope'
+	    });
+	    $scope.attachSignin(document.getElementById('customBtn'));
+	  });
+	};
+
+	$scope.attachSignin = function(element) {
+		   auth2.attachClickHandler(element, {},function(googleUser) {
+	    	
+			   var profile = googleUser.getBasicProfile();
+				var id_token = googleUser.getAuthResponse().id_token;
+
+				var profileDetails = {};
+				profileDetails.email = profile.getEmail();
+
+				// console.log(id_token);
+				console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+				console.log('Name: ' + profile.getName());
+				console.log('Image URL: ' + profile.getImageUrl());
+				console.log('Email: ' + profile.getEmail());
+				console.log(profileDetails);
+				$http({
+					method : 'POST',
+					url : 'http://localhost:8080/Project-Authentication/validate/custom',
+					data : profileDetails,
+					headers : {'Content-Type': 'application/json'}
+				}).success(function(response) {
+					console.log(response);
+					if(response.status == 200) {
+						userDetails.setCurrentUser(response.data);
+						$window.location.href = 'admin/index.html';
+					} else {
+						profileDetails.name = profile.getName();
+						userDetails.setUser(profileDetails);
+						$rootScope.$emit("setUserDetails", {});
+						location = "#toregister";
+					}
+				}).error(function(response) {
+					alert("Connection Error");
+				});
+	    	
+	    	
+	  }, function(error) {
+	        alert(JSON.stringify(error, undefined, 2));
+	      });
 	}
 
-	function onSignIn(googleUser) {
+	/*function onSignIn(googleUser) {
 		var profile = googleUser.getBasicProfile();
 		var id_token = googleUser.getAuthResponse().id_token;
 
@@ -100,7 +145,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 		// location = "#toregister";
 	}
 
-	window.onSignIn = onSignIn;
+	window.onSignIn = onSignIn;*/
 });
 
 landingPage.controller('registerForm', function($scope, $http, $window, $rootScope, md5, userDetails) {
