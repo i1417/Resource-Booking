@@ -12,7 +12,7 @@
                     <form role="form" ng-submit="bookResource()">
                         <div class="form-group">
 
-                            <select id="resSelect" class="selectpicker form-control" ng-model="resourceValue" ng-readonly="{{truefalse}}" required>
+                            <select id="resSelect" class="selectpicker form-control" ng-model="resourceValue" ng-disabled="{{truefalse}}" required>
                                 <option data-hidden="true" value="">Select a Resource</option>
                                 <option data-ng-repeat="r in allResources" value="{{r.resourceId}}">{{r.resourceName}}</option>
                             </select>
