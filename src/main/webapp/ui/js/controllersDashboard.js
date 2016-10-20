@@ -1,28 +1,33 @@
 var homePage = angular.module('homePage', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'dataFactory','ui.bootstrap']);
 var personalDetailsPage = angular.module('personalDetailsPage', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp']);
 
-//if(sessionStorage.length == 0) {
-//	window.location = "http://localhost:8080/Project-Authentication/";
-//}
 
-
-var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions,itemObj) {
-
-	console.log(itemObj);
-	
-	 $scope.sTime= itemObj.startTime.substring(11);
-	 $scope.eTime= itemObj.endTime.substring(11);
-	 $scope.dateFormat= itemObj.startTime.substring(0,10);
-	$scope.resourceValue = itemObj.resourceId; 
-	 
-	 /* $('#resSelect option[value="100"]').prop('selected', true);*/
-	 
+var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions,itemObj) { 
 	$scope.booking = {};
 	$scope.booking.resourceDetails = {};
 	$scope.booking.userDetails = {};
 	$scope.booking.userDetails.employeeId = userDetails.getCurrentUser().employeeId;
 	$scope.allResources = utilityFunctions.getAllResources();
-
+	
+	 $scope.sTime= itemObj.startTime;
+	 $scope.eTime= itemObj.endTime;
+	 $scope.dateFormat= itemObj.dateFormat;
+	 $scope.booking.title= itemObj.title;
+	 $scope.booking.description= itemObj.description;
+	 $scope.resourceValue = itemObj.resourceId.toString();
+	
+	console.log(itemObj.bookBtn); 
+	
+	if(itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)){
+		$scope.truefalse = false;
+		$scope.bookBtn="Book";
+		$scope.urlValue= "http://localhost:8080/Project-Authentication/bookings/createBooking";
+	}else{
+		$scope.truefalse = true;
+		$scope.bookBtn = "Edit Booking";
+		console.log("else edit");
+		//$scope.urlValue= "http://localhost:8080/Project-Authentication/bookings/editBooking";
+	}
 	
 	$scope.cancel = function () {
         $modalInstance.dismiss('cancel');
@@ -35,10 +40,12 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 			$scope.booking.resourceDetails.resourceId = $('#resSelect :selected').val();
 			$scope.booking.resourceDetails.resourceName = $('#resSelect :selected').text();
 			console.log($scope.booking);
+			
+			
 
 			$http({
 	            method : 'POST',
-	            url : 'http://localhost:8080/Project-Authentication/bookings/createBooking',
+	            url : $scope.urlValue,
 	            data : $scope.booking,
 	            headers : {'Content-Type': 'application/json'}
 	        }).success(function(response) {
@@ -205,6 +212,8 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
  			  });
 			   reply(resources);
 		   },
+		   
+		   
 		   events: function(start, end, timezone, callback) {
 			   var events = [];
 //			   console.log($($scope.currentUser.bookingsMade).length);
@@ -237,10 +246,18 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 		   },
 
 		   select: function(start, end, jsEvent, view, resource) {
-			   if($scope.checkDate(start.format().substring(0,10))){
-				   $scope.showModal(start, end, resource);
+			   var startT= start.format().substring(11);
+			   var endT =  end.format().substring(11);
+			   var dateFormat = start.format().substring(0,10);
+			   var resourceId = resource.id
+			   var title="";
+			   var description="";
+			   var bookBtn = "new";
+			
+			   if($scope.checkDate(dateFormat)){
+				   $scope.showModal(startT, endT, dateFormat,title,description, resourceId, bookBtn);
 			   }else{
-				   console.log("can't book at this date");
+				   console.log("Can't book at this date");
 			   }
 			  
 		   },
@@ -265,19 +282,36 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 				 
 		        },*/
 		        
-		   eventClick: function(event, element) {
-			   console.log(event);
-			   $('#calendar').fullCalendar('updateEvent', event);
-
-		   }
+		   eventClick: function(calEvent) {
+			  $scope.callShowModal(calEvent);
+		   },
+			
+			eventDrop: function(event, revertFunc) {		        
+				  $scope.callShowModal(event);
+		    },
+		    
+		    eventResize: function(event) { 
+				  $scope.callShowModal(event);
+		    }	
 		});
+	}
+	
+	$scope.callShowModal= function(event){
+		var startT = event.start.format().substring(11,19);
+		   var endT = event.end.format().substring(11,19);
+		   var dateFormat = event.start.format().substring(0,10);
+		   var resourceId = event.resourceId;
+		   var title = event.title.substring(0,event.title.indexOf('\n'));
+		   var description = event.title.substring(event.title.indexOf('\n'));
+		   var bookBtn= "edit";
+		   $(this).css('border-color', 'yellow');
+		   $scope.showModal(startT,endT,dateFormat,title,description,resourceId, bookBtn);
 	}
 	
 	$scope.checkDate = function(date){
 		console.log(date);
 		var myDate = date;   
 		 if (myDate < $scope.date) {  
-			 console.log('here');
                return false;
            }
 		 else{
@@ -286,9 +320,8 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 	}
 	
 	
-	$scope.showModal = function(start, end, resource) {
+	$scope.showModal = function(start, end, dateFormat, title, description, resource, bookBtn) {
         /*Setting the modal options*/
-		
         $scope.opts = {
             backdrop: true,
             dialogFade: false,
@@ -299,9 +332,13 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             resolve: {
             	itemObj: function(){
             		return {
-            			startTime: start.format(),
-                		endTime: end.format(),
-                		resourceId : resource.id
+            			startTime: start,
+                		endTime: end,
+                		dateFormat: dateFormat,
+                		title: title,
+                		description: description,
+                		resourceId : resource,
+                		bookBtn : bookBtn,
             		};
             	}
             }
