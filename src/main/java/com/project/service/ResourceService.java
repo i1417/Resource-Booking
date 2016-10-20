@@ -71,9 +71,21 @@ public class ResourceService {
 	 * @return true/false whether resource created successfully or not.
 	 */
 	public boolean createResource(ResourcesVO resourcesVO) {
+
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
-		BeanUtils.copyProperties(resourcesVO, resourceModel);
-		return resourceDAO.createResource(resourceModel);
+		resourceModel = convertResourcesVOToResourcesModel(resourcesVO);
+		List<UsersModel> newResAdmins = resourceModel.getResourceAdmins();
+
+		boolean result = resourceDAO.createResource(resourceModel);
+
+		if (result) {
+
+			for (UsersModel usersModel : newResAdmins) {
+				resourceDAO.addResourceAdmin(resourceModel, usersModel);
+			}
+
+		}
+		return result;
 	}
 
 
