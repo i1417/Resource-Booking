@@ -128,5 +128,22 @@ public class BookingsAPIController {
 			return new Response(400, "Error in booking creation");
 		}
 	}
+	/* to edit existing booking*/
+	@RequestMapping(value = "/bookings/editBooking", method = RequestMethod.POST)
+	public @ResponseBody Response editBooking(@RequestBody BookingsVO bookingsVO) {
+
+		System.out.println(bookingsVO);
+		//Getting the result from the facade
+		boolean result = bookingsFacade.editBooking(bookingsVO);
+		
+		//Sending back the response to the client
+		if(result) {
+			System.out.println("Edited successfully");
+			return new Response(200, result);
+		} else {
+			System.out.println("Couldn't edit");
+			return new Response(400, "Couldn't create");
+		}
+	}
 	
 }
