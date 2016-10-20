@@ -16,12 +16,18 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 	 $scope.dateFormat= itemObj.dateFormat;
 	 $scope.booking.title= itemObj.title;
 	 $scope.booking.description= itemObj.description;
+	 $scope.booking.numberOfParticipants = itemObj.numberOfParticipants;
 	 $scope.resourceValue = itemObj.resourceId.toString();
 	
 	console.log(itemObj.bookBtn); 
 	
-	if(itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)){
+	if(angular.isUndefined(itemObj.bookBtn)){
 		$scope.truefalse = false;
+		$scope.bookBtn="Book";
+		$scope.urlValue= "http://localhost:8080/Project-Authentication/bookings/createBooking";
+	}
+	else if(itemObj.bookBtn == "new"){
+		$scope.truefalse = true;
 		$scope.bookBtn="Book";
 		$scope.urlValue= "http://localhost:8080/Project-Authentication/bookings/createBooking";
 	}else{
@@ -43,8 +49,6 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 			$scope.booking.resourceDetails.resourceName = $('#resSelect :selected').text();
 			console.log($scope.booking);
 			
-			
-
 			$http({
 	            method : 'POST',
 	            url : $scope.urlValue,
@@ -242,7 +246,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
 				   
 				   events.push({
-					   title: $(this).attr('title')+"\n"+$(this).attr('description'),
+					   title: $(this).attr('title')+"\n"+$(this).attr('description')+"\nParticipants:  \b"+$(this).attr('numberOfParticipants'),
 					   start: startTime, // will be parsed
 					   end : endTime,
 					   resourceId : $(res).attr('resourceId')
@@ -255,7 +259,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 				   var endTime = $(this).attr('date')+'T'+$(this).attr('endTime')+'+05:30';
 				   
 				   events.push({
-					   title: $(this).attr('title')+"\n"+$(this).attr('description'),
+					   title: $(this).attr('title')+"\n"+$(this).attr('description')+"\nParticipants:  \b"+$(this).attr('numberOfParticipants'),
 					   start: startTime, // will be parsed
 					   end : endTime,
 					   resourceId : $(res).attr('resourceId')
@@ -277,9 +281,10 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 			   var title="";
 			   var description="";
 			   var bookBtn = "new";
+			   var numberOfParticipants = "";
 			
 			   if($scope.checkDate(dateFormat)){
-				   $scope.showModal(startT, endT, dateFormat,title,description, resourceId, bookBtn);
+				   $scope.showModal(startT, endT, dateFormat,title,description, numberOfParticipants, resourceId, bookBtn);
 			   }else{
 				   console.log("Can't book at this date");
 			   }
@@ -326,10 +331,12 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 		   var dateFormat = event.start.format().substring(0,10);
 		   var resourceId = event.resourceId;
 		   var title = event.title.substring(0,event.title.indexOf('\n'));
-		   var description = event.title.substring(event.title.indexOf('\n'));
+		   var description = event.title.substring(event.title.indexOf('\n'), event.title.indexOf('\nP'));
+		   //var numberOfParticipants = event.title.substring(event.title.indexOf('\b'));
+		   var numberOfParticipants = 1;
 		   var bookBtn= "edit";
 		   $(this).css('border-color', 'yellow');
-		   $scope.showModal(startT,endT,dateFormat,title,description,resourceId, bookBtn);
+		   $scope.showModal(startT,endT,dateFormat,title,description,numberOfParticipants,resourceId, bookBtn);
 	}
 	
 	$scope.checkDate = function(date){
@@ -344,7 +351,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 	}
 	
 	
-	$scope.showModal = function(start, end, dateFormat, title, description, resource, bookBtn) {
+	$scope.showModal = function(start, end, dateFormat, title, description,numberOfParticipants, resource, bookBtn) {
         /*Setting the modal options*/
         $scope.opts = {
             backdrop: true,
@@ -361,6 +368,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 		dateFormat: dateFormat,
                 		title: title,
                 		description: description,
+                		numberOfParticipants: numberOfParticipants,
                 		resourceId : resource,
                 		bookBtn : bookBtn,
             		};
