@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.model.BookingsVO;
 import com.project.model.ResourcesVO;
+import com.project.model.UsersVO;
 import com.project.service.BookingsFacade;
 import com.project.service.MailService;
 
@@ -128,22 +129,40 @@ public class BookingsAPIController {
 			return new Response(400, "Error in booking creation");
 		}
 	}
-	/* to edit existing booking*/
-	@RequestMapping(value = "/bookings/editBooking", method = RequestMethod.POST)
-	public @ResponseBody Response editBooking(@RequestBody BookingsVO bookingsVO) {
-
-		System.out.println(bookingsVO);
+	
+	@RequestMapping(value = "/bookings/getPendingbookingsByEmployeeId", method = RequestMethod.POST)
+	public @ResponseBody Response getPendingBookingsListByEmployeeId(@RequestBody UsersVO  usersVO) {
 		//Getting the result from the facade
-		boolean result = bookingsFacade.editBooking(bookingsVO);
+		System.out.println("pending requests by employee id:"+usersVO.getEmployeeId());
+		List<BookingsVO> result = bookingsFacade.pendingBookingsListByEmployeeId(usersVO);
+		
+
 		
 		//Sending back the response to the client
-		if(result) {
-			System.out.println("Edited successfully");
+		if(result != null) {
+			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Couldn't edit");
-			return new Response(400, "Couldn't create");
+			System.out.println("Wrong");
+			return new Response(400, "No Pending bookings");
 		}
 	}
+	
+	@RequestMapping(value = "/bookings/editBooking", method = RequestMethod.POST)
+	 	public @ResponseBody Response editBooking(@RequestBody BookingsVO bookingsVO) {
+	 
+	 		System.out.println(bookingsVO);
+	 		//Getting the result from the facade
+	 		boolean result = bookingsFacade.editBooking(bookingsVO);
+	 		
+	 		//Sending back the response to the client
+	 		if(result) {
+	 			System.out.println("Edited successfully");
+	 			return new Response(200, result);
+	 		} else {
+	 			System.out.println("Couldn't edit");
+	 			return new Response(400, "Couldn't create");
+	 		}
+	 	}
 	
 }
