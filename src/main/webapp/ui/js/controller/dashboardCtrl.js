@@ -63,9 +63,10 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 
     // datetime picker
     $scope.pickDateTime = function() {
+    	
+    	
             $('#datePicker').datetimepicker({
                 format: 'YYYY-MM-DD',
-                minDate: new Date(),
                 ignoreReadonly: true,
 
                 icons: {
@@ -76,6 +77,8 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
                     time: "fa fa-clock-o",
                     date: "fa fa-calendar",
                 }
+            }).on('dp.change',function(event){
+            	 $('#datePicker').data('DateTimePicker').minDate($scope.date);
             });
 
             $('#startTime').datetimepicker({
@@ -258,7 +261,6 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     var startTime = $(this).attr('date') + 'T' + $(this).attr('startTime') + '+05:30';
                     var endTime = $(this).attr('date') + 'T' + $(this).attr('endTime') + '+05:30';
                     var currentTime = new Date().getHours()+":"+new Date().getMinutes();
-                    console.log(startTime.substring(11,19));
                     
                     if(startTime.substring(0,10) < $scope.date){
                     	var editableValue =false;
