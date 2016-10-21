@@ -30,6 +30,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     } else {
         $scope.truefalse = true;
         $scope.bookBtn = "Edit Booking";
+	$scope.urlValue = "http://localhost:8080/Project-Authentication/bookings/editBooking";    
     }
 
     $scope.cancel = function() {
