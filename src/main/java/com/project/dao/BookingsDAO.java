@@ -138,7 +138,7 @@ public class BookingsDAO {
 	 * 
 	 * @return List of bookings having status = Approved
 	 */
-	public List<BookingsModel> approvedBookingsList(UsersModel userModel) {
+	public List<BookingsModel> approvedBookingsList() {
 
 		Session session = this.sessionFactory.getCurrentSession();
 
@@ -188,7 +188,7 @@ public class BookingsDAO {
 			System.out.println(date); // DEBUG
 			// checking for both date and status
 			cr.add(Restrictions.and(Restrictions.ge("date", date),
-					Restrictions.eq("status", "Approved"),Restrictions.ne("userDetails", userModel)));
+					Restrictions.eq("status", "Approved")));
 			cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		} catch (ParseException e) {
@@ -343,13 +343,15 @@ public class BookingsDAO {
 
 	/* edit booking request */
 	@SuppressWarnings("unchecked")
-	public boolean editBooking(BookingsModel bookingsModel) {
+	public BookingsModel editBooking(BookingsModel bookingsModel) {
 		Session session = sessionFactory.openSession();
 		try {
 			session.beginTransaction();
+			
+			System.out.println("transaction begin booking id "+ bookingsModel.getBookingId());
 			BookingsModel bookingsModelDB = (BookingsModel) session.get(
 					BookingsModel.class, bookingsModel.getBookingId());
-
+			System.out.println("getting ojbect from db");
 			bookingsModelDB.setDate(bookingsModel.getDate());
 			bookingsModelDB.setStartTime(bookingsModel.getStartTime());
 			bookingsModelDB.setEndTime(bookingsModel.getEndTime());
@@ -370,8 +372,8 @@ public class BookingsDAO {
 							bookingsModel.getStartTime(),
 							bookingsModel.getEndTime()),
 					Restrictions.and(Restrictions.ge("endTime",
-							bookingsModel.getEndTime())),
-					Restrictions.le("startTime", bookingsModel.getStartTime()))));
+							bookingsModel.getEndTime()),Restrictions.le("startTime", bookingsModel.getStartTime()))
+					)));
 
 			List<BookingsModel> forStatus = criteria.list();
 			if (forStatus.size() == 0) {
@@ -379,14 +381,18 @@ public class BookingsDAO {
 			} else {
 				bookingsModelDB.setStatus("Pending");
 			}
+			System.out.println("updating records into db");
 			session.update(bookingsModelDB);
+			System.out.println("transaction end");
 
 			session.getTransaction().commit();
-			return true;
+			System.out.println("transaction committed");
+			return bookingsModelDB;
 		} catch (Exception e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
-			return false;
+			System.out.println("transaction roll back");
+			return null;
 		}
 	}
 
