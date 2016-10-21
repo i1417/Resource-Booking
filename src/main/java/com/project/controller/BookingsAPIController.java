@@ -21,6 +21,7 @@ import com.project.model.ResourcesVO;
 import com.project.model.UsersVO;
 import com.project.service.BookingsService;
 import com.project.service.MailService;
+import com.project.service.MessageService;
 
 @Controller
 public class BookingsAPIController {
@@ -29,9 +30,11 @@ public class BookingsAPIController {
 	@Autowired
 	private BookingsService bookingsService;
 
-	//To interact with the mail Service
 	@Autowired
 	private MailService mailService;
+	
+	@Autowired
+	private MessageService messageService;
 
 	// To get the beans
 	@Autowired
@@ -62,14 +65,14 @@ public class BookingsAPIController {
 	/**
 	 * Following function returns the list of all bookings which are approved
 	 * till today and upcoming.
+	 * 
 	 * @return Response object showing the list of all approved bookings.
 	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@RequestMapping(value = "/bookings/getApprovedBookings", method = RequestMethod.GET)
-	public @ResponseBody Response getApprovedBookingsList() {
-		
-		// Getting the result from the Service Layer
-		List<BookingsVO> result = bookingsService.approvedBookingsList();
+	public @ResponseBody Response getApprovedBookingsList(@RequestParam("employeeId") String employeeId) {
+		// Getting the result from the facade
+		List<BookingsVO> result = bookingsService.approvedBookingsList(Integer.parseInt(employeeId));
 
 		// Sending back the response to the client
 		if (result.size() != 0) {
@@ -88,8 +91,8 @@ public class BookingsAPIController {
 	@RequestMapping(value = "/bookings/updateBookingsStatus", method = RequestMethod.POST)
 	public @ResponseBody Response updateBookingsStatus(
 			@RequestBody BookingsVO bookingsVO) {
-		
 		// Getting the result from the Service Layer
+
 		boolean result = bookingsService.updateBookingsStatus(bookingsVO);
 
 		// Sending back the response to the client
@@ -100,8 +103,37 @@ public class BookingsAPIController {
 					+ "\nThe current booking status is : "
 					+ bookingsVO.getStatus()
 					+ "\n\nRegards\nResource Booking Team";
-			mailService.sendMail(bookingsVO.getUserDetails(),
+			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Status Changed", mailMessage);
+			
+			//messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
+
+			return new Response(200, true);
+		} else {
+			return new Response(400, "Couldn't update");
+		}
+	}
+	
+	@RequestMapping(value = "/bookings/updateBookingsStatusApproved", method = RequestMethod.POST)
+	public @ResponseBody Response updateBookingsStatusApproved(
+			@RequestBody BookingsVO bookingsVO) {
+		// Getting the result from the facade
+
+		boolean result = bookingsService.updateBookingsStatusApproved(bookingsVO);
+
+		// Sending back the response to the client
+		if (result) {
+			// Sending the booking updation mail
+			String mailMessage = "Dear "+bookingsVO.getUserDetails().getName()+"\nYour booking with ID : "
+					+ bookingsVO.getBookingId()
+					+ "\nThe current booking status is : "
+					+ bookingsVO.getStatus()
+					+ "\n\nRegards\nResource Booking Team";
+			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
+					"Booking Status Changed", mailMessage);
+			
+			//messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
+
 			return new Response(200, true);
 		} else {
 			return new Response(400, "Couldn't update");
@@ -118,22 +150,29 @@ public class BookingsAPIController {
 	public @ResponseBody Response createBooking(
 			@RequestBody BookingsVO bookingsVO) {
 
-		// Getting the result from the Service Layer
+		// Getting the result from theService Layer
 		bookingsVO = bookingsService.createBooking(bookingsVO);
 
 		// Sending back the response to the client
 		if (bookingsVO != null) {
 			// Sending the mail for the booking creation
-			String mailMessage = "Your booking for resource : "
+			String mailMessage = "<p>Dear "+bookingsVO.getUserDetails().getName()+"</p><p>Your booking for resource : "
 					+ bookingsVO.getResourceDetails().getResourceName()
-					+ "\n is registered with us with booking ID : "
+					+ "</p><p> is registered with us with booking ID : "
 					+ bookingsVO.getBookingId()
-					+ "\nThe current booking status is : "
+					+ "</p><p>The current booking status is : "
 					+ bookingsVO.getStatus()
-					+ "\n\nRegards\nResource Booking Team";
-			mailService.sendMail(bookingsVO.getUserDetails(),
+					+ "</p><p>Regards</p><p>Resource Booking Team</p>";
+			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Confirmation", mailMessage);
-			return new Response(200, bookingsVO);
+			
+			//String message="Dear "+bookingsVO.getUserDetails().getName()+"\n Your booking with ID "+ bookingsVO.getBookingId() + 
+//					"is : " + bookingsVO.getStatus() + 
+//					"\n\nRegards\nResource Booking Team";
+		
+			//messageService.sendSMS(message,"91"+bookingsVO.getUserDetails().getMobileNumber());
+
+			return new Response(200, true);
 		} else {
 			return new Response(400, "Error in booking creation");
 		}
@@ -163,17 +202,16 @@ public class BookingsAPIController {
 
 	/**
 	 * 
-	 * @param usersVO 
+	 * @param usersVO
 	 * @return
 	 * @author Amit Sharma
 	 */
 	@RequestMapping(value = "/bookings/getPendingbookingsByEmployeeId", method = RequestMethod.POST)
 	public @ResponseBody Response getPendingBookingsListByEmployeeId(
 			@RequestBody UsersVO usersVO) {
-		
+		// Getting the result from the Service Layer
 		System.out.println("pending requests by employee id:"
 				+ usersVO.getEmployeeId());
-		// Getting the result from Service Layer
 		List<BookingsVO> result = bookingsService
 				.pendingBookingsListByEmployeeId(usersVO);
 
@@ -211,5 +249,6 @@ public class BookingsAPIController {
 			return new Response(400, "Couldn't create");
 		}
 	}
+
 
 }

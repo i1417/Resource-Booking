@@ -17,12 +17,13 @@ pendingRequestsApp
 					/**
 					 * method to update pending request status--Cancelled
 					 */
-					$scope.updateEmployeeRequest = function(bookingId,employeeId, employeeName, email, bookingStatus) {
+					$scope.updateEmployeeRequest = function(bookingId,employeeId, employeeName, email, mobileNumber, bookingStatus) {
 						$scope.updateData.bookingId = bookingId;
 						$scope.updateData.userDetails = {};
 						$scope.updateData.userDetails.employeeId = employeeId;
 						$scope.updateData.userDetails.name = employeeName;
 						$scope.updateData.userDetails.email = email;
+						$scope.updateData.userDetails.mobileNumber = mobileNumber;
 						$scope.updateData.status = bookingStatus;
 
 						$http(

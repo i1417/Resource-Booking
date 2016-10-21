@@ -327,7 +327,6 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 				   }else{
 					   console.log("cant book at this date");
 				   }
-
 		        },*/
 
             eventClick: function(calEvent) {

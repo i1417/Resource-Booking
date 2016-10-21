@@ -138,7 +138,7 @@ public class BookingsDAO {
 	 * 
 	 * @return List of bookings having status = Approved
 	 */
-	public List<BookingsModel> approvedBookingsList() {
+	public List<BookingsModel> approvedBookingsList(UsersModel userModel) {
 
 		Session session = this.sessionFactory.getCurrentSession();
 
@@ -188,7 +188,7 @@ public class BookingsDAO {
 			System.out.println(date); // DEBUG
 			// checking for both date and status
 			cr.add(Restrictions.and(Restrictions.ge("date", date),
-					Restrictions.eq("status", "Approved")));
+					Restrictions.eq("status", "Approved"),Restrictions.ne("userDetails", userModel)));
 			cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		} catch (ParseException e) {
@@ -244,6 +244,78 @@ public class BookingsDAO {
 			return false;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean updateBookingsStatusApproved(BookingsModel bookingsModel) {
+		Session session = sessionFactory.openSession();
+
+		System.out.println("I am here");
+		try {
+			// Starting a new transaction
+			session.beginTransaction();
+
+			String status = bookingsModel.getStatus();
+			
+			Criteria criteria = session.createCriteria(BookingsModel.class);
+			BookingsModel objectToUpdate;
+
+			bookingsModel = (BookingsModel) session.get(BookingsModel.class, bookingsModel.getBookingId());
+			
+			criteria.add(Restrictions.and(Restrictions.eq("date",
+					bookingsModel.getDate()), Restrictions.eq("status",
+					"approved"), Restrictions.or(
+					Restrictions.between("startTime",
+							bookingsModel.getStartTime(),
+							bookingsModel.getEndTime()),
+					Restrictions.between("endTime",
+							bookingsModel.getStartTime(),
+							bookingsModel.getEndTime()),
+					Restrictions.and(Restrictions.ge("endTime",
+							bookingsModel.getEndTime()),Restrictions.le("startTime", bookingsModel.getStartTime())
+					))));
+			
+			List<BookingsModel> forStatus = criteria.list();
+			System.out.println(forStatus.size()+"forStatus");
+			if(forStatus.size() != 0) {
+				for (BookingsModel bookings : forStatus) {
+					
+					objectToUpdate = (BookingsModel) session.get(
+							BookingsModel.class, bookings.getBookingId());
+					objectToUpdate.setStatus("Rejected");
+					session.update(objectToUpdate);
+					
+					String mailMessage = "Dear "+bookings.getUserDetails().getName()+"\nYour booking with ID : "
+							+ bookings.getBookingId()
+							+ "\nThe current booking status is : "
+							+ bookings.getStatus()
+							+ "\n\nRegards\nResource Booking Team";
+					
+					UsersVO user = context.getBean(UsersVO.class);
+					BeanUtils.copyProperties(bookings.getUserDetails(), user);
+					mailService.sendHTMLMail(user,
+							"Booking Status Changed", mailMessage);
+				}
+			}
+			
+			objectToUpdate = (BookingsModel) session.get(
+					BookingsModel.class, bookingsModel.getBookingId());
+
+			// DEBUG
+			objectToUpdate.setStatus(status);
+
+			// DEBUG
+			session.getTransaction().commit();
+
+			System.out.println("End");
+			// DEBUG
+			return true;
+
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+
+			return false;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public BookingsModel createBooking(BookingsModel bookingsModel) {
@@ -276,8 +348,8 @@ public class BookingsDAO {
 							bookingsModel.getStartTime(),
 							bookingsModel.getEndTime()),
 					Restrictions.and(Restrictions.ge("endTime",
-							bookingsModel.getEndTime())),
-					Restrictions.le("startTime", bookingsModel.getStartTime()))));
+							bookingsModel.getEndTime()),Restrictions.le("startTime", bookingsModel.getStartTime())
+					))));
 
 			forStatus = criteria.list();
 
@@ -347,10 +419,9 @@ public class BookingsDAO {
 		Session session = sessionFactory.openSession();
 		try {
 			session.beginTransaction();
-			
-			System.out.println("transaction begin booking id "+ bookingsModel.getBookingId());
 			BookingsModel bookingsModelDB = (BookingsModel) session.get(
 					BookingsModel.class, bookingsModel.getBookingId());
+
 			System.out.println("getting ojbect from db");
 			bookingsModelDB.setDate(bookingsModel.getDate());
 			bookingsModelDB.setStartTime(bookingsModel.getStartTime());
@@ -372,8 +443,8 @@ public class BookingsDAO {
 							bookingsModel.getStartTime(),
 							bookingsModel.getEndTime()),
 					Restrictions.and(Restrictions.ge("endTime",
-							bookingsModel.getEndTime()),Restrictions.le("startTime", bookingsModel.getStartTime()))
-					)));
+							bookingsModel.getEndTime()),Restrictions.le("startTime", bookingsModel.getStartTime())
+					))));
 
 			List<BookingsModel> forStatus = criteria.list();
 			if (forStatus.size() == 0) {
@@ -421,22 +492,23 @@ public class BookingsDAO {
 				UsersVO user = context.getBean(UsersVO.class);
 				BeanUtils.copyProperties(oldBooking.getUserDetails(), user);
 
-				mailService.sendMail(user, "Booking Status Changed",
+				mailService.sendHTMLMail(user, "Booking Status Changed",
 						mailMessage);
 
 				Criteria criteria = session.createCriteria(BookingsModel.class);
 
 				criteria.add(Restrictions.and(Restrictions.eq("date",
 						newBooking.getDate()), Restrictions.eq("status",
-						"approved"),
-						Restrictions.or(Restrictions.between("startTime",
+						"approved"), Restrictions.or(
+						Restrictions.between("startTime",
 								newBooking.getStartTime(),
-								newBooking.getEndTime()), Restrictions.between(
-								"endTime", newBooking.getStartTime(),
-								newBooking.getEndTime()), Restrictions
-								.and(Restrictions.ge("endTime",
-										newBooking.getEndTime())), Restrictions
-								.le("startTime", newBooking.getStartTime()))));
+								newBooking.getEndTime()),
+						Restrictions.between("endTime",
+								newBooking.getStartTime(),
+								newBooking.getEndTime()),
+						Restrictions.and(Restrictions.ge("endTime",
+								newBooking.getEndTime()),Restrictions.le("startTime", newBooking.getStartTime())
+						))));
 
 				List<BookingsModel> forStatus = criteria.list();
 				if (forStatus.size() == 0) {
@@ -448,7 +520,7 @@ public class BookingsDAO {
 							+ "\n\nRegards\nResource Booking Team";
 
 					BeanUtils.copyProperties(newBooking.getUserDetails(), user);
-					mailService.sendMail(user, "Booking Status Changed",
+					mailService.sendHTMLMail(user, "Booking Status Changed",
 							mailMessage);
 				}
 			}

@@ -35,7 +35,7 @@ public class ResourceAPIController {
 	 */
 	@RequestMapping(value = "/resources/getAll", method = RequestMethod.GET)
 	public @ResponseBody Response getAllResourceList() {
-		// Getting the result from service layer
+		// Getting the result from the Service Layer
 		List<ResourcesVO> result = resourceService.allResourceList();
 
 		// Sending back the response to the client
@@ -57,39 +57,16 @@ public class ResourceAPIController {
 	@RequestMapping(value = "/resources/createResource", method = RequestMethod.POST)
 	public @ResponseBody Response createResource(
 			@RequestBody ResourcesVO resourcesVO) {
-		// Getting the result from service layer
+		// Getting the result from the Service Layer
 		boolean result = resourceService.createResource(resourcesVO);
 
 		// Sending back the response to the client
 		if (result) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "Couldn't create a new resource");
 		}
 	}
-
-	/**
-	 * Following function deletes a resource
-	 * 
-	 * @param resourcesVO
-	 *            contains the details of the new resource
-	 * @return Response object confirming the deletion of resource
-	 * @author Vivek Mittal, Pratap Singh
-	 */
-	/*
-	 * @RequestMapping(value = "/resources/deleteResource", method =
-	 * RequestMethod.POST) public @ResponseBody Response
-	 * deleteResource(@RequestBody ResourcesVO resourcesVO) { // Getting the
-	 * result from the facade boolean result =
-	 * resourceFacade.deleteResource(resourcesVO);
-	 * 
-	 * // Sending back the response to the client if (result) {
-	 * System.out.println("OK"); return new Response(200, result); } else {
-	 * System.out.println("Wrong"); return new Response(400,
-	 * "No Resource Available"); } }
-	 */
 
 	/**
 	 * Following function edits a existing resource
@@ -100,15 +77,13 @@ public class ResourceAPIController {
 	@RequestMapping(value = "/resources/editResource", method = RequestMethod.POST)
 	public @ResponseBody Response editResource(
 			@RequestBody ResourcesVO resourcesVO) {
-		// Getting the result from service layer
+		// Getting the result from the Service Layer
 		boolean result = resourceService.editResource(resourcesVO);
 
 		// Sending back the response to the client
 		if (result) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "Couldn't edit the existing resource");
 		}
 	}

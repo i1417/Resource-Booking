@@ -32,33 +32,56 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
 	}
 
 	//method to update pending request status--Approved or Rejected
-	$scope.updateRequest  =  function(bookingId,employeeId,employeeName,email,bookingStatus){
+	$scope.updateRequest  =  function(bookingId,employeeId,employeeName,email, mobileNumber, bookingStatus){
 
 		$scope.updateData.bookingId=bookingId;
 		$scope.updateData.userDetails={};
 		$scope.updateData.userDetails.employeeId=employeeId;
 		$scope.updateData.userDetails.name=employeeName;
 		$scope.updateData.userDetails.email=email;
+		$scope.updateData.userDetails.mobileNumber=mobileNumber;
 		$scope.updateData.status=bookingStatus;
 
-		$http({
-            method : 'POST',
-            url : 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
-            data : $scope.updateData,
-            headers : {'Content-Type': 'application/json'}
-        })
-		.success(
-				function(data, status, headers,	config) {
-					if (status == 200) {
-						alert('Successfully '+bookingStatus);
-						$scope.fetchPendingBookings($scope.resources.resourceId );
-					} else {
-						alert('Can\'t be '+bookingStatus);
-					}
-				}).error(
-				function(data, status, headers,	config) {
-					alert('Error'+status);
-				});
+		if($scope.updateData.status == 'Approved') {
+			console.log('approved');
+			$http({
+	            method : 'POST',
+	            url : 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatusApproved',
+	            data : $scope.updateData,
+	            headers : {'Content-Type': 'application/json'}
+	        })
+			.success(
+					function(data, status, headers,	config) {
+						if (status == 200) {
+							alert('Successfully '+bookingStatus);
+							$scope.fetchPendingBookings($scope.resources.resourceId );
+						} else {
+							alert('Can\'t be '+bookingStatus);
+						}
+					}).error(
+					function(data, status, headers,	config) {
+						alert('Error'+status);
+					});
+		} else {
+//			$http({
+//	            method : 'POST',
+//	            url : 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
+//	            data : $scope.updateData,
+//	            headers : {'Content-Type': 'application/json'}
+//	        })
+//			.success(
+//					function(data, status, headers,	config) {
+//						if (status == 200) {
+//							alert('Successfully '+bookingStatus);
+//							$scope.fetchPendingBookings($scope.resources.resourceId );
+//						} else {
+//							alert('Can\'t be '+bookingStatus);
+//						}
+//					}).error(
+//					function(data, status, headers,	config) {
+//						alert('Error'+status);
+//					});
+		}
 };
 
 	 angular.element(document).ready(function () {

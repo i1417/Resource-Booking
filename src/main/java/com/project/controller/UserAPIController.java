@@ -41,7 +41,7 @@ public class UserAPIController {
 	@RequestMapping(value = "/validate/custom", method = RequestMethod.POST)
 	public @ResponseBody Response customLoginStatus(
 			@RequestBody UsersVO userCredentials) {
-		// Getting the result from Service Layer
+		// Getting the result from the Service Layer
 		UsersVO result = usersService.validateUserCustomLogin(userCredentials);
 
 		// Sending back the response to the client
@@ -74,6 +74,7 @@ public class UserAPIController {
 
 		// Sending the data to the Service Layer for creation of the account
 		boolean result = usersService.createUserAccount(userDetails);
+		// boolean result = true;
 
 		// Sending back the response to the client
 		if (result) {
@@ -94,7 +95,7 @@ public class UserAPIController {
 	@RequestMapping("userDetailsByEmail")
 	public @ResponseBody Response getUserDetailsByEmail(
 			@RequestBody UsersVO userDetails) {
-		// Getting the user details from Service Layer
+		// Getting the user details
 		userDetails = usersService.getUserDetailsByEmail(userDetails);
 
 		// Checking if the user exists or not
@@ -113,10 +114,8 @@ public class UserAPIController {
 	 */
 	@RequestMapping("userExist")
 	public @ResponseBody Response userExist(@RequestBody UsersVO userDetails) {
-		// Getting the result from Service layer
-		boolean result = usersService.checkUserExist(userDetails);
 		// Checking if the user exists or not
-		if (result) {
+		if (usersService.checkUserExist(userDetails)) {
 			return new Response(200, "User Exist");
 		} else {
 			return new Response(403, "User does not exist");
@@ -151,15 +150,13 @@ public class UserAPIController {
 	 */
 	@RequestMapping(value = "/users/getAll", method = RequestMethod.GET)
 	public @ResponseBody Response getAllUsers() {
-		// Getting the result from Service layer
+		// Getting the result from the Service Layer
 		List<UsersVO> result = usersService.getAllUsers();
 
 		// Sending back the response to the client
 		if (result != null) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "Couldn't fetch all the Users");
 		}
 	}

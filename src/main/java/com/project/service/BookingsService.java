@@ -57,9 +57,10 @@ public class BookingsService {
 		try {
 			// Getting the result from the database
 			bookingsList = bookingsDAO.pendingBookingsListById(bookingsModel);
-			
+
 			//copying fetched pending booking list in some local bookingsModel and 
 			for (BookingsModel bookingsModelLocal : bookingsList) {
+
 				//adding bookingsModelLocal data in bookingsVOList one by one  
 				bookingsVOList
 						.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
@@ -74,7 +75,6 @@ public class BookingsService {
 
 	}
 
-	
 	/**
 	 * To get the list of pending bookings using employee ID
 	 * @param usersVO(UsersVO) contains user details (employee Id)
@@ -86,7 +86,6 @@ public class BookingsService {
 		List<BookingsModel> bookingsList;
 		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
 
-		//Converting UsersVO to UserModel 
 		BeanUtils.copyProperties(usersVO, usersModel);
 
 		try {
@@ -94,14 +93,14 @@ public class BookingsService {
 			bookingsList = bookingsDAO
 					.pendingBookingsListByEmployeeId(usersModel);
 
-			// //Converting UserModel to UserVO for sending data back to controller
+			//Converting UserModel to UserVO for sending data back to controller
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 
 				bookingsVOList
 						.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
 
 			}
-			
+
 			// returns List of BookingsVO
 			return bookingsVOList;
 		} catch (Exception e) {
@@ -116,15 +115,17 @@ public class BookingsService {
 	 * 
 	 * @return List of bookings having status = Approved
 	 */
-	public List<BookingsVO> approvedBookingsList() {
+	public List<BookingsVO> approvedBookingsList(int employeeId) {
 
 		List<BookingsModel> bookingsList;
 		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
+		UsersModel userModel = context.getBean(UsersModel.class);
+		userModel.setEmployeeId(employeeId);
 
 		try {
 			// Getting the result from the database
-			bookingsList = bookingsDAO.approvedBookingsList();
-			
+			bookingsList = bookingsDAO.approvedBookingsList(userModel);
+
 			//Converting BookingsModel to BookingsVO for sending data back to controller
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 				bookingsVOList
@@ -155,8 +156,17 @@ public class BookingsService {
 
 		return bookingsDAO.updateBookingsStatus(bookingsModel);
 	}
-
 	
+	public boolean updateBookingsStatusApproved(BookingsVO bookingsVO) {
+
+		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
+		// copying the bookingsVO data to the bookingsModel
+		BeanUtils.copyProperties(bookingsVO, bookingsModel);
+		// getting the result from the database
+
+		return bookingsDAO.updateBookingsStatusApproved(bookingsModel);
+	}
+
 	/**
 	 *  this function is helper service to get BookingsVO and convert it to BookingsModel
 	 *  and call createBookings to create new Booking
@@ -165,10 +175,9 @@ public class BookingsService {
 	 */
 	public BookingsVO createBooking(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel;
-		
+
 		// converts BookingsVO to BookingsModel
 		bookingsModel = BookingsVoToModel(bookingsVO);
-		
 		bookingsModel = bookingsDAO.createBooking(bookingsModel);
 
 		if (bookingsModel != null) {
@@ -179,6 +188,7 @@ public class BookingsService {
 			return null;
 		}
 
+		// getting the result from the database
 	}
 
 	/**
@@ -189,7 +199,8 @@ public class BookingsService {
 	public BookingsVO editBooking(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel;
 		
-		bookingsModel = BookingsVoToModel(bookingsVO);System.out.println("bookingVO to model successful");
+		bookingsModel = BookingsVoToModel(bookingsVO);
+		System.out.println("bookingVO to model successful");
 		return  convertBookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
 	}
 
@@ -197,10 +208,10 @@ public class BookingsService {
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		UsersModel usersModel = context.getBean(UsersModel.class);
 		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
-		
+
 		System.out.println("bookings vo  bookings id "+ bookingsVO.getBookingId());
 		bookingsModel.setBookingId(bookingsVO.getBookingId());
-
+		
 		bookingsModel.setTitle(bookingsVO.getTitle());
 		bookingsModel.setDescription(bookingsVO.getDescription());
 

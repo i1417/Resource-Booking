@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="form-group">
-                    <input type="text" pattern="[0-9]" class="form-control" placeholder="Number of participants" ng-model="booking.numberOfParticipants" min="1" required/>
+                    <input type="text" pattern="[0-9]{1,}" class="form-control" placeholder="Number of participants" ng-model="booking.numberOfParticipants" min="1" required/>
                 </div>
 
                 <button type="submit" class="btn btnClass btn-block btn-primary">{{bookBtn}}</button>
