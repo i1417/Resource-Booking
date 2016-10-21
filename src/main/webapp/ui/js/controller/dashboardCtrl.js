@@ -30,7 +30,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     } else {
         $scope.truefalse = true;
         $scope.bookBtn = "Edit Booking";
-	$scope.urlValue = "http://localhost:8080/Project-Authentication/bookings/editBooking";    
+        $scope.urlValue = "http://localhost:8080/Project-Authentication/bookings/editBooking";
     }
 
     $scope.cancel = function() {
@@ -53,6 +53,13 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
             }
         }).success(function(response) {
             if (response.status == 200) {
+            	 $modalInstance.dismiss('cancel');
+        		if(itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
+        			userDetails.addCurrentBooking(response.data);
+        		}else{
+        			console.log("calling edit");
+        			userDetails.editCurrentBooking(response.data);
+        		}
                 $window.location.href = 'index.html';
             } else {
                 console.log(response.errorMessage);
@@ -80,6 +87,11 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
                 }
             }).on('dp.change',function(event){
             	 $('#datePicker').data('DateTimePicker').minDate($scope.date);
+            	if(event.date.format().substring(0,10) === moment().format().substring(0,10)){
+            		$('#startTime').data('DateTimePicker').minDate(moment({h:new Date().getHours(),m:new Date().getMinutes()}));
+            	}else{
+            		$('#startTime').data('DateTimePicker').minDate(0);
+            	}
             });
 
             $('#startTime').datetimepicker({
@@ -232,7 +244,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 $($scope.allResources).each(function() {
                     resources.push({
                         id: $(this).attr('resourceId'),
-                        title: $(this).attr('resourceName'),
+                        title: $(this).attr('resourceName')+", Capacity("+$(this).attr('capacity')+")",
                         eventColor: 'black'
                     });
                 });
@@ -304,7 +316,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 var bookBtn = "new";
                 var numberOfParticipants = "";
 
-                if ($scope.checkDate(dateFormat)) {
+                if ($scope.checkDate(dateFormat, startT)) {
                     $scope.showModal(startT, endT, dateFormat,id, title, description, numberOfParticipants, resourceId, bookBtn);
                 } else {
                     console.log("Can't book at this date");
@@ -328,10 +340,10 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 				   }else{
 					   console.log("cant book at this date");
 				   }
+
 		        },*/
 
             eventClick: function(calEvent) {
-            	console.log(calEvent);
             	if(calEvent.editable){
                     $scope.callShowModal(calEvent);
             	}
@@ -348,7 +360,6 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
     }
 
     $scope.callShowModal = function(event) {
-    	console.log(event);
         var startT = event.start.format().substring(11, 19);
         if(event.end == null){
         	  var endT = "";
@@ -367,12 +378,23 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
         $scope.showModal(startT, endT, dateFormat,bookingId, title, description, numberOfParticipants, resourceId, bookBtn);
     }
 
-    $scope.checkDate = function(date) {
-        console.log(date);
-        var myDate = date;
-        if (myDate < $scope.date) {
+    $scope.checkDate = function(date, startTime) {
+        console.log(startTime);
+        var selectedDate = date;
+        var selectedTime = startTime;
+        if (selectedTime < $scope.currentTime && selectedDate < $scope.date){
             return false;
-        } else {
+        }else if(selectedDate < $scope.date){
+        	return false;
+        }
+        else if(selectedTime < $scope.currentTime){
+        	if(selectedDate === $scope.date){
+            	return false;
+        	}else{
+        		return true;
+        	}
+        }
+        else {
             return true;
         }
     }
