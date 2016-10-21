@@ -7,6 +7,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     $scope.booking.userDetails.employeeId = userDetails.getCurrentUser().employeeId;
     $scope.booking.userDetails.email = userDetails.getCurrentUser().email;
     $scope.booking.userDetails.name = userDetails.getCurrentUser().name;
+    $scope.booking.userDetails.mobileNumber = userDetails.getCurrentUser().mobileNumber;
     $scope.allResources = utilityFunctions.getAllResources();
 
     $scope.sTime = itemObj.startTime;
@@ -261,18 +262,14 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     
                     if(startTime.substring(0,10) < $scope.date){
                     	var editableValue =false;
-                    	console.log("if");
                     }
                     else if(startTime.substring(0,10) == $scope.date){
                     	if(startTime.substring(11,19) < $scope.currentTime){
-                        	console.log("else if if");
                     		var editableValue = false;
                     	}
-                    	console.log("else if");
                     }
                     else{
                     	var editableValue = true;
-                    	console.log("else");
                     }
                     
                     events.push({
@@ -349,8 +346,13 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
     }
 
     $scope.callShowModal = function(event) {
+    	console.log(event);
         var startT = event.start.format().substring(11, 19);
-        var endT = event.end.format().substring(11, 19);
+        if(event.end == null){
+        	  var endT = "";
+        }else{
+            var endT = event.end.format().substring(11, 19);
+        }
         var dateFormat = event.start.format().substring(0, 10);
         var resourceId = event.resourceId;
         var bookingId = event.id;
