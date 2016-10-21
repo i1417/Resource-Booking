@@ -34,16 +34,14 @@ public class UserAPIController {
 
 	/**
 	 * To validate the login request from the user
-	 * 
-	 * @param userCredentials
-	 *            - The UsersVO object containing the user's login credentials
-	 * @return - Response object stating whether the credentials are right or
-	 *         wrong
+	 * @param userCredentials(UsersVO) - The UsersVO object containing the user's login credentials
+	 * @return - Response object stating whether the credentials are right or wrong
+	 * @author- Arpit Pittie
 	 */
 	@RequestMapping(value = "/validate/custom", method = RequestMethod.POST)
 	public @ResponseBody Response customLoginStatus(
 			@RequestBody UsersVO userCredentials) {
-		// Getting the result from the facade
+		// Getting the result from Service Layer
 		UsersVO result = usersService.validateUserCustomLogin(userCredentials);
 
 		// Sending back the response to the client
@@ -58,11 +56,9 @@ public class UserAPIController {
 
 	/**
 	 * To save the user details to create a new account
-	 * 
-	 * @param userDetails
-	 *            - The UsersVO object containing the user details for new
-	 *            account
+	 * @param userDetails - The UsersVO object containing the user details for new account
 	 * @return - Response object stating whether the account is created or not
+	 * @author- Arpit Pittie
 	 */
 	@RequestMapping(value = "createAccount", method = RequestMethod.POST)
 	public @ResponseBody Response createUserAccount(
@@ -76,9 +72,8 @@ public class UserAPIController {
 		 * +value+"'"); }
 		 */
 
-		// Sending the data to the facade for creation of the account
+		// Sending the data to the Service Layer for creation of the account
 		boolean result = usersService.createUserAccount(userDetails);
-		// boolean result = true;
 
 		// Sending back the response to the client
 		if (result) {
@@ -92,16 +87,14 @@ public class UserAPIController {
 
 	/**
 	 * To get the all the user profile details using its email id
-	 * 
-	 * @param userDetails
-	 *            - The UsersVO object containing the email id to fetch the
-	 *            personal details
+	 * @param userDetails - The UsersVO object containing the email id to fetch the personal details
 	 * @return - Response object having the user details
+	 * @author- Arpit Pittie
 	 */
 	@RequestMapping("userDetailsByEmail")
 	public @ResponseBody Response getUserDetailsByEmail(
 			@RequestBody UsersVO userDetails) {
-		// Getting the user details
+		// Getting the user details from Service Layer
 		userDetails = usersService.getUserDetailsByEmail(userDetails);
 
 		// Checking if the user exists or not
@@ -113,17 +106,17 @@ public class UserAPIController {
 	}
 
 	/**
-	 * To check if user exist or not
-	 * 
-	 * @param userDetails
-	 *            - The UsersVO object containing the email to check if user
-	 *            exist or not
+	 * To check if user exist or not.
+	 * @param userDetails - The UsersVO object containing the email to check if user exist or not
 	 * @return - Response object confirming user exist or not
+	 * @author- Arpit Pittie
 	 */
 	@RequestMapping("userExist")
 	public @ResponseBody Response userExist(@RequestBody UsersVO userDetails) {
+		// Getting the result from Service layer
+		boolean result = usersService.checkUserExist(userDetails);
 		// Checking if the user exists or not
-		if (usersService.checkUserExist(userDetails)) {
+		if (result) {
 			return new Response(200, "User Exist");
 		} else {
 			return new Response(403, "User does not exist");
@@ -132,14 +125,14 @@ public class UserAPIController {
 
 	/**
 	 * To update the user details
-	 * 
-	 * @param userDetails
-	 *            - The updated User Details
+	 * @param userDetails(UsersVO) - The updated User Details
 	 * @return - Response object confirming the updation
+	 * @author- Pratap Singh , Vivek Mittal
 	 */
 	@RequestMapping("user/update")
 	public @ResponseBody Response updateUserDetails(
 			@RequestBody UsersVO userDetails) {
+		// Getting the result from Service layer
 		boolean result = usersService.updateUserDetails(userDetails);
 
 		// Checking if the user exists or not
@@ -147,18 +140,18 @@ public class UserAPIController {
 			// mailService.sendMail(userDetails);
 			return new Response(200, userDetails);
 		} else {
-			return new Response(403, "User details not correct");
+			return new Response(403, "User details could not be updated");
 		}
 	}
 
 	/**
 	 * To fetch the list of all users
-	 * 
 	 * @return the response object containing the list of all users
+	 * @author- Pratap Singh , Vivek Mittal
 	 */
 	@RequestMapping(value = "/users/getAll", method = RequestMethod.GET)
 	public @ResponseBody Response getAllUsers() {
-		// Getting the result from the facade
+		// Getting the result from Service layer
 		List<UsersVO> result = usersService.getAllUsers();
 
 		// Sending back the response to the client
@@ -167,7 +160,7 @@ public class UserAPIController {
 			return new Response(200, result);
 		} else {
 			System.out.println("Wrong");
-			return new Response(400, "Wrong Credentials");
+			return new Response(400, "Couldn't fetch all the Users");
 		}
 	}
 }

@@ -21,7 +21,6 @@ import com.project.model.ResourcesVO;
 import com.project.model.UsersVO;
 import com.project.service.BookingsService;
 import com.project.service.MailService;
-import com.project.service.MessageService;
 
 @Controller
 public class BookingsAPIController {
@@ -30,19 +29,17 @@ public class BookingsAPIController {
 	@Autowired
 	private BookingsService bookingsService;
 
+	//To interact with the mail Service
 	@Autowired
 	private MailService mailService;
-	
-	@Autowired
-	private MessageService messageService;
 
 	// To get the beans
 	@Autowired
 	private ApplicationContext context;
 
 	/**
-	 * Following function returns the list of all pending bookings.
-	 * 
+	 * Following function returns the list of all pending bookings corresponding to particular resource.
+	 * @param ResourcesVO(ResourcesVO) containing the information of the resource.
 	 * @return Response object showing the list of all pending bookings.
 	 * @author Vivek Mittal, Pratap Singh
 	 */
@@ -50,7 +47,7 @@ public class BookingsAPIController {
 	public @ResponseBody Response getPendingBookingsList(
 			@RequestBody ResourcesVO resourcesVO) {
 
-		// Getting the result from the facade
+		// Getting the result from the Service Layer
 		List<BookingsVO> result = bookingsService
 				.pendingBookingsListById(resourcesVO);
 
@@ -65,14 +62,14 @@ public class BookingsAPIController {
 	/**
 	 * Following function returns the list of all bookings which are approved
 	 * till today and upcoming.
-	 * 
 	 * @return Response object showing the list of all approved bookings.
 	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@RequestMapping(value = "/bookings/getApprovedBookings", method = RequestMethod.GET)
-	public @ResponseBody Response getApprovedBookingsList(@RequestParam("employeeId") String employeeId) {
-		// Getting the result from the facade
-		List<BookingsVO> result = bookingsService.approvedBookingsList(Integer.parseInt(employeeId));
+	public @ResponseBody Response getApprovedBookingsList() {
+		
+		// Getting the result from the Service Layer
+		List<BookingsVO> result = bookingsService.approvedBookingsList();
 
 		// Sending back the response to the client
 		if (result.size() != 0) {
@@ -84,18 +81,15 @@ public class BookingsAPIController {
 
 	/**
 	 * Following function updates the status of bookings(accepted/cancelled)
-	 * 
-	 * @param bookingsVO
-	 *            - contains the information related to the booking
-	 * 
-	 * @return Response object confirming the update
+	 * @param bookingsVO(BookingsVO) - contains the information related to the booking
+	 * @return Response object confirming the updation
 	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@RequestMapping(value = "/bookings/updateBookingsStatus", method = RequestMethod.POST)
 	public @ResponseBody Response updateBookingsStatus(
 			@RequestBody BookingsVO bookingsVO) {
-		// Getting the result from the facade
-
+		
+		// Getting the result from the Service Layer
 		boolean result = bookingsService.updateBookingsStatus(bookingsVO);
 
 		// Sending back the response to the client
@@ -108,9 +102,6 @@ public class BookingsAPIController {
 					+ "\n\nRegards\nResource Booking Team";
 			mailService.sendMail(bookingsVO.getUserDetails(),
 					"Booking Status Changed", mailMessage);
-			
-			messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
-
 			return new Response(200, true);
 		} else {
 			return new Response(400, "Couldn't update");
@@ -118,20 +109,16 @@ public class BookingsAPIController {
 	}
 
 	/**
-	 * To create a new booking
-	 * 
-	 * @param bookingsVO
-	 *            - The view object containing the bookings details
-	 * 
+	 * To create a new booking.
+	 * @param bookingsVO(BookingsVO) - The view object containing the bookings details
 	 * @return Response object containing the booking confirmation
 	 * @author Vivek Mittal, Pratap Singh
-	 * 
 	 */
 	@RequestMapping(value = "/bookings/createBooking", method = RequestMethod.POST)
 	public @ResponseBody Response createBooking(
 			@RequestBody BookingsVO bookingsVO) {
 
-		// Getting the result from the facade
+		// Getting the result from the Service Layer
 		bookingsVO = bookingsService.createBooking(bookingsVO);
 
 		// Sending back the response to the client
@@ -146,25 +133,18 @@ public class BookingsAPIController {
 					+ "\n\nRegards\nResource Booking Team";
 			mailService.sendMail(bookingsVO.getUserDetails(),
 					"Booking Confirmation", mailMessage);
-			
-			String message="Dear "+bookingsVO.getUserDetails().getName()+"\n Your booking with ID "+ bookingsVO.getBookingId() + 
-					"is : " + bookingsVO.getStatus() + 
-					"\n\nRegards\nResource Booking Team";
-		
-			messageService.sendSMS(message,"91"+bookingsVO.getUserDetails().getMobileNumber());
-
-			return new Response(200, true);
+			return new Response(200, bookingsVO);
 		} else {
 			return new Response(400, "Error in booking creation");
 		}
 	}
 
 	/**
-	 * 
-	 * @param bookingId
-	 * @param newBookingId
-	 * @param status
-	 * @return
+	 * To update the booking status for the user approved by the another user via Email.
+	 * @param bookingId - Previous Booking Id(Approved)
+	 * @param newBookingId - New booking Id(Pending)
+	 * @param status - Status(Approved)
+	 * @return Response object containing information regarding status updation
 	 * @author Arpit Pittie
 	 */
 	@RequestMapping(value = "/bookings/statusChange", method = RequestMethod.GET)
@@ -183,16 +163,17 @@ public class BookingsAPIController {
 
 	/**
 	 * 
-	 * @param usersVO
+	 * @param usersVO 
 	 * @return
 	 * @author Amit Sharma
 	 */
 	@RequestMapping(value = "/bookings/getPendingbookingsByEmployeeId", method = RequestMethod.POST)
 	public @ResponseBody Response getPendingBookingsListByEmployeeId(
 			@RequestBody UsersVO usersVO) {
-		// Getting the result from the facade
+		
 		System.out.println("pending requests by employee id:"
 				+ usersVO.getEmployeeId());
+		// Getting the result from Service Layer
 		List<BookingsVO> result = bookingsService
 				.pendingBookingsListByEmployeeId(usersVO);
 
@@ -207,22 +188,24 @@ public class BookingsAPIController {
 	}
 
 	/**
-	 * 
-	 * @param bookingsVO
-	 * @return
+	 * To edit the existing booking.
+	 * @param bookingsVO(BookingsVO) containing information about the new edited booking.
+ 	 * @return Response Object containing information regarding editing of booking.
 	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@RequestMapping(value = "/bookings/editBooking", method = RequestMethod.POST)
 	public @ResponseBody Response editBooking(@RequestBody BookingsVO bookingsVO) {
 
 		System.out.println(bookingsVO);
-		// Getting the result from the facade
-		boolean result = bookingsService.editBooking(bookingsVO);
+		// Getting the result from Service Layer
+		System.out.println("Enter into controller");
+		BookingsVO result = bookingsService.editBooking(bookingsVO);
+		System.out.println("check controller "+ result);
 
 		// Sending back the response to the client
-		if (result) {
+		if (result!=null) {
 			System.out.println("Edited successfully");
-			return new Response(200, result);
+			return new Response(200, bookingsVO);
 		} else {
 			System.out.println("Couldn't edit");
 			return new Response(400, "Couldn't create");
