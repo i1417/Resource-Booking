@@ -435,7 +435,8 @@ public class BookingsDAO {
 
 			criteria.add(Restrictions.and(Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
-					"approved"), Restrictions.or(
+					"approved"), Restrictions.ne("bookingId",
+					bookingsModel.getBookingId()),  Restrictions.or(
 					Restrictions.between("startTime",
 							bookingsModel.getStartTime(),
 							bookingsModel.getEndTime()),
