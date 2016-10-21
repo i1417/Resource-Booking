@@ -1,0 +1,35 @@
+.abcRioButtonBlue {
+	width: 100% !important;
+}
+
+#wrapper p span.glyphicon {
+	color: rgb(77, 218, 76);
+}
+
+#customBtn {
+	display: inline-block;
+	background: #c53929;
+	color: #fff;
+	width: 100%;
+	border-radius: 5px;
+	border: thin solid #888;
+	box-shadow: 1px 1px 1px grey;
+	white-space: nowrap;
+	margin-bottom: 10px;
+}
+
+#customBtn:hover {
+	background-color: #4dda4c;
+	color: #fff;
+}
+
+span.icon {
+	display: flex;
+	align-items: center;
+	vertical-align: middle;
+	height: 42px;
+	vertical-align: middle;
+	padding-left: 37%;
+	font-size: 16px;
+	font-weight: bold;
+}
