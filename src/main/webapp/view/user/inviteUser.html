@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js"></script>
+
+        <title>Invite User</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="ui/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="ui/css/sb-admin.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="ui/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
+
+        <!-- jQuery -->
+        <script src="ui/js/res/jquery.min.js"></script>
+        <script src="ui/js/res/angular.min.js"></script>
+        <script src="ui/js/res/angular-route.min.js"></script>
+        <script src="ui/js/factory/factoryProject.js"></script>
+        <script src="ui/js/factory/factoryDashboard.js"></script>
+        <script src="ui/js/controller/topbarCtrl.js"></script>
+        <script src="ui/js/controller/sidebarCtrl.js"></script>
+        <script src="ui/js/controller/inviteUserCtrl.js"></script>
+
+    </head>
+
+    <body ng-app="inviteUserApp">
+
+        <div id="wrapper" ng-controller="inviteUserCtrl">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+                <ng-include src="'topbar.html'"></ng-include>
+
+                <ng-include src="'sidebar.html'"></ng-include>
+
+            </nav>
+
+            <div id="page-wrapper">
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h1 class="page-header">
+                                Send Invitation
+                            </h1>
+                            <ol class="breadcrumb">
+                                <li>
+                                    <i class="fa fa-dashboard"></i>
+                                    <a href="index.html">Dashboard</a>
+                                </li>
+                                <li class="active">
+                                    <i class="fa fa-bell"></i>
+                                    Invite User
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+
+                    <div class="row">
+                        <div class="col-md-offset-3 col-md-6">
+
+                            <form role="form" ng-submit="sendInvite()">
+
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" id="name" type="text" pattern="[a-zA-Z\s]{2,30}" placeholder="Name" ng-model="user.name" title="It must be between 2-30 characters" required/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">Email-ID</label>
+                                    <input class="form-control" id="email" type="email" name="emailid" placeholder="Email-ID" ng-model="user.email" required/>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Send Invite</button>
+                                <button type="reset" class="btn btn-warning">Reset</button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+                    <!-- /.row -->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- /#page-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="ui/js/res/bootstrap.min.js"></script>
+
+    </body>
+
+</html>

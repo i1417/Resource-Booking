@@ -191,4 +191,17 @@ public class UserAPIController {
 	public @ResponseBody Response changePassword(@RequestBody UsersVO user, @RequestParam("token") String token) {
 		return new Response(200, usersService.changePassword(user, token));
 	}
+	
+	@RequestMapping(value = "/user/sendInvitationToUser", method = RequestMethod.POST)
+	public @ResponseBody Response sendInvitationToUser(@RequestBody UsersVO userToInvite) {
+		String mailMessage = "<p>Dear "+ userToInvite.getName() +"</p><p>A friend of your has invited you to join the Resource Booking.</p><p>Please follow the link to create the account</p>" 
+				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
+							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/' >Click Here</a>"
+							+ "</div>"
+					+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
+			mailService.sendHTMLMail(userToInvite,
+					"Invitation to join Resource Booking", mailMessage);
+			
+		return new Response(200, "Invitation Sent");
+	}
 }
