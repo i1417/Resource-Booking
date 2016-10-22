@@ -286,6 +286,9 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     	if(startTime.substring(11,19) < $scope.currentTime){
                     		var editableValue = false;
                     	}
+                    	else{
+                    		var editableValue = true;
+                    	}
                     }
                     else{
                     	var editableValue = true;
@@ -338,17 +341,6 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 }
             },
 
-            /*dayClick: function(date, allDay, jsEvent, view) {
-				 console.log(jsEvent);
-				 if($scope.checkDate(date)){
-					   $scope.showModal(start, end, resource);
-					 console.log("please");
-				   }else{
-					   console.log("cant book at this date");
-				   }
-
-		        },*/
-
             eventClick: function(calEvent) {
             	if(calEvent.editable){
                     $scope.callShowModal(calEvent);
@@ -386,8 +378,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             eventMouseout: function(calEvent, jsEvent) {
                 $(this).css('z-index', 8);
                 $('.tooltipevent').remove();
-            },
-            
+            }
             
         });
     }
