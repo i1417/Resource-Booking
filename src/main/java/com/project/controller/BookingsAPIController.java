@@ -172,7 +172,7 @@ public class BookingsAPIController {
 		
 			//messageService.sendSMS(message,"91"+bookingsVO.getUserDetails().getMobileNumber());
 
-			return new Response(200, true);
+			return new Response(200, bookingsVO);
 		} else {
 			return new Response(400, "Error in booking creation");
 		}
