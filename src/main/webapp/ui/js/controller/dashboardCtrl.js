@@ -1,6 +1,7 @@
-var homePage = angular.module('homePageApp', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'utilityFunctionsFactory', 'ui.bootstrap']);
+var homePage = angular.module('homePageApp', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'utilityFunctionsFactory', 'ui.bootstrap','ui-notification']);
 
-var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions, itemObj) {
+var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions, itemObj, Notification) {
+	 
 	$scope.booking = {};
     $scope.booking.resourceDetails = {};
     $scope.booking.userDetails = {};
@@ -57,10 +58,12 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
         		if(itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
         			userDetails.addCurrentBooking(response.data);
         		}else{
-        			console.log("calling edit");
         			userDetails.editCurrentBooking(response.data);
-        		}
-                $window.location.href = 'index.html';
+        		}              
+                
+                Notification({message: 'Your Current Booking is '+response.data.status+'. Please Refresh to reflect changes in calendar', title: 'Booking Status',delay:null});
+        		//$window.location.href = 'index.html';
+
             } else {
                 console.log(response.errorMessage);
             }
@@ -130,7 +133,8 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 };
 
 homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http, $filter, userDetails, utilityFunctions) {
-    console.log(userDetails.getCurrentUser());
+	
+	console.log(userDetails.getCurrentUser());
     $scope.currentUser = userDetails.getCurrentUser();
     $scope.date = $filter('date')(new Date(), 'yyyy-MM-dd');
     $scope.currentTime = $filter('date')(new Date(), 'HH:mm:ss');
@@ -180,7 +184,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http,
 
 });
 
-homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, userDetails, utilityFunctions) {
+homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, userDetails, utilityFunctions, Notification) {
     $rootScope.$on("populateResources", function() {
         $scope.allResources = utilityFunctions.getAllResources();
         $scope.currentUser = userDetails.getCurrentUser();
@@ -247,7 +251,6 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     resources.push({
                         id: $(this).attr('resourceId'),
                         title: $(this).attr('resourceName')+", Capacity("+$(this).attr('capacity')+")"
-                        
                     });
                 });
                 reply(resources);
@@ -328,7 +331,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 if ($scope.checkDate(dateFormat, startT)) {
                     $scope.showModal(startT, endT, dateFormat,id, title, description, numberOfParticipants, resourceId, bookBtn);
                 } else {
-                    console.log("Can't book at this date");
+                	 Notification.error({message: 'Unable to book at selected time', positionY: 'bottom', positionX: 'center',delay: 2000});
                 }
 
             },
@@ -344,6 +347,8 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             eventClick: function(calEvent) {
             	if(calEvent.editable){
                     $scope.callShowModal(calEvent);
+            	}else{
+            		 Notification.error({message: 'Please edit your bookings only!', positionY: 'bottom', positionX: 'right',delay: 2000});
             	}
             },
 
@@ -361,12 +366,12 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 var description = calEvent.title.substring(calEvent.title.indexOf('\n')+1, calEvent.title.indexOf('\nP'));
                 var numberOfParticipants = calEvent.title.substring(calEvent.title.indexOf('\b'));
                 
-                var tooltip = '<div class="tooltipevent" style="border-radius:15px;background:#bac8f2;position:absolute;z-index:1;"><ul>'+
+                var tooltip = '<div class="tooltipevent" style="border-radius:15px;background:#bac8f2;position:absolute;z-index:1000;"><ul>'+
                 	'<li>Title: '+title+'</li><li>Description:'+description+'</li><li>Participants:'+numberOfParticipants+'</li></ul></div>';
                 var $tooltip = $(tooltip).appendTo('body');
 
                 $(this).mouseover(function(e) {
-                    $(this).css('z-index', 1);
+                    $(this).css('z-index', 1000);
                     $tooltip.fadeIn('500');
                     $tooltip.fadeTo('10', 1.9);
                 }).mousemove(function(e) {
