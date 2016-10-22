@@ -5,6 +5,12 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
     $scope.resource = utilityFunctions.getResourceDetails();
     console.log(utilityFunctions.getResourceDetails());
 
+    if($scope.resource == null) {
+        $scope.heading = 'New Resource';
+    } else {
+        $scope.heading = 'Edit Resource';
+    }
+
     $http({
 		method : 'GET',
 		url : 'http://localhost:8080/Project-Authentication/users/getAll',

@@ -77,10 +77,16 @@ public class UserAPIController {
 
 		// Sending back the response to the client
 		if (result) {
-			System.out.println("OK");
+			String mailMessage = "<p>Dear "+ userDetails.getName() +"</p><p>Your account has been created</p><p>Please follow the link to access your account</p>" 
+					+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
+								+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/' >Click Here</a>"
+								+ "</div>"
+						+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
+				mailService.sendHTMLMail(userDetails,
+						"Account created on Resource Booking", mailMessage);
+				
 			return new Response(200, "OK");
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "Account already present");
 		}
 	}
@@ -173,7 +179,7 @@ public class UserAPIController {
 							+ "</div>"
 					+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
 			mailService.sendHTMLMail(user,
-					"Booking Status Changed", mailMessage);
+					"Change Password for Account on Resource Booking", mailMessage);
 					
 			return new Response(200, "Link Generated");
 		} else {

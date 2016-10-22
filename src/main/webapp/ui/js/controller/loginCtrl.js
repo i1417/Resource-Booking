@@ -183,8 +183,8 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
 				if(response.status == 400) {
 					alert(response.message);
 				} else {
-					$("input[type='email']").prop('readonly', "false");
-					location = "#tologin"
+					//$("input[type='email']").prop('readonly', "false");
+					$window.location.href = "http://localhost:8080/Project-Authentication";
 				}
 	        }).error(function(response) {
 				alert("Connection Error");

@@ -203,6 +203,12 @@ public class BookingsService {
 		System.out.println("bookingVO to model successful");
 		return  bookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
 	}
+
+	public boolean userBookingStatusChange(String bookingId,
+			String newBookingId, String status) {
+		return bookingsDAO.userBookingStatusChange(bookingId, newBookingId,
+				status);
+	}
 	
 	public boolean cancelTodayBookings() {
 		return bookingsDAO.cancelTodayBookings();
@@ -298,11 +304,5 @@ public class BookingsService {
 
 		System.out.println(bookingsVO);
 		return bookingsVO;
-	}
-
-	public boolean userBookingStatusChange(String bookingId,
-			String newBookingId, String status) {
-		return bookingsDAO.userBookingStatusChange(bookingId, newBookingId,
-				status);
 	}
 }

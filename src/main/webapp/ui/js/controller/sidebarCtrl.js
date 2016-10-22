@@ -7,6 +7,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetail
 
     if($scope.currentUser.role != 'admin') {
     	$('#resourcesMgmt').hide();
+        $('#inviteUser').hide();
     	if($scope.currentUser.role != 'res_admin') {
     		$('#pendingRequest').hide();
     	}
