@@ -218,9 +218,11 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'agendaDay,agendaTwoDay,agendaWeek,month'
+                right: 'agendaDay,agendaTwoDay,agendaWeek,month,listDay,listWeek'
             },
             views: {
+            	listDay: { buttonText: 'list day' },
+				listWeek: { buttonText: 'list week' },
                 agendaTwoDay: {
                     type: 'agenda',
                     duration: {
@@ -244,8 +246,8 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 $($scope.allResources).each(function() {
                     resources.push({
                         id: $(this).attr('resourceId'),
-                        title: $(this).attr('resourceName')+", Capacity("+$(this).attr('capacity')+")",
-                        eventColor: 'black'
+                        title: $(this).attr('resourceName')+", Capacity("+$(this).attr('capacity')+")"
+                        
                     });
                 });
                 reply(resources);
@@ -265,8 +267,10 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                         start: startTime, // will be parsed
                         end: endTime,
                         editable: false,
-                        resourceId: $(res).attr('resourceId')
-                    });
+                        resourceId: $(res).attr('resourceId'),
+                        textColor: 'black',
+                        color: '#5fefe6'
+                	});
                 });
                 
                 $($scope.currentUser.bookingsMade).each(function() {
@@ -293,7 +297,9 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                         start: startTime, // will be parsed
                         end: endTime,
                         editable: editableValue,
-                        resourceId: $(res).attr('resourceId')
+                        resourceId: $(res).attr('resourceId'),
+                        textColor: 'black',
+                        color: '#9ccefc'
                     });
                 });
               
@@ -355,7 +361,34 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 
             eventResize: function(event) {
                 $scope.callShowModal(event);
-            }
+            },
+            
+            
+            eventMouseover: function(calEvent, jsEvent) {
+            	var title = calEvent.title.substring(0, calEvent.title.indexOf('\n')+1);
+                var description = calEvent.title.substring(calEvent.title.indexOf('\n')+1, calEvent.title.indexOf('\nP'));
+                var numberOfParticipants = calEvent.title.substring(calEvent.title.indexOf('\b'));
+                
+                var tooltip = '<div class="tooltipevent" style="border-radius:15px;background:#bac8f2;position:absolute;z-index:1;"><ul>'+
+                	'<li>Title: '+title+'</li><li>Description:'+description+'</li><li>Participants:'+numberOfParticipants+'</li></ul></div>';
+                var $tooltip = $(tooltip).appendTo('body');
+
+                $(this).mouseover(function(e) {
+                    $(this).css('z-index', 1);
+                    $tooltip.fadeIn('500');
+                    $tooltip.fadeTo('10', 1.9);
+                }).mousemove(function(e) {
+                    $tooltip.css('top', e.pageY + 10);
+                    $tooltip.css('left', e.pageX + 20);
+                });
+            },
+
+            eventMouseout: function(calEvent, jsEvent) {
+                $(this).css('z-index', 8);
+                $('.tooltipevent').remove();
+            },
+            
+            
         });
     }
 
@@ -370,16 +403,14 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
         var resourceId = event.resourceId;
         var bookingId = event.id;
         var title = event.title.substring(0, event.title.indexOf('\n'));
-        var description = event.title.substring(event.title.indexOf('\n'), event.title.indexOf('\nP'));
-        //var numberOfParticipants = event.title.substring(event.title.indexOf('\b'));
-        var numberOfParticipants = 1;
+        var description = event.title.substring(event.title.indexOf('\n')+1, event.title.indexOf('\nP'));
+        var numberOfParticipants = event.title.substring(event.title.indexOf('\b'));
         var bookBtn = "edit";
         $(this).css('border-color', 'yellow');
         $scope.showModal(startT, endT, dateFormat,bookingId, title, description, numberOfParticipants, resourceId, bookBtn);
     }
 
     $scope.checkDate = function(date, startTime) {
-        console.log(startTime);
         var selectedDate = date;
         var selectedTime = startTime;
         if (selectedTime < $scope.currentTime && selectedDate < $scope.date){
