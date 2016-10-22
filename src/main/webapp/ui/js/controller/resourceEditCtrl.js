@@ -1,47 +1,49 @@
-var resourceEdit = angular.module('resourceEditApp', ['ngRoute', 'utilityFunctionsFactory', 'dataShareFactory', 'topbarApp', 'sidebarApp']);
+var resourceEdit = angular.module('resourceEditApp', ['ui-notification', 'ngRoute', 'utilityFunctionsFactory', 'dataShareFactory', 'topbarApp', 'sidebarApp']);
 
-resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $filter, utilityFunctions, userDetails) {
-//    $scope.resource = {};
+resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $filter, utilityFunctions, userDetails, Notification) {
     $scope.resource = utilityFunctions.getResourceDetails();
-    console.log(utilityFunctions.getResourceDetails());
 
-    if($scope.resource == null) {
+    if ($scope.resource == null) {
         $scope.heading = 'New Resource';
     } else {
         $scope.heading = 'Edit Resource';
     }
 
     $http({
-		method : 'GET',
-		url : 'http://localhost:8080/Project-Authentication/users/getAll',
-		data : $scope.currentUser,
-		headers : {'Content-Type': 'application/json'}
-	}).success(function(response) {
-		if(response.status == 403) {
-			console.log(response.errorMessage);
-		} else {
+        method: 'GET',
+        url: 'http://localhost:8080/Project-Authentication/users/getAll',
+        data: $scope.currentUser,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).success(function(response) {
+        if (response.status == 200) {
             $scope.allUsers = response.data;
             $scope.determineAdmin();
-            console.log(response);
-		}
-	}).error(function(response) {
-		alert("Connection Error");
-	});
+        }
+    }).error(function(response) {
+        Notification.error({
+            message: "Couldn't establish connection",
+            delay: 2000
+        });
+    });
 
     $scope.determineAdmin = function() {
         $scope.currentUser = userDetails.getCurrentUser();
-        if($scope.resource != null) {
+        if ($scope.resource != null) {
             angular.forEach($scope.resource.resourceAdmins, function(obj) {
-            	var foundItem = $filter('filter')($scope.allUsers, { email: obj.email  }, true)[0];
-            	var index = $scope.allUsers.indexOf(foundItem);
-            	$scope.allUsers.splice(index, 1);
+                var foundItem = $filter('filter')($scope.allUsers, {
+                    email: obj.email
+                }, true)[0];
+                var index = $scope.allUsers.indexOf(foundItem);
+                $scope.allUsers.splice(index, 1);
             });
 
             $('#resType').hide();
         } else {
             var unique = {};
             $scope.distinct = [];
-            $scope.currentUser.adminOfResources.forEach(function (x) {
+            $scope.currentUser.adminOfResources.forEach(function(x) {
                 if (!unique[x.type]) {
                     $scope.distinct.push(x.type);
                     unique[x.type] = true;
@@ -53,8 +55,12 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
             $scope.resource.resourceAdmins = [];
         }
 
-        var foundItem = $filter('filter')($scope.allUsers, { email: $scope.currentUser.email  }, true)[0];
+        var foundItem = $filter('filter')($scope.allUsers, {
+            email: $scope.currentUser.email
+        }, true)[0];
+
         var index = $scope.allUsers.indexOf(foundItem);
+        
         $scope.allUsers.splice(index, 1);
     }
 
@@ -64,45 +70,74 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
         $scope.resource.resourceAdmins.splice(index, 1);
 
         $('#addAdminBtn').attr('disabled', false);
-        if($scope.resource.resourceAdmins.length == 0) {
+        if ($scope.resource.resourceAdmins.length == 0) {
             $('#removeAdminBtn').attr('disabled', true);
         }
     }
 
     $scope.addAdmin = function() {
-        console.log($("#userList option:selected").index());
-        if($("#userList option:selected").index() >= 0) {
-	        var index = $("#userList option:selected").index();
-	        $scope.resource.resourceAdmins.push($scope.allUsers[index]);
-	        $scope.allUsers.splice(index, 1);
+        if ($("#userList option:selected").index() >= 0) {
+            var index = $("#userList option:selected").index();
+            $scope.resource.resourceAdmins.push($scope.allUsers[index]);
+            $scope.allUsers.splice(index, 1);
+        } else {
+            Notification.warning({
+                message: "Select a user",
+                delay: 2000
+            });
         }
 
         $('#removeAdminBtn').attr('disabled', false);
-        if($scope.allUsers.length == 0) {
+        if ($scope.allUsers.length == 0) {
             $('#addAdminBtn').attr('disabled', true);
         }
     }
 
     $scope.updateResource = function() {
-        console.log($scope.resource);
-        // if($scope.currentUser == undefined) {
+        if (utilityFunctions.getResourceDetails() == null) {
             $http({
-        		method : 'POST',
-        		url : 'http://localhost:8080/Project-Authentication/resources/editResource',
-        		data : $scope.resource,
-        		headers : {'Content-Type': 'application/json'}
-        	}).success(function(response) {
-                console.log(response);
-        		// if(response.status == 403) {
-        		// 	console.log(response.errorMessage);
-        		// } else {
-                //     $scope.allUsers = response.data;
-                //     $scope.determineAdmin();
-                //     console.log(response);
-        		// }
-        	}).error(function(response) {
-        		alert("Connection Error");
-        	});
-        // }
+                method: 'POST',
+                url: 'http://localhost:8080/Project-Authentication/resources/createResource',
+                data: $scope.resource,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).success(function(response) {
+                Notification.success({
+                    message: "Resource Creation Successfull",
+                    delay: 2000
+                });
+                setTimeout(function() {
+                    $window.location.href = 'index.html';
+                }, 2500);
+            }).error(function(response) {
+                Notification.error({
+                    message: "Couldn't establish connection",
+                    delay: 2000
+                });
+            });
+        } else {
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/Project-Authentication/resources/editResource',
+                data: $scope.resource,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).success(function(response) {
+                Notification.success({
+                    message: "Resource Edit Successfull",
+                    delay: 2000
+                });
+                setTimeout(function() {
+                    $window.location.href = 'index.html';
+                }, 2500);
+            }).error(function(response) {
+                Notification.error({
+                    message: "Couldn't establish connection",
+                    delay: 2000
+                });
+            });
+        }
     }
 });

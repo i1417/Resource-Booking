@@ -1,8 +1,8 @@
-var homePage = angular.module('homePageApp', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'utilityFunctionsFactory', 'ui.bootstrap','ui-notification']);
+var homePage = angular.module('homePageApp', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'utilityFunctionsFactory', 'ui.bootstrap', 'ui-notification']);
 
 var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions, itemObj, Notification) {
 
-	$scope.booking = {};
+    $scope.booking = {};
     $scope.booking.resourceDetails = {};
     $scope.booking.userDetails = {};
     $scope.booking.userDetails.employeeId = userDetails.getCurrentUser().employeeId;
@@ -14,7 +14,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     $scope.sTime = itemObj.startTime;
     $scope.eTime = itemObj.endTime;
     $scope.dateFormat = itemObj.dateFormat;
-    $scope.booking.bookingId= itemObj.bookingId;
+    $scope.booking.bookingId = itemObj.bookingId;
     $scope.booking.title = itemObj.title;
     $scope.booking.description = itemObj.description;
     $scope.noOfParticipants = itemObj.numberOfParticipants;
@@ -46,8 +46,8 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
         $scope.booking.resourceDetails.resourceName = $('#resSelect :selected').text();
 
         $('#wrapper').hide();
-		$('#spinner').show();
-		$modalInstance.dismiss('cancel');
+        $('#spinner').show();
+        $modalInstance.dismiss('cancel');
 
         $http({
             method: 'POST',
@@ -57,93 +57,98 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
                 'Content-Type': 'application/json'
             }
         }).success(function(response) {
+            $('#wrapper').show();
+            $('#spinner').hide();
             if (response.status == 200) {
 
-        		if(itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
-        			userDetails.addCurrentBooking(response.data);
-        		}else{
-        			userDetails.editCurrentBooking(response.data);
-        		}
+                if (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
+                    userDetails.addCurrentBooking(response.data);
+                } else {
+                    userDetails.editCurrentBooking(response.data);
+                }
 
-        		$('#wrapper').show();
-				$('#spinner').hide();
-                Notification({message: 'Your Current Booking is '+response.data.status+'.', title: 'Booking Status',delay:2000});
-				setTimeout(function(){
-					$window.location.href = 'index.html';
-				},2500);
 
-            } else {
-            	$('#wrapper').show();
-				$('#spinner').hide();
+                Notification({
+                    message: 'Your Current Booking is ' + response.data.status + '.',
+                    title: 'Booking Status',
+                    delay: 2000
+                });
+                setTimeout(function() {
+                    $window.location.href = 'index.html';
+                }, 2500);
+
             }
         }).error(function(response) {
-            Notification.error({message: "Couldn't establish connection",delay:2000});
+            Notification.error({
+                message: "Couldn't establish connection",
+                delay: 2000
+            });
         });
     }
 
     // datetime picker
     $scope.pickDateTime = function() {
+        $('#datePicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            ignoreReadonly: true,
 
+            icons: {
+                up: "fa fa-chevron-circle-up",
+                down: "fa fa-chevron-circle-down",
+                next: 'fa fa-chevron-circle-right',
+                previous: 'fa fa-chevron-circle-left',
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+            }
+        }).on('dp.change', function(event) {
+            $('#datePicker').data('DateTimePicker').minDate($scope.date);
+            if (event.date.format().substring(0, 10) === moment().format().substring(0, 10)) {
+                $('#startTime').data('DateTimePicker').minDate(moment({
+                    h: new Date().getHours(),
+                    m: new Date().getMinutes()
+                }));
+            } else {
+                $('#startTime').data('DateTimePicker').minDate(0);
+            }
+        });
 
-            $('#datePicker').datetimepicker({
-                format: 'YYYY-MM-DD',
-                ignoreReadonly: true,
+        $('#startTime').datetimepicker({
+            format: 'HH:mm:00',
+            ignoreReadonly: true,
+            stepping: 15,
+            icons: {
+                up: "fa fa-chevron-circle-up",
+                down: "fa fa-chevron-circle-down",
+                next: 'fa fa-chevron-circle-right',
+                previous: 'fa fa-chevron-circle-left',
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+            }
+        }).on('dp.change', function(event) {
+            $('#endTime').data('DateTimePicker').minDate(event.date);
+        });
 
-                icons: {
-                    up: "fa fa-chevron-circle-up",
-                    down: "fa fa-chevron-circle-down",
-                    next: 'fa fa-chevron-circle-right',
-                    previous: 'fa fa-chevron-circle-left',
-                    time: "fa fa-clock-o",
-                    date: "fa fa-calendar",
-                }
-            }).on('dp.change',function(event){
-            	 $('#datePicker').data('DateTimePicker').minDate($scope.date);
-            	if(event.date.format().substring(0,10) === moment().format().substring(0,10)){
-            		$('#startTime').data('DateTimePicker').minDate(moment({h:new Date().getHours(),m:new Date().getMinutes()}));
-            	}else{
-            		$('#startTime').data('DateTimePicker').minDate(0);
-            	}
-            });
+        $('#endTime').datetimepicker({
+            format: 'HH:mm:00',
+            ignoreReadonly: true,
+            stepping: 15,
 
-            $('#startTime').datetimepicker({
-                format: 'HH:mm:00',
-                ignoreReadonly: true,
-                stepping: 15,
-                icons: {
-                    up: "fa fa-chevron-circle-up",
-                    down: "fa fa-chevron-circle-down",
-                    next: 'fa fa-chevron-circle-right',
-                    previous: 'fa fa-chevron-circle-left',
-                    time: "fa fa-clock-o",
-                    date: "fa fa-calendar",
-                }
-            }).on('dp.change', function(event) {
-                $('#endTime').data('DateTimePicker').minDate(event.date);
-            });
+            icons: {
+                up: "fa fa-chevron-circle-up",
+                down: "fa fa-chevron-circle-down",
+                next: 'fa fa-chevron-circle-right',
+                previous: 'fa fa-chevron-circle-left',
+                time: "fa fa-clock-o",
+                date: "fa fa-calendar",
+            }
+        });
 
-            $('#endTime').datetimepicker({
-                format: 'HH:mm:00',
-                ignoreReadonly: true,
-                stepping: 15,
-
-                icons: {
-                    up: "fa fa-chevron-circle-up",
-                    down: "fa fa-chevron-circle-down",
-                    next: 'fa fa-chevron-circle-right',
-                    previous: 'fa fa-chevron-circle-left',
-                    time: "fa fa-clock-o",
-                    date: "fa fa-calendar",
-                }
-            });
-
-        }
-        //end of datetimepicker
+    }
+    //end of datetimepicker
 };
 
 homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http, $filter, userDetails, utilityFunctions) {
 
-	console.log(userDetails.getCurrentUser());
     $scope.currentUser = userDetails.getCurrentUser();
     $scope.date = $filter('date')(new Date(), 'yyyy-MM-dd');
     $scope.currentTime = $filter('date')(new Date(), 'HH:mm:ss');
@@ -156,9 +161,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http,
             'Content-Type': 'application/json'
         }
     }).success(function(response) {
-        if (response.status == 403) {
-            console.log(response.errorMessage);
-        } else {
+        if (response.status == 200) {
             utilityFunctions.setAllResources(response.data);
             $rootScope.$emit("populateResources", {});
         }
@@ -200,16 +203,13 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 
         $http({
             method: 'GET',
-            url: 'http://localhost:8080/Project-Authentication/bookings/getApprovedBookings?employeeId='+$scope.currentUser.employeeId,
+            url: 'http://localhost:8080/Project-Authentication/bookings/getApprovedBookings?employeeId=' + $scope.currentUser.employeeId,
             headers: {
                 'Content-Type': 'application/json'
             }
         }).success(function(response) {
-            if (response.status == 400) {
-                console.log(response.errorMessage);
-            } else {
+            if (response.status == 200) {
                 $scope.allApprovedBookings = response.data;
-                console.log($scope.allApprovedBookings);
             }
             $scope.showCalendar();
         }).error(function(response) {
@@ -234,24 +234,21 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 right: 'agendaDay,agendaTwoDay,agendaWeek,month,listDay,listWeek'
             },
             views: {
-            	listDay: { buttonText: 'list day' },
-				listWeek: { buttonText: 'list week' },
+                listDay: {
+                    buttonText: 'list day'
+                },
+                listWeek: {
+                    buttonText: 'list week'
+                },
                 agendaTwoDay: {
                     type: 'agenda',
                     duration: {
                         days: 2
                     },
-
-                    // views that are more than a day will NOT do this behavior by default
-                    // so, we need to explicitly enable it
                     groupByResource: true
-
-                    //// uncomment this line to group by day FIRST with resources underneath
-                    //groupByDateAndResource: true
                 }
             },
 
-            //// uncomment this line to hide the all-day slot
             allDaySlot: false,
 
             resources: function(reply) {
@@ -259,7 +256,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 $($scope.allResources).each(function() {
                     resources.push({
                         id: $(this).attr('resourceId'),
-                        title: $(this).attr('resourceName')+", Capacity("+$(this).attr('capacity')+")"
+                        title: $(this).attr('resourceName') + ", Capacity(" + $(this).attr('capacity') + ")"
                     });
                 });
                 reply(resources);
@@ -274,7 +271,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     var endTime = $(this).attr('date') + 'T' + $(this).attr('endTime') + '+05:30';
 
                     events.push({
-                    	id: $(this).attr('bookingId'),
+                        id: $(this).attr('bookingId'),
                         title: $(this).attr('title') + "\n" + $(this).attr('description') + "\nParticipants:  \b" + $(this).attr('numberOfParticipants'),
                         start: startTime, // will be parsed
                         end: endTime,
@@ -282,32 +279,29 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                         resourceId: $(res).attr('resourceId'),
                         textColor: 'black',
                         color: '#5fefe6'
-                	});
+                    });
                 });
 
                 $($scope.currentUser.bookingsMade).each(function() {
-                	var res = $(this).attr('resourceDetails');
+                    var res = $(this).attr('resourceDetails');
                     var startTime = $(this).attr('date') + 'T' + $(this).attr('startTime') + '+05:30';
                     var endTime = $(this).attr('date') + 'T' + $(this).attr('endTime') + '+05:30';
-                    var currentTime = new Date().getHours()+":"+new Date().getMinutes();
+                    var currentTime = new Date().getHours() + ":" + new Date().getMinutes();
 
-                    if(startTime.substring(0,10) < $scope.date){
-                    	var editableValue =false;
-                    }
-                    else if(startTime.substring(0,10) == $scope.date){
-                    	if(startTime.substring(11,19) < $scope.currentTime){
-                    		var editableValue = false;
-                    	}
-                    	else{
-                    		var editableValue = true;
-                    	}
-                    }
-                    else{
-                    	var editableValue = true;
+                    if (startTime.substring(0, 10) < $scope.date) {
+                        var editableValue = false;
+                    } else if (startTime.substring(0, 10) == $scope.date) {
+                        if (startTime.substring(11, 19) < $scope.currentTime) {
+                            var editableValue = false;
+                        } else {
+                            var editableValue = true;
+                        }
+                    } else {
+                        var editableValue = true;
                     }
 
                     events.push({
-                    	id: $(this).attr('bookingId'),
+                        id: $(this).attr('bookingId'),
                         title: $(this).attr('title') + "\n" + $(this).attr('description') + "\nParticipants:  \b" + $(this).attr('numberOfParticipants'),
                         start: startTime, // will be parsed
                         end: endTime,
@@ -331,16 +325,21 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     var resourceId = "";
                 }
 
-                var id="";
+                var id = "";
                 var title = "";
                 var description = "";
                 var bookBtn = "new";
                 var numberOfParticipants = "";
 
                 if ($scope.checkDate(dateFormat, startT)) {
-                    $scope.showModal(startT, endT, dateFormat,id, title, description, numberOfParticipants, resourceId, bookBtn);
+                    $scope.showModal(startT, endT, dateFormat, id, title, description, numberOfParticipants, resourceId, bookBtn);
                 } else {
-                	Notification.error({message: 'Unable to book at selected time', positionY: 'bottom', positionX: 'center',delay: 2000});
+                    Notification.error({
+                        message: 'Unable to book at selected time',
+                        positionY: 'bottom',
+                        positionX: 'center',
+                        delay: 2000
+                    });
                 }
 
             },
@@ -354,11 +353,16 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             },
 
             eventClick: function(calEvent) {
-            	if(calEvent.editable){
+                if (calEvent.editable) {
                     $scope.callShowModal(calEvent);
-            	}else{
-            		Notification.error({message: 'Can not Edit!', positionY: 'bottom', positionX: 'right',delay: 2000});
-            	}
+                } else {
+                    Notification.error({
+                        message: 'Can not Edit!',
+                        positionY: 'bottom',
+                        positionX: 'right',
+                        delay: 2000
+                    });
+                }
             },
 
             eventDrop: function(event, revertFunc) {
@@ -371,12 +375,12 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 
 
             eventMouseover: function(calEvent, jsEvent) {
-            	var title = calEvent.title.substring(0, calEvent.title.indexOf('\n')+1);
-                var description = calEvent.title.substring(calEvent.title.indexOf('\n')+1, calEvent.title.indexOf('\nP'));
+                var title = calEvent.title.substring(0, calEvent.title.indexOf('\n') + 1);
+                var description = calEvent.title.substring(calEvent.title.indexOf('\n') + 1, calEvent.title.indexOf('\nP'));
                 var numberOfParticipants = calEvent.title.substring(calEvent.title.indexOf('\b'));
 
-                var tooltip = '<div class="tooltipevent" style="border-radius:10px;background:#bac8f2;position:absolute;z-index:1000; padding-right:10px;"><ul>'+
-                	'<li>Title: '+title+'</li><li>Description:'+description+'</li><li>Participants:'+numberOfParticipants+'</li></ul></div>';
+                var tooltip = '<div class="tooltipevent" style="border-radius:10px;background:#bac8f2;position:absolute;z-index:1000; padding-right:10px;"><ul>' +
+                    '<li>Title: ' + title + '</li><li>Description:' + description + '</li><li>Participants:' + numberOfParticipants + '</li></ul></div>';
                 var $tooltip = $(tooltip).appendTo('body');
 
                 $(this).mouseover(function(e) {
@@ -399,43 +403,41 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 
     $scope.callShowModal = function(event) {
         var startT = event.start.format().substring(11, 19);
-        if(event.end == null){
-        	  var endT = "";
-        }else{
+        if (event.end == null) {
+            var endT = "";
+        } else {
             var endT = event.end.format().substring(11, 19);
         }
         var dateFormat = event.start.format().substring(0, 10);
         var resourceId = event.resourceId;
         var bookingId = event.id;
         var title = event.title.substring(0, event.title.indexOf('\n'));
-        var description = event.title.substring(event.title.indexOf('\n')+1, event.title.indexOf('\nP'));
+        var description = event.title.substring(event.title.indexOf('\n') + 1, event.title.indexOf('\nP'));
         var numberOfParticipants = event.title.substring(event.title.indexOf('\b'));
         var bookBtn = "edit";
         $(this).css('border-color', 'yellow');
-        $scope.showModal(startT, endT, dateFormat,bookingId, title, description, numberOfParticipants, resourceId, bookBtn);
+        $scope.showModal(startT, endT, dateFormat, bookingId, title, description, numberOfParticipants, resourceId, bookBtn);
     }
 
     $scope.checkDate = function(date, startTime) {
         var selectedDate = date;
         var selectedTime = startTime;
-        if (selectedTime < $scope.currentTime && selectedDate < $scope.date){
+        if (selectedTime < $scope.currentTime && selectedDate < $scope.date) {
             return false;
-        }else if(selectedDate < $scope.date){
-        	return false;
-        }
-        else if(selectedTime < $scope.currentTime){
-        	if(selectedDate === $scope.date){
-            	return false;
-        	}else{
-        		return true;
-        	}
-        }
-        else {
+        } else if (selectedDate < $scope.date) {
+            return false;
+        } else if (selectedTime < $scope.currentTime) {
+            if (selectedDate === $scope.date) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
             return true;
         }
     }
 
-    $scope.showModal = function(start, end, dateFormat,bookingId, title, description, numberOfParticipants, resource, bookBtn) {
+    $scope.showModal = function(start, end, dateFormat, bookingId, title, description, numberOfParticipants, resource, bookBtn) {
         /*Setting the modal options*/
         $scope.opts = {
             backdrop: true,

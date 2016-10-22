@@ -1,18 +1,18 @@
-angular.module('utilityFunctionsFactory',[]).factory('utilityFunctions', function($window) {
+angular.module('utilityFunctionsFactory', []).factory('utilityFunctions', function($window) {
     var utilityFunc = {};
 
     var allResources = {};
 
     utilityFunc.performSignOut = function() {
-    	// $window.sessionStorage.setItem("signout", "Perform Sign Out");
+        // $window.sessionStorage.setItem("signout", "Perform Sign Out");
         // $window.sessionStorage.clear();
-    	gapi.load('auth2', function() {
+        gapi.load('auth2', function() {
             gapi.auth2.init();
-          });
+        });
         gapi.auth2.init();
         var auth2 = gapi.auth2.getAuthInstance();
         console.log(auth2);
-        gapi.auth2.signOut().then(function () {
+        gapi.auth2.signOut().then(function() {
             console.log('User signed out.');
         });
 

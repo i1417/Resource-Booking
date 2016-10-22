@@ -1,9 +1,12 @@
-var inviteUserPage = angular.module('inviteUserApp', ['ngRoute', 'topbarApp', 'sidebarApp']);
+var inviteUserPage = angular.module('inviteUserApp', ['ui-notification', 'ngRoute', 'topbarApp', 'sidebarApp']);
 
-inviteUserPage.controller('inviteUserCtrl', function($scope, $http, $window) {
+inviteUserPage.controller('inviteUserCtrl', function($scope, $http, $window, Notification) {
     $scope.user = {};
 
     $scope.sendInvite = function() {
+        $('#wrapper').hide();
+        $('#spinner').show();
+
         $http({
             method: 'POST',
             url: 'http://localhost:8080/Project-Authentication/user/sendInvitationToUser',
@@ -12,10 +15,22 @@ inviteUserPage.controller('inviteUserCtrl', function($scope, $http, $window) {
                 'Content-Type': 'application/json'
             }
         }).success(function(response) {
-            alert("Invitation Send");
-            $window.location.href = 'index.html';
+            $('#wrapper').show();
+            $('#spinner').hide();
+            Notification.info({
+                message: "Invitation Send",
+                delay: 2000
+            });
+            setTimeout(function() {
+                $window.location.href = 'index.html';
+            }, 2500);
         }).error(function(response) {
-            alert("Connection Error");
+            $('#wrapper').show();
+            $('#spinner').hide();
+            Notification.error({
+                message: "Couldn't establish connection",
+                delay: 2000
+            });
         });
     }
 });

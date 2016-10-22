@@ -4,6 +4,7 @@
  */
 package com.project.dao;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -242,10 +243,20 @@ public class BookingsDAO {
 	public boolean updateBookingsStatusApproved(BookingsModel bookingsModel) {
 		Session session = sessionFactory.openSession();
 
-		System.out.println("I am here");
 		try {
 			// Starting a new transaction
 			session.beginTransaction();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+			Calendar cal = Calendar.getInstance();
+			String currentTime = dateFormat.format(cal.getTime());
+			
+			Time startTime = new Time(dateFormat.parse(currentTime).getTime());
+			
+			if(startTime.after(bookingsModel.getStartTime())) {
+				return false;
+			}
+			
+			
 
 			String status = bookingsModel.getStatus();
 			
@@ -330,7 +341,7 @@ public class BookingsDAO {
 			bookingsModel.setBookingId(idForBooking);
 
 			criteria = session.createCriteria(BookingsModel.class);
-			System.out.println("ResourceModel" + bookingsModel.getResourceDetails());
+			
 			criteria.add(Restrictions.and(Restrictions.eq("resourceDetails", bookingsModel.getResourceDetails()), Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
 					"approved"), Restrictions.or(

@@ -18,6 +18,7 @@ import com.project.dao.ResourceDAO;
 import com.project.model.ResourcesModel;
 import com.project.model.ResourcesVO;
 import com.project.model.UsersModel;
+import com.project.model.UsersVO;
 
 @Service("resourceService")
 @Transactional
@@ -68,9 +69,24 @@ public class ResourceService {
 	 */
 	public boolean createResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		UsersModel userModel;
 
-		// Copying properties of ResourcesModel to ResourcesVO
-		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		// Copying properties of ResourcesVO to ResourcesModel
+		
+		resourceModel.setCapacity(resourcesVO.getCapacity());
+		resourceModel.setResourceName(resourcesVO.getResourceName());
+		resourceModel.setType(resourcesVO.getType());
+		List<UsersModel> userList = new ArrayList<UsersModel>();
+		
+		for(UsersVO userVO : resourcesVO.getResourceAdmins()) {
+			userModel = context.getBean(UsersModel.class);
+			BeanUtils.copyProperties(userVO, userModel);
+			userList.add(userModel);
+		}
+		
+		resourceModel.setResourceAdmins(userList);
+		
+		
 
 		return resourceDAO.createResource(resourceModel);
 	}
@@ -85,12 +101,26 @@ public class ResourceService {
 	 */
 	public boolean editResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+		UsersModel userModel;
 
 		// Copying properties of ResourcesVO to ResourcesModel
-		BeanUtils.copyProperties(resourcesVO, resourceModel);
-		// resourceModel = resourcesVOToResourcesModel(resourcesVO);
-		List<UsersModel> newResAdmins = resourceModel.getResourceAdmins();
-
+		// Copying properties of ResourcesModel to ResourcesVO
+		
+		resourceModel.setCapacity(resourcesVO.getCapacity());
+		resourceModel.setResourceName(resourcesVO.getResourceName());
+		resourceModel.setType(resourcesVO.getType());
+		resourceModel.setResourceId(resourcesVO.getResourceId());
+		
+		List<UsersModel> newResAdmins = new ArrayList<UsersModel>();
+		
+		for(UsersVO userVO : resourcesVO.getResourceAdmins()) {
+			userModel = context.getBean(UsersModel.class);
+			BeanUtils.copyProperties(userVO, userModel);
+			newResAdmins.add(userModel);
+		}
+		
+		resourceModel.setResourceAdmins(newResAdmins);
+		
 		// Deleting a resource admin
 		resourceDAO.deleteResourceAdmin(resourceModel);
 

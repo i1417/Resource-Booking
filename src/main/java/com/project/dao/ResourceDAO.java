@@ -61,6 +61,7 @@ public class ResourceDAO {
 	public boolean createResource(ResourcesModel resourceModel) {
 		// Creating a new session
 		Session session = sessionFactory.openSession();
+		System.out.println("resmodel"+resourceModel);
 
 		try {
 			// Starting a new transaction
@@ -74,6 +75,7 @@ public class ResourceDAO {
 
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			session.getTransaction().rollback();
 			return false;
 		}
@@ -125,7 +127,7 @@ public class ResourceDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
-			return true;
+			return false;
 		}
 	}
 
