@@ -30,9 +30,11 @@
             <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
             <a class="hiddenanchor" id="toregister"></a>
             <a class="hiddenanchor" id="tologin"></a>
+            <!-- <a class="hiddenanchor" id="toforgot"></a> -->
             <div id="wrapper">
+
                 <div id="login" class="animate form" ng-controller="loginForm" data-ng-init="startApp()">
-                    <form autocomplete="on" ng-submit="authenticateLogin()">
+                    <form autocomplete="on" ng-submit="authenticateLogin()" name="login">
                         <h2>Log in</h2>
                         <p>
                             <label for="email">
@@ -40,8 +42,9 @@
                             </label><br/>
                             <span>
                                 <span class="glyphicon glyphicon-envelope"></span>
-                                <input id="email" type="email" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
+                                <input id="email" type="email" name="emailid" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
                             </span>
+                            <div id="error" style="color:red; display:none;"></div>
                         </p>
                         <p>
                             <label for="password">
@@ -52,12 +55,13 @@
                                 <input id="password" type="password" placeholder="PASSWORD" ng-model="user.password" required/>
                             </span>
                         </p>
-                        <!-- <p class="keeplogin">
-							<input type="checkbox" id="brand" value="">
-							<label for="brand"><span></span> Remember me?</label>
-						</p> -->
+                        <div id="loginError" style="color:red; display:none"></div>
                         <p class="login button">
                             <input type="submit" value="Login"/>
+                        </p>
+                        <p class="login button">
+                            <!-- ng-click="login.emailid.$valid && forgotPassword()" -->
+                            <input type="button" value="Forgot Password" ng-click="forgotPassword(login.emailid.$valid)"/>
                         </p>
                         <div id="gSignInWrapper">
                             <div id="customBtn" class="customGPlusSignIn">
@@ -72,6 +76,29 @@
                         </p>
                     </form>
                 </div>
+
+                <!-- <div id="forgot" class="animate form">
+                    <form autocomplete="on" ng-submit="forgotPassword()">
+                        <h2>Log in</h2>
+                        <p>
+                            <label for="email">
+                                <span>Your email</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-envelope"></span>
+                                <input id="email" type="email" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
+                            </span>
+                        </p>
+                        <p class="login button">
+                            <input type="submit" value="Generate Link"/>
+                        </p>
+                        <p class="change_link">
+                            <span>Not a member yet ?</span>
+                            <a href="#toregister" class="to_register">Register Now</a>
+                        </p>
+                    </form>
+                </div> -->
+
                 <div id="register" class="animate form" ng-controller="registerForm">
                     <form ng-submit="createAccount()" autocomplete="on" accept-charset="utf-8">
                         <h2>
@@ -137,7 +164,7 @@
                         </p>
                         <p class="change_link">
                             <span>Already a member ?</span>
-                            <a href="#tologin" class="to_register" ng-click="changeEmailBox()">Log In</a>
+                            <a href="#tologin" class="to_register">Log In</a>
                         </p>
                     </form>
                 </div>

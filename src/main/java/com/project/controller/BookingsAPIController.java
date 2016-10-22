@@ -98,11 +98,11 @@ public class BookingsAPIController {
 		// Sending back the response to the client
 		if (result) {
 			// Sending the booking updation mail
-			String mailMessage = "Your booking with ID : "
+			String mailMessage = "<p>Dear " + bookingsVO.getUserDetails().getName() + "</p><p>Your booking with ID : "
 					+ bookingsVO.getBookingId()
-					+ "\nThe current booking status is : "
+					+ "</p><p>The current booking status is : "
 					+ bookingsVO.getStatus()
-					+ "\n\nRegards\nResource Booking Team";
+					+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
 			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Status Changed", mailMessage);
 			
@@ -124,11 +124,11 @@ public class BookingsAPIController {
 		// Sending back the response to the client
 		if (result) {
 			// Sending the booking updation mail
-			String mailMessage = "Dear "+bookingsVO.getUserDetails().getName()+"\nYour booking with ID : "
+			String mailMessage = "<p>Dear " + bookingsVO.getUserDetails().getName() + "</p><p>Your booking with ID : "
 					+ bookingsVO.getBookingId()
-					+ "\nThe current booking status is : "
+					+ "</p><p>The current booking status is : "
 					+ bookingsVO.getStatus()
-					+ "\n\nRegards\nResource Booking Team";
+					+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
 			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Status Changed", mailMessage);
 			
@@ -243,12 +243,20 @@ public class BookingsAPIController {
 		// Sending back the response to the client
 		if (result!=null) {
 			System.out.println("Edited successfully");
-			return new Response(200, bookingsVO);
+			return new Response(200, result);
 		} else {
 			System.out.println("Couldn't edit");
 			return new Response(400, "Couldn't create");
 		}
 	}
 
+	@RequestMapping(value = "/bookings/cancelTodayBookings")
+	public @ResponseBody Response cancelTodayBookings() {
+		if (bookingsService.cancelTodayBookings()) {
+			return new Response(200, "OK");
+		} else {
+			return new Response(405, "Bad Request");
+		}
+	}
 
 }

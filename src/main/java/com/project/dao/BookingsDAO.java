@@ -41,14 +41,6 @@ public class BookingsDAO {
 	@Autowired
 	private ApplicationContext context;
 
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
 	/**
 	 * Following function fires query to database to get the required result(i.e
 	 * get all the pending bookings )
@@ -435,8 +427,7 @@ public class BookingsDAO {
 
 			criteria.add(Restrictions.and(Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
-					"approved"), Restrictions.ne("bookingId",
-					bookingsModel.getBookingId()),  Restrictions.or(
+					"approved"), Restrictions.ne("bookingId", bookingsModel.getBookingId()), Restrictions.or(
 					Restrictions.between("startTime",
 							bookingsModel.getStartTime(),
 							bookingsModel.getEndTime()),
@@ -529,6 +520,36 @@ public class BookingsDAO {
 			session.getTransaction().commit();
 			return true;
 		} catch (Exception e) {
+			session.getTransaction().rollback();
+			return false;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean cancelTodayBookings() {
+		Session session = sessionFactory.openSession();
+		
+		try {
+			session.beginTransaction();
+			
+			Criteria criteria = session.createCriteria(BookingsModel.class);
+			
+			Calendar cal = Calendar.getInstance();
+			Date date = cal.getTime();
+			
+			criteria.add(Restrictions.and(Restrictions.eq("date", date), Restrictions.eq("status", "Pending")));
+			
+			List<BookingsModel> listToUpdate = criteria.list();
+			
+			for (BookingsModel bookingsModel : listToUpdate) {
+				bookingsModel.setStatus("Cancelled");
+				session.update(bookingsModel);
+			}
+			
+			session.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 			session.getTransaction().rollback();
 			return false;
 		}

@@ -63,7 +63,7 @@ public class BookingsService {
 
 				//adding bookingsModelLocal data in bookingsVOList one by one  
 				bookingsVOList
-						.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
+						.add(bookingsModelToBookingsVO(bookingsModelLocal));
 
 			}
 
@@ -97,7 +97,7 @@ public class BookingsService {
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 
 				bookingsVOList
-						.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
+						.add(bookingsModelToBookingsVO(bookingsModelLocal));
 
 			}
 
@@ -129,7 +129,7 @@ public class BookingsService {
 			//Converting BookingsModel to BookingsVO for sending data back to controller
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 				bookingsVOList
-						.add(convertBookingsModelToBookingsVO(bookingsModelLocal));
+						.add(bookingsModelToBookingsVO(bookingsModelLocal));
 			}
 
 			// returns List ofBookingsVO
@@ -177,12 +177,12 @@ public class BookingsService {
 		BookingsModel bookingsModel;
 
 		// converts BookingsVO to BookingsModel
-		bookingsModel = BookingsVoToModel(bookingsVO);
+		bookingsModel = bookingsVoToModel(bookingsVO);
 		bookingsModel = bookingsDAO.createBooking(bookingsModel);
 
 		if (bookingsModel != null) {
 			//converts back to BookingsVO from BookingsModels
-			bookingsVO = convertBookingsModelToBookingsVO(bookingsModel);
+			bookingsVO = bookingsModelToBookingsVO(bookingsModel);
 			return bookingsVO;
 		} else {
 			return null;
@@ -199,12 +199,16 @@ public class BookingsService {
 	public BookingsVO editBooking(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel;
 		
-		bookingsModel = BookingsVoToModel(bookingsVO);
+		bookingsModel = bookingsVoToModel(bookingsVO);
 		System.out.println("bookingVO to model successful");
-		return  convertBookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
+		return  bookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
+	}
+	
+	public boolean cancelTodayBookings() {
+		return bookingsDAO.cancelTodayBookings();
 	}
 
-	public BookingsModel BookingsVoToModel(BookingsVO bookingsVO) {
+	private BookingsModel bookingsVoToModel(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		UsersModel usersModel = context.getBean(UsersModel.class);
 		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
@@ -248,7 +252,7 @@ public class BookingsService {
 	 * 
 	 * @return BookingsVO
 	 */
-	private BookingsVO convertBookingsModelToBookingsVO(
+	private BookingsVO bookingsModelToBookingsVO(
 			BookingsModel bookingsModel) {
 
 		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);

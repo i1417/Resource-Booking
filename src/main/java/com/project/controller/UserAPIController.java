@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.model.UsersVO;
@@ -46,10 +47,8 @@ public class UserAPIController {
 
 		// Sending back the response to the client
 		if (result != null) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "Wrong Credentials");
 		}
 	}
@@ -159,5 +158,31 @@ public class UserAPIController {
 		} else {
 			return new Response(400, "Couldn't fetch all the Users");
 		}
+	}
+	
+	@RequestMapping(value = "/forgotPass", method = RequestMethod.POST)
+	public @ResponseBody Response forgotPassword(@RequestBody UsersVO user) {
+		long token = usersService.forgotPassword(user);
+		
+		if(token != 0) {
+			String mailMessage = "<p>Dear User</p><p>Please follow the below link to change your password" 
+				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
+							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/forgotPassword.html?token="
+							+ token + "&email="
+							+ user.getEmail() + "' >Change Password</a>"
+							+ "</div>"
+					+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
+			mailService.sendHTMLMail(user,
+					"Booking Status Changed", mailMessage);
+					
+			return new Response(200, "Link Generated");
+		} else {
+			return new Response(400, "User does not Exist");
+		}
+	}
+	
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	public @ResponseBody Response changePassword(@RequestBody UsersVO user, @RequestParam("token") String token) {
+		return new Response(200, usersService.changePassword(user, token));
 	}
 }

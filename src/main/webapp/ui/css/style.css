@@ -357,6 +357,7 @@ p.change_link{
 }
 /** Styling both forms **/
 #register,
+#forgot,
 #login{
 	position: absolute;
 	top: 0px;
@@ -366,7 +367,7 @@ p.change_link{
 	background:rgba(52, 53, 49, 0.58);
 }
 #register{
-	z-index: 21;
+	z-index: 20;
 	opacity: 0;
 }
 #login{

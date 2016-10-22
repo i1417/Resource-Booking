@@ -157,4 +157,20 @@ public class UsersService {
 		System.out.println("vo data" + usersVO);
 		return usersVO;
 	}
+	
+	public long forgotPassword(UsersVO user) {
+		UsersModel userModel = context.getBean(UsersModel.class);
+		
+		BeanUtils.copyProperties(user, userModel);
+		
+		return usersDAO.forgotPassword(userModel);
+		
+	}
+	
+	public String changePassword(UsersVO user, String token) {
+		UsersModel userModel = context.getBean(UsersModel.class);
+		
+		BeanUtils.copyProperties(user, userModel);
+		return usersDAO.changePassword(userModel, Long.parseLong(token));
+	}
 }

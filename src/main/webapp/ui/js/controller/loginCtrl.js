@@ -46,7 +46,8 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
             	$window.location.href = 'user/index.html';
             } else {
             	$scope.user.password = "";
-            	console.log(response.errorMessage);
+				$('#loginError').text(response.errorMessage);
+            	$('#loginError').show();
             }
         }).error(function(response) {
 			alert("Connection Error");
@@ -69,7 +70,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 
 	$scope.attachSignin = function(element) {
 		   auth2.attachClickHandler(element, {},function(googleUser) {
-	    	
+
 			   var profile = googleUser.getBasicProfile();
 				var id_token = googleUser.getAuthResponse().id_token;
 
@@ -101,51 +102,38 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 				}).error(function(response) {
 					alert("Connection Error");
 				});
-	    	
-	    	
+
+
 	  }, function(error) {
 	        alert(JSON.stringify(error, undefined, 2));
 	      });
 	}
 
-	/*function onSignIn(googleUser) {
-		var profile = googleUser.getBasicProfile();
-		var id_token = googleUser.getAuthResponse().id_token;
+	$scope.forgotPassword = function(value) {
+		if(value) {
+			console.log("I am here");
+			$("#error").hide();
 
-		var profileDetails = {};
-		profileDetails.email = profile.getEmail();
-
-		// console.log(id_token);
-		console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-		console.log('Name: ' + profile.getName());
-		console.log('Image URL: ' + profile.getImageUrl());
-		console.log('Email: ' + profile.getEmail());
-		console.log(profileDetails);
-		$http({
-			method : 'POST',
-			url : 'http://localhost:8080/Project-Authentication/validate/custom',
-			data : profileDetails,
-			headers : {'Content-Type': 'application/json'}
-		}).success(function(response) {
-			console.log(response);
-			if(response.status == 200) {
-				userDetails.setCurrentUser(response.data);
-				$window.location.href = 'admin/index.html';
-			} else {
-				profileDetails.name = profile.getName();
-				userDetails.setUser(profileDetails);
-				$rootScope.$emit("setUserDetails", {});
-				location = "#toregister";
-			}
-		}).error(function(response) {
-			alert("Connection Error");
-		});
-		// $rootScope.$emit("setUserDetails", {});
-
-		// location = "#toregister";
+			$http({
+	            method : 'POST',
+	            url : 'http://localhost:8080/Project-Authentication/forgotPass',
+	            data : $scope.user,
+	            headers : {'Content-Type': 'application/json'}
+	        }).success(function(response) {
+	            console.log(response);
+	            if(response.status == 200 ) {
+	            	console.log("completed");
+	            }
+				$('#loginError').text(response.errorMessage);
+				$('#loginError').show();
+	        }).error(function(response) {
+				alert("Connection Error");
+			});
+		} else {
+			$("#error").text("Enter mail ID");
+			$("#error").show();
+		}
 	}
-
-	window.onSignIn = onSignIn;*/
 });
 
 landingPage.controller('registerForm', function($scope, $http, $window, $rootScope, md5, userDetails) {
@@ -155,7 +143,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
 	$rootScope.$on("setUserDetails", function(){
        $scope.setUserDetails();
     });
-	
+
 	$scope.changeEmailBox = function() {
 		console.log("Here");
 		$("input[type='email']").removeAttr('readonly');
@@ -204,126 +192,3 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
 		}
 	}
 });
-
-// function onSignIn(googleUser) {
-// 	var profile = googleUser.getBasicProfile();
-// 	var id_token = googleUser.getAuthResponse().id_token;
-//
-// 	profileDetails = {};
-// 	profileDetails.name = profile.getName();
-// 	profileDetails.email = profile.getEmail();
-// 	//userDetails.setUser(profileDetails);
-//
-// 	console.log(id_token);
-// 	console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-// 	console.log('Name: ' + profile.getName());
-// 	console.log('Image URL: ' + profile.getImageUrl());
-// 	console.log('Email: ' + profile.getEmail());
-//
-// 	console.log(profileDetails);
-// 	location = "#toregister";
-// 	//console.log("sdgd"+$location.host());
-// }
-
-function onFailure(error) {
-	console.log(error);
-}
-
-function signOut() {
-	var auth2 = gapi.auth2.getAuthInstance();
-	console.log(auth2);
-	auth2.signOut().then(function () {
-		console.log('User signed out.');
-	});
-}
-
-// var CLIENT_ID = '170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com';
-//
-//       var SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
-//
-//       /**
-//        * Check if current user has authorized this application.
-//        */
-//       function checkAuth() {
-//         gapi.auth.authorize(
-//           {
-//             'client_id': CLIENT_ID,
-//             'scope': SCOPES.join(' '),
-//             'immediate': true
-//           }, handleAuthResult);
-//       }
-//
-//       /**
-//        * Handle response from authorization server.
-//        *
-//        * @param {Object} authResult Authorization result.
-//        */
-//       function handleAuthResult(authResult) {
-//         var authorizeDiv = document.getElementById('authorize-div');
-//         if (authResult && !authResult.error) {
-//           // Hide auth UI, then load client library.
-//           authorizeDiv.style.display = 'none';
-//           loadGmailApi();
-//         } else {
-//           // Show auth UI, allowing the user to initiate authorization by
-//           // clicking authorize button.
-//           authorizeDiv.style.display = 'inline';
-//         }
-//       }
-//
-//       /**
-//        * Initiate auth flow in response to user clicking authorize button.
-//        *
-//        * @param {Event} event Button click event.
-//        */
-//       function handleAuthClick(event) {
-//         gapi.auth.authorize(
-//           {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
-//           handleAuthResult);
-//         return false;
-//       }
-//
-//       /**
-//        * Load Gmail API client library. List labels once client library
-//        * is loaded.
-//        */
-//       function loadGmailApi() {
-//         gapi.client.load('gmail', 'v1', listLabels);
-//       }
-//
-//       /**
-//        * Print all Labels in the authorized user's inbox. If no labels
-//        * are found an appropriate message is printed.
-//        */
-//       function listLabels() {
-//         var request = gapi.client.gmail.users.labels.list({
-//           'userId': 'me'
-//         });
-//
-//         request.execute(function(resp) {
-//           var labels = resp.labels;
-//           appendPre('Labels:');
-//
-//           if (labels && labels.length > 0) {
-//             for (i = 0; i < labels.length; i++) {
-//               var label = labels[i];
-//               appendPre(label.name)
-//             }
-//           } else {
-//             appendPre('No Labels found.');
-//           }
-//         });
-//       }
-//
-//       /**
-//        * Append a pre element to the body containing the given message
-//        * as its text node.
-//        *
-//        * @param {string} message Text to be placed in pre element.
-//        */
-//       function appendPre(message) {
-//         var pre = document.getElementById('output');
-//         var textContent = document.createTextNode(message + '\n');
-//         pre.appendChild(textContent);
-//       }
-//

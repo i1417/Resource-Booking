@@ -13,13 +13,10 @@ angular.module('dataShareFactory',[]).factory('userDetails', function($window, $
 
     userFunctions.setCurrentUser = function(data) {
         $window.sessionStorage.setItem('user', angular.toJson(data));
-        // currentUser.push(data);
-        //console.log(JSON.parse($window.sessionStorage.getItem('user')));
     }
 
     userFunctions.getCurrentUser = function() {
         return JSON.parse($window.sessionStorage.getItem('user'));
-        // return currentUser.pop();
     }
     
     userFunctions.addCurrentBooking = function(data) {

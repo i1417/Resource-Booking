@@ -13,8 +13,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
 
+import com.project.model.TokensModel;
 import com.project.model.UsersModel;
 
 @Repository("usersDAO")
@@ -25,13 +27,9 @@ public class UsersDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+	// To get the beans
+	@Autowired
+	private ApplicationContext context;
 
 	/**
 	 * To perform the authentication of the user
@@ -51,8 +49,8 @@ public class UsersDAO {
 
 		// Adding restrictions for login validation
 		if (userCredentials.getPassword() == null) {
-			authentication.add(Restrictions.eq("email",
-					userCredentials.getEmail()));
+			authentication.add(Restrictions.and(Restrictions.eq("email",
+					userCredentials.getEmail()), Restrictions.isNull("password")));
 		} else {
 			authentication
 					.add(Restrictions.and(Restrictions.eq("email",
@@ -147,5 +145,80 @@ public class UsersDAO {
 
 		return cr.list();
 
+	}
+	
+	public long forgotPassword(UsersModel userModel) {
+		Session session = sessionFactory.openSession();
+		
+		try {
+			session.beginTransaction();
+			TokensModel forgotToken = context.getBean(TokensModel.class);
+			
+			Criteria criteria = session.createCriteria(UsersModel.class);
+			criteria.add(Restrictions.eq("email", userModel.getEmail()));
+			
+			UsersModel customOrSocial = (UsersModel) criteria.uniqueResult();
+			
+			if(customOrSocial == null) {
+				session.getTransaction().commit();
+				return 0;
+			} else if(customOrSocial.getPassword() == null) {
+				session.getTransaction().commit();
+				return 0;
+			}
+			
+			forgotToken.setUser(customOrSocial);
+			
+			session.save(forgotToken);
+			long tokenId = forgotToken.getTokenId();
+			
+			session.getTransaction().commit();
+			return tokenId;
+		} catch (Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+			return 0;
+		}
+	}
+	
+	public String changePassword(UsersModel userModel, long token) {
+		Session session = sessionFactory.openSession();
+		
+		try {
+			session.beginTransaction();
+			
+			Criteria criteria = session.createCriteria(TokensModel.class);
+			criteria.add(Restrictions.and(Restrictions.eq("tokenId", token), Restrictions.sqlRestriction("TIMESTAMPDIFF(HOUR, {alias}.request, CURRENT_TIMESTAMP) < 4")));
+			TokensModel tokenModel = (TokensModel) criteria.uniqueResult();
+			
+			if(tokenModel == null) {
+				criteria = session.createCriteria(TokensModel.class);
+				criteria.add(Restrictions.eq("tokenId", token));
+				tokenModel = (TokensModel) criteria.uniqueResult();
+				
+				if(tokenModel != null) {
+					session.delete(tokenModel);
+				}
+				session.getTransaction().commit();
+				return "Link Expired";
+			} else {
+				criteria = session.createCriteria(UsersModel.class);
+				criteria.add(Restrictions.eq("email", userModel.getEmail()));
+				//criteria.setProjection(Projections.property("employeeId"));
+				UsersModel objToUpdate = (UsersModel) criteria.uniqueResult();
+				
+				objToUpdate.setPassword(userModel.getPassword());
+				
+				session.delete(tokenModel);
+				
+				session.getTransaction().commit();
+				
+				return "Password Updated";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+			return "Can't change the password";
+		}
 	}
 }
