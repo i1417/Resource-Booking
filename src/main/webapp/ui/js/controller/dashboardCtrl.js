@@ -17,7 +17,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     $scope.booking.bookingId= itemObj.bookingId;
     $scope.booking.title = itemObj.title;
     $scope.booking.description = itemObj.description;
-    $scope.booking.numberOfParticipants = itemObj.numberOfParticipants;
+    $scope.noOfParticipants = itemObj.numberOfParticipants;
     $scope.resourceValue = itemObj.resourceId.toString();
 
     if (angular.isUndefined(itemObj.bookBtn)) {
@@ -348,7 +348,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             	if(calEvent.editable){
                     $scope.callShowModal(calEvent);
             	}else{
-            		 Notification.error({message: 'Please edit your bookings only!', positionY: 'bottom', positionX: 'right',delay: 2000});
+            		 Notification.error({message: 'Can not Edit!', positionY: 'bottom', positionX: 'right',delay: 2000});
             	}
             },
 
@@ -366,7 +366,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 var description = calEvent.title.substring(calEvent.title.indexOf('\n')+1, calEvent.title.indexOf('\nP'));
                 var numberOfParticipants = calEvent.title.substring(calEvent.title.indexOf('\b'));
                 
-                var tooltip = '<div class="tooltipevent" style="border-radius:15px;background:#bac8f2;position:absolute;z-index:1000;"><ul>'+
+                var tooltip = '<div class="tooltipevent" style="border-radius:10px;background:#bac8f2;position:absolute;z-index:1000; padding-right:10px;"><ul>'+
                 	'<li>Title: '+title+'</li><li>Description:'+description+'</li><li>Participants:'+numberOfParticipants+'</li></ul></div>';
                 var $tooltip = $(tooltip).appendTo('body');
 
