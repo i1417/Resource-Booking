@@ -26,14 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Component
 @Table(name = "resources")
 public class ResourcesModel {
-
-	@Override
-	public String toString() {
-		return "ResourcesModel [resourceId=" + resourceId + ", resourceName="
-				+ resourceName + ", type=" + type + ", capacity=" + capacity
-				+ "]";
-	}
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "resource_id")
@@ -49,14 +42,6 @@ public class ResourcesModel {
 	private int capacity;
 
 	@ManyToMany(mappedBy = "adminOfResources")
-	/*
-	 * cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	 * 
-	 * @JoinTable(name = "admins", joinColumns = {@JoinColumn(name =
-	 * "resource_id", referencedColumnName = "resource_id")}, inverseJoinColumns
-	 * = {@JoinColumn(name = "employee_id", referencedColumnName =
-	 * "employee_id")})
-	 */
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonIgnore
 	private List<UsersModel> resourceAdmins;

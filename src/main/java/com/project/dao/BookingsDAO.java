@@ -13,6 +13,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
+import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -329,8 +330,8 @@ public class BookingsDAO {
 			bookingsModel.setBookingId(idForBooking);
 
 			criteria = session.createCriteria(BookingsModel.class);
-
-			criteria.add(Restrictions.and(Restrictions.eq("date",
+			System.out.println("ResourceModel" + bookingsModel.getResourceDetails());
+			criteria.add(Restrictions.and(Restrictions.eq("resourceDetails", bookingsModel.getResourceDetails()), Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
 					"approved"), Restrictions.or(
 					Restrictions.between("startTime",
@@ -398,8 +399,13 @@ public class BookingsDAO {
 			session.getTransaction().commit();
 
 			return bookingsModel;
-		} catch (Exception e) {
+		} catch (NonUniqueObjectException e) {
 			e.printStackTrace();
+			session.merge(bookingsModel);
+			session.getTransaction().commit();
+			return bookingsModel;
+		} catch(Exception exp) {
+			exp.printStackTrace();
 			session.getTransaction().rollback();
 			return null;
 		}

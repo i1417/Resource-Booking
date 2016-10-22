@@ -1,7 +1,7 @@
 var homePage = angular.module('homePageApp', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'utilityFunctionsFactory', 'ui.bootstrap','ui-notification']);
 
 var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions, itemObj, Notification) {
-	 
+
 	$scope.booking = {};
     $scope.booking.resourceDetails = {};
     $scope.booking.userDetails = {};
@@ -45,6 +45,10 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
         $scope.booking.resourceDetails.resourceId = $('#resSelect :selected').val();
         $scope.booking.resourceDetails.resourceName = $('#resSelect :selected').text();
 
+        $('#wrapper').hide();
+		$('#spinner').show();
+		$modalInstance.dismiss('cancel');
+
         $http({
             method: 'POST',
             url: $scope.urlValue,
@@ -54,28 +58,33 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
             }
         }).success(function(response) {
             if (response.status == 200) {
-            	 $modalInstance.dismiss('cancel');
+
         		if(itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
         			userDetails.addCurrentBooking(response.data);
         		}else{
         			userDetails.editCurrentBooking(response.data);
-        		}              
-                
-                Notification({message: 'Your Current Booking is '+response.data.status+'. Please Refresh to reflect changes in calendar', title: 'Booking Status',delay:null});
-        		//$window.location.href = 'index.html';
+        		}
+
+        		$('#wrapper').show();
+				$('#spinner').hide();
+                Notification({message: 'Your Current Booking is '+response.data.status+'.', title: 'Booking Status',delay:2000});
+				setTimeout(function(){
+					$window.location.href = 'index.html';
+				},2500);
 
             } else {
-                console.log(response.errorMessage);
+            	$('#wrapper').show();
+				$('#spinner').hide();
             }
         }).error(function(response) {
-            alert("Connection Error");
+            Notification.error({message: "Couldn't establish connection",delay:2000});
         });
     }
 
     // datetime picker
     $scope.pickDateTime = function() {
-    	
-    	
+
+
             $('#datePicker').datetimepicker({
                 format: 'YYYY-MM-DD',
                 ignoreReadonly: true,
@@ -133,7 +142,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
 };
 
 homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http, $filter, userDetails, utilityFunctions) {
-	
+
 	console.log(userDetails.getCurrentUser());
     $scope.currentUser = userDetails.getCurrentUser();
     $scope.date = $filter('date')(new Date(), 'yyyy-MM-dd');
@@ -275,13 +284,13 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                         color: '#5fefe6'
                 	});
                 });
-                
+
                 $($scope.currentUser.bookingsMade).each(function() {
                 	var res = $(this).attr('resourceDetails');
                     var startTime = $(this).attr('date') + 'T' + $(this).attr('startTime') + '+05:30';
                     var endTime = $(this).attr('date') + 'T' + $(this).attr('endTime') + '+05:30';
                     var currentTime = new Date().getHours()+":"+new Date().getMinutes();
-                    
+
                     if(startTime.substring(0,10) < $scope.date){
                     	var editableValue =false;
                     }
@@ -296,7 +305,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                     else{
                     	var editableValue = true;
                     }
-                    
+
                     events.push({
                     	id: $(this).attr('bookingId'),
                         title: $(this).attr('title') + "\n" + $(this).attr('description') + "\nParticipants:  \b" + $(this).attr('numberOfParticipants'),
@@ -308,7 +317,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                         color: '#9ccefc'
                     });
                 });
-              
+
                 callback(events);
             },
 
@@ -331,7 +340,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 if ($scope.checkDate(dateFormat, startT)) {
                     $scope.showModal(startT, endT, dateFormat,id, title, description, numberOfParticipants, resourceId, bookBtn);
                 } else {
-                	 Notification.error({message: 'Unable to book at selected time', positionY: 'bottom', positionX: 'center',delay: 2000});
+                	Notification.error({message: 'Unable to book at selected time', positionY: 'bottom', positionX: 'center',delay: 2000});
                 }
 
             },
@@ -348,7 +357,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             	if(calEvent.editable){
                     $scope.callShowModal(calEvent);
             	}else{
-            		 Notification.error({message: 'Can not Edit!', positionY: 'bottom', positionX: 'right',delay: 2000});
+            		Notification.error({message: 'Can not Edit!', positionY: 'bottom', positionX: 'right',delay: 2000});
             	}
             },
 
@@ -359,13 +368,13 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             eventResize: function(event) {
                 $scope.callShowModal(event);
             },
-            
-            
+
+
             eventMouseover: function(calEvent, jsEvent) {
             	var title = calEvent.title.substring(0, calEvent.title.indexOf('\n')+1);
                 var description = calEvent.title.substring(calEvent.title.indexOf('\n')+1, calEvent.title.indexOf('\nP'));
                 var numberOfParticipants = calEvent.title.substring(calEvent.title.indexOf('\b'));
-                
+
                 var tooltip = '<div class="tooltipevent" style="border-radius:10px;background:#bac8f2;position:absolute;z-index:1000; padding-right:10px;"><ul>'+
                 	'<li>Title: '+title+'</li><li>Description:'+description+'</li><li>Participants:'+numberOfParticipants+'</li></ul></div>';
                 var $tooltip = $(tooltip).appendTo('body');
@@ -384,7 +393,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
                 $(this).css('z-index', 8);
                 $('.tooltipevent').remove();
             }
-            
+
         });
     }
 

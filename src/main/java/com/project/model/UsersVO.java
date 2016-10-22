@@ -14,15 +14,6 @@ import org.springframework.stereotype.Component;
 public class UsersVO {
 
 	private int employeeId;
-
-	@Override
-	public String toString() {
-		return "UsersVO [employeeId=" + employeeId + ", name=" + name
-				+ ", designation=" + designation + ", email=" + email
-				+ ", password=" + password + ", mobileNumber=" + mobileNumber
-				+ ", role=" + role + "]";
-	}
-
 	private String name;
 	private String designation;
 	private String email;

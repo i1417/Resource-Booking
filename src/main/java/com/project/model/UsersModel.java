@@ -59,12 +59,6 @@ public class UsersModel {
 	@JoinTable(name = "admins", joinColumns = { @JoinColumn(name = "employee_id", referencedColumnName = "employee_id") }, inverseJoinColumns = { @JoinColumn(name = "resource_id", referencedColumnName = "resource_id") })
 	private List<ResourcesModel> adminOfResources;
 
-	@Override
-	public String toString() {
-		return "UsersModel [employeeId=" + employeeId + ", name=" + name
-				+ ", email=" + email + "]";
-	}
-
 	@OneToMany(mappedBy = "userDetails")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonManagedReference

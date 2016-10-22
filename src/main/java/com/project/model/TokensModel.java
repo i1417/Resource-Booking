@@ -1,5 +1,5 @@
 /**
- * To map the cabs table in the database in the ORM
+ * To map the tokens table in the database in the ORM
  * @author Arpit Pittie
  */
 package com.project.model;

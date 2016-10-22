@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
+        
+        <link rel="stylesheet" href="ui/css/angular-csp.css">
+        <link rel="stylesheet" href="ui/css/angular-ui-notification.min.css">
+        
         <!-- font files -->
         <!-- <link href='//fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic' rel='stylesheet' type='text/css'>
 		<link href='//fonts.googleapis.com/css?family=Comfortaa:400,300,700' rel='stylesheet' type='text/css'> -->
@@ -18,6 +22,7 @@
         <!-- /css files -->
         <script src="ui/js/res/jquery.min.js"></script>
         <script src="ui/js/res/angular.min.js"></script>
+        <script src="ui/js/res/angular-ui-notification.min.js"></script>  
         <script src="https://apis.google.com/js/platform.js"></script>
         <script src="ui/js/factory/factoryProject.js"></script>
         <script src="ui/js/controller/loginCtrl.js"></script>
@@ -25,6 +30,7 @@
         <script src="ui/js/res/angular-md5.js"></script>
     </head>
     <body ng-app="landingPage">
+    	<div id="spinner" class="overlay"><img src="ui/images/loader.gif" alt="spinner"></div>
         <h1 class="w3ls" style="color: black;">Resource Booking</h1>
         <div id="container_demo">
             <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
@@ -44,7 +50,6 @@
                                 <span class="glyphicon glyphicon-envelope"></span>
                                 <input id="email" type="email" name="emailid" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
                             </span>
-                            <div id="error" style="color:red; display:none;"></div>
                         </p>
                         <p>
                             <label for="password">
@@ -55,7 +60,6 @@
                                 <input id="password" type="password" placeholder="PASSWORD" ng-model="user.password" required/>
                             </span>
                         </p>
-                        <div id="loginError" style="color:red; display:none"></div>
                         <p class="login button">
                             <input type="submit" value="Login"/>
                         </p>
@@ -76,28 +80,6 @@
                         </p>
                     </form>
                 </div>
-
-                <!-- <div id="forgot" class="animate form">
-                    <form autocomplete="on" ng-submit="forgotPassword()">
-                        <h2>Log in</h2>
-                        <p>
-                            <label for="email">
-                                <span>Your email</span>
-                            </label><br/>
-                            <span>
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <input id="email" type="email" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
-                            </span>
-                        </p>
-                        <p class="login button">
-                            <input type="submit" value="Generate Link"/>
-                        </p>
-                        <p class="change_link">
-                            <span>Not a member yet ?</span>
-                            <a href="#toregister" class="to_register">Register Now</a>
-                        </p>
-                    </form>
-                </div> -->
 
                 <div id="register" class="animate form" ng-controller="registerForm">
                     <form ng-submit="createAccount()" autocomplete="on" accept-charset="utf-8">
@@ -130,7 +112,6 @@
                                 <span class="glyphicon glyphicon-wrench"></span>
                                 <input id="passwordConfirm" type="password" pattern="^[-a-zA-Z0-9!@#]{6,20}" placeholder="CONFIRM PASSWORD" ng-model="confirm.password" required/>
                             </span>
-                            <div id="error" style="color:red; display:none">Password do not match</div>
                         </p>
                         <p>
                             <label for="name">

@@ -22,9 +22,9 @@ angular.module('dataShareFactory',[]).factory('userDetails', function($window, $
     userFunctions.addCurrentBooking = function(data) {
     	var user = JSON.parse($window.sessionStorage.getItem('user'));
     	console.log(data.status);
-    	if(data.status == "Approved"){
-    		user.bookingsMade.push(data);
-    	}
+    	    	if(data.status == "Approved"){
+    	    		user.bookingsMade.push(data);
+    	    	}
     	$window.sessionStorage.setItem('user', angular.toJson(user));
     }
     

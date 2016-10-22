@@ -13,14 +13,6 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class ResourcesVO {
 
-	@Override
-	public String toString() {
-		return "ResourcesVO [resourceId=" + resourceId + ", resourceName="
-				+ resourceName + ", type=" + type + ", capacity=" + capacity
-				+ ", resourceAdmins=" + resourceAdmins + ", bookedList="
-				+ bookedList + "]";
-	}
-
 	private int resourceId;
 	private String resourceName;
 	private String type;

@@ -44,19 +44,12 @@ public class BookingsModel {
 	@Column(name = "description")
 	private String description;
 
-	/*
-	 * @Column(name = "resource_id") private String resourceId;
-	 */
-
-	// @Temporal(TemporalType.DATE)
 	@Column(name = "date")
 	private Date date;
 
-	// @Temporal(TemporalType.TIME)
 	@Column(name = "start_time")
 	private Time startTime;
 
-	// @Temporal(TemporalType.TIME)
 	@Column(name = "end_time")
 	private Time endTime;
 
@@ -65,13 +58,6 @@ public class BookingsModel {
 
 	@Column(name = "participants")
 	private int numberOfParticipants;
-
-	/*
-	 * public String getResourceId() { return resourceId; }
-	 * 
-	 * public void setResourceId(String resourceId) { this.resourceId =
-	 * resourceId; }
-	 */
 
 	public String getBookingId() {
 		return bookingId;

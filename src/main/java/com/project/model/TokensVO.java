@@ -1,5 +1,5 @@
 /**
- * Class to map the Cabs View Object
+ * Class to map the Tokens View Object
  * @author Arpit Pittie
  */
 package com.project.model;
@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 public class TokensVO {
 
 	private long tokenId;
-
 	private String requestTime;
-
 	private UsersVO user;
 
 	public long getTokenId() {

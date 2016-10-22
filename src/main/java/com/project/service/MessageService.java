@@ -1,19 +1,32 @@
 package com.project.service;
 
 import java.net.*;
+import java.util.Properties;
 import java.io.*;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * 
+ * send mobile sms to the user on booking status
+ * @author Amit
+ *
+ */
 @Component
 public class MessageService {
 	
+	//username for sms api gateway
 	private String userName;
+	
+	//password for sms api gateway
 	private String password;
 	
+	//constructor
 	public MessageService(){
-		this.setUserName("resourcebooking");
-		this.setPassword("resourcebooking");
+		
+		//set sms api credentials
+		this.setUserName(getPropValues("smsAPIUsername"));
+		this.setPassword(getPropValues("smsAPIPassword"));
 	}
 
     /**
@@ -43,52 +56,77 @@ public class MessageService {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	static public void main(String[] args) {
-		new MessageService().sendSMS("Hello amit how are you", "917821042473");
-        
-    }
     
+	/**
+	 * sends a message to a user on booking status
+	 * @param messageBody--the sms body
+	 * @param receiver--mobile number of the receiver with country code
+	 */
     public void sendSMS(String messageBody,String receiver)
     {
     	try {
             // Construct data
-            String data = "";
-            /*
-             * Note the suggested encoding for certain parameters, notably
-             * the username, password and especially the message.  ISO-8859-1
-             * is essentially the character set that we use for message bodies,
-             * with a few exceptions for e.g. Greek characters.  For a full list,
-             * see:  http://developer.bulksms.com/eapi/submission/character-encoding/
-             */
+    		String data = "";
             data += "username=" + URLEncoder.encode(this.getUserName(), "ISO-8859-1");
             data += "&password=" + URLEncoder.encode(this.getPassword(), "ISO-8859-1");
             data += "&message=" + URLEncoder.encode(messageBody, "ISO-8859-1");
             data += "&want_report=1";
             data += "&msisdn="+receiver;
 
-            // Send data
-            // Please see the FAQ regarding HTTPS (port 443) and HTTP (port 80/5567)
+            // sms api url
             URL url = new URL("https://bulksms.vsms.net/eapi/submission/send_sms/2/2.0");
 
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write(data);
-            wr.flush();
+            //call the sms api
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.setDoOutput(true);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
+            outputStreamWriter.write(data);
+            outputStreamWriter.flush();
 
             // Get the response
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                // Print the response output...
-                System.out.println(line);
-            }
-            wr.close();
-            rd.close();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            bufferedReader.close();
+            outputStreamWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
+    /**
+	 * retrieve the values of passed parameters from a properties file
+	 * 
+	 * @param propertyName
+	 *            -the parameter whose value is to be retrieved
+	 * @return-the value of parameter requested
+	 */
+	public String getPropValues(String propertyName) {
+		String result = "";
+		InputStream inputStream = null;
+		
+		try {
+			Properties properties = new Properties();
+			String propFileName = "dbconfig.properties";
+
+			 inputStream= getClass().getClassLoader().getResourceAsStream(propFileName);
+
+			if (inputStream != null) {
+				properties.load(inputStream);
+			} else {
+				throw new FileNotFoundException("property file '"+ propFileName + "' not found in the classpath");
+			}
+
+		result = properties.getProperty(propertyName);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+    
 }
 

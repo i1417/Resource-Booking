@@ -15,12 +15,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.project.dao.ResourceDAO;
-import com.project.model.BookingsModel;
-import com.project.model.BookingsVO;
 import com.project.model.ResourcesModel;
 import com.project.model.ResourcesVO;
 import com.project.model.UsersModel;
-import com.project.model.UsersVO;
 
 @Service("resourceService")
 @Transactional
@@ -38,24 +35,26 @@ public class ResourceService {
 	 * To get the list of all available resources from ResourcesDao class
 	 * 
 	 * @return - List of all the available resources
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 
 	public List<ResourcesVO> allResourceList() {
 
 		List<ResourcesModel> resourcesModel = new ArrayList<ResourcesModel>();
 
+		// Getting all the available resource list from dao
 		resourcesModel = resourceDAO.allResourceList();
 		List<ResourcesVO> resourcesVO = new ArrayList<ResourcesVO>(
 				resourcesModel.size());
 		ResourcesVO resourceVO;
-		System.out.println(" model data" + resourcesModel.size());
+
+		// Converting the list of ResourceModel to ResourcesVO
 		for (int i = 0; i < resourcesModel.size(); i++) {
 			resourceVO = context.getBean(ResourcesVO.class);
 			BeanUtils.copyProperties(resourcesModel.get(i), resourceVO);
 			resourcesVO.add(resourceVO);
 		}
 
-		System.out.println("vo data" + resourcesVO);
 		return resourcesVO;
 	}
 
@@ -65,26 +64,16 @@ public class ResourceService {
 	 * @param resourcesVO
 	 *            contains the information of the new resource.
 	 * @return true/false whether resource created successfully or not.
+	 * @author Arpit Pittie
 	 */
 	public boolean createResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
+
+		// Copying properties of ResourcesModel to ResourcesVO
 		BeanUtils.copyProperties(resourcesVO, resourceModel);
+
 		return resourceDAO.createResource(resourceModel);
 	}
-
-	/**
-	 * Following function helps in deleting an existing resource.
-	 * 
-	 * @param resourcesVO
-	 *            contains the information of resource to be deleted.
-	 * @return true/false whether resource deleted successfully or not.
-	 */
-	/*
-	 * public boolean deleteResource(ResourcesVO resourcesVO) { ResourcesModel
-	 * resourceModel = context.getBean(ResourcesModel.class);
-	 * BeanUtils.copyProperties(resourcesVO, resourceModel); return
-	 * resourceDAO.deleteResource(resourceModel); }
-	 */
 
 	/**
 	 * Following function helps in updating the existing resource.
@@ -92,71 +81,25 @@ public class ResourceService {
 	 * @param resourcesVO
 	 *            contains the information of the resource to be updated.
 	 * @return true/false whether resource updated successfully or not.
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public boolean editResource(ResourcesVO resourcesVO) {
 		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
-		resourceModel = convertResourcesVOToResourcesModel(resourcesVO);
+
+		// Copying properties of ResourcesVO to ResourcesModel
+		BeanUtils.copyProperties(resourcesVO, resourceModel);
+		// resourceModel = resourcesVOToResourcesModel(resourcesVO);
 		List<UsersModel> newResAdmins = resourceModel.getResourceAdmins();
 
+		// Deleting a resource admin
 		resourceDAO.deleteResourceAdmin(resourceModel);
 
+		// Adding a resource Admin
 		for (UsersModel usersModel : newResAdmins) {
 			resourceDAO.addResourceAdmin(resourceModel, usersModel);
 		}
+
+		// Updating the remaining properties of the resource
 		return resourceDAO.editResource(resourceModel);
 	}
-
-	private ResourcesModel convertResourcesVOToResourcesModel(
-			ResourcesVO resourcesVO) {
-
-		ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
-		UsersModel usersModel;
-		List<UsersModel> usersModelList = new ArrayList<UsersModel>();
-
-		resourceModel.setResourceId(resourcesVO.getResourceId());
-		resourceModel.setResourceName(resourcesVO.getResourceName());
-		resourceModel.setType(resourcesVO.getType());
-		resourceModel.setCapacity(resourcesVO.getCapacity());
-
-		for (UsersVO userVO : resourcesVO.getResourceAdmins()) {
-
-			usersModel = context.getBean(UsersModel.class);
-
-			BeanUtils.copyProperties(userVO, usersModel);
-
-			usersModelList.add(usersModel);
-
-		}
-
-		resourceModel.setResourceAdmins(usersModelList);
-
-		BookingsModel bookingsModel;
-		List<BookingsModel> bookingsModelList = new ArrayList<BookingsModel>();
-
-		for (BookingsVO bookingsVO : resourcesVO.getBookedList()) {
-
-			bookingsModel = context.getBean(BookingsModel.class);
-
-			BeanUtils.copyProperties(bookingsVO, bookingsModel);
-
-			bookingsModelList.add(bookingsModel);
-
-		}
-
-		resourceModel.setBookedList(bookingsModelList);
-
-		return resourceModel;
-	}
-
-	/*
-	 * public boolean createResourceAdmin(ResourcesVO resourcesVO, UsersVO
-	 * usersVO) {
-	 * 
-	 * ResourcesModel resourceModel = context.getBean(ResourcesModel.class);
-	 * UsersModel usersModel = context.getBean(UsersModel.class);
-	 * BeanUtils.copyProperties(resourcesVO, resourceModel);
-	 * BeanUtils.copyProperties(usersVO, usersModel); return
-	 * resourceDAO.createResourceAdmin(resourceModel, usersModel); }
-	 */
-
 }

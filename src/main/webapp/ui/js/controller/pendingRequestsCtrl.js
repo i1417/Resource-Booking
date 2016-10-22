@@ -17,7 +17,7 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
             data : $scope.resources,
             headers : {'Content-Type': 'application/json'}
         }).success(function(response) {
-        	if(response.data==null || response.status==400){
+        	if(response.data==null || response.status==400 || response.data.length == 0){
         		$('#no-pending-requests').show();
         		$('#pending-request-table').hide();
         	}else{
@@ -63,24 +63,24 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
 						alert('Error'+status);
 					});
 		} else {
-//			$http({
-//	            method : 'POST',
-//	            url : 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
-//	            data : $scope.updateData,
-//	            headers : {'Content-Type': 'application/json'}
-//	        })
-//			.success(
-//					function(data, status, headers,	config) {
-//						if (status == 200) {
-//							alert('Successfully '+bookingStatus);
-//							$scope.fetchPendingBookings($scope.resources.resourceId );
-//						} else {
-//							alert('Can\'t be '+bookingStatus);
-//						}
-//					}).error(
-//					function(data, status, headers,	config) {
-//						alert('Error'+status);
-//					});
+			$http({
+	            method : 'POST',
+	            url : 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
+	            data : $scope.updateData,
+	            headers : {'Content-Type': 'application/json'}
+	        })
+			.success(
+					function(data, status, headers,	config) {
+						if (status == 200) {
+							alert('Successfully '+bookingStatus);
+							$scope.fetchPendingBookings($scope.resources.resourceId );
+						} else {
+							alert('Can\'t be '+bookingStatus);
+						}
+					}).error(
+					function(data, status, headers,	config) {
+						alert('Error'+status);
+					});
 		}
 };
 

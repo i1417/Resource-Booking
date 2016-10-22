@@ -1,12 +1,12 @@
 var pendingRequestsApp = angular.module('employeePendingRequestsApp',
-		[ 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp',
+		['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp',
 				'sidebarApp' ]);
 
 pendingRequestsApp
 		.controller(
 				'employeePendingRequestCtrl',
 				function($scope, $http, userDetails, utilityFunctions,
-						$location) {
+						$location, Notification) {
 
 					$scope.resources = {};
 					$scope.response = {};
@@ -26,6 +26,8 @@ pendingRequestsApp
 						$scope.updateData.userDetails.mobileNumber = mobileNumber;
 						$scope.updateData.status = bookingStatus;
 
+						$('#wrapper').hide();
+						$('#spinner').show();
 						$http(
 								{
 									method : 'POST',
@@ -37,18 +39,20 @@ pendingRequestsApp
 								})
 								.success(
 										function(data, status, headers, config) {
+											$('#wrapper').show();
+											$('#spinner').hide();
 											if (status == 200) {
-												alert('Successfully '
-														+ bookingStatus);
+												Notification.success({message: "Successfully" + bookingStatus ,delay:2000});
 												$scope
 														.fetchPendingBookingsByEmployeeId();
 											} else {
-												alert('Can\'t be '
-														+ bookingStatus);
+														Notification.info({message: "Can't "+bookingStatus ,delay:2000});
 											}
 										})
 								.error(function(data, status, headers, config) {
-									alert('Error' + status);
+									$('#wrapper').show();
+									$('#spinner').hide();
+									Notification.error({message: status ,delay:2000});
 								});
 					};
 					/**
@@ -80,7 +84,7 @@ pendingRequestsApp
 										$('#pending-request-table').show();
 									}
 								}).error(function(response) {
-							console.log(response);
+							Notification.error({message: "Couldn't establish connection",delay:2000});
 						});
 					}
 

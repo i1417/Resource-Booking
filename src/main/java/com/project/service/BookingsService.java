@@ -41,11 +41,13 @@ public class BookingsService {
 	/**
 	 * To get the list of pending bookings using resource id
 	 * @return List of bookings having status = pending
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public List<BookingsVO> pendingBookingsListById(ResourcesVO resourcesVO) {
 
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
+		
 		List<BookingsModel> bookingsList;
 		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
 
@@ -79,6 +81,7 @@ public class BookingsService {
 	 * To get the list of pending bookings using employee ID
 	 * @param usersVO(UsersVO) contains user details (employee Id)
 	 * @return BookingVO List of bookings having status = pending
+	 * @author Amit Sharma
 	 */
 	public List<BookingsVO> pendingBookingsListByEmployeeId(UsersVO usersVO) {
 
@@ -114,11 +117,13 @@ public class BookingsService {
 	 * To get the list of approved bookings from BookingsDAO class
 	 * 
 	 * @return List of bookings having status = Approved
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public List<BookingsVO> approvedBookingsList(int employeeId) {
 
 		List<BookingsModel> bookingsList;
 		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
+		
 		UsersModel userModel = context.getBean(UsersModel.class);
 		userModel.setEmployeeId(employeeId);
 
@@ -146,6 +151,7 @@ public class BookingsService {
 	 * @param bookingsVO
 	 *            contains the information related to the booking
 	 * @return true/false whether booking status has been updated successfully.
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public boolean updateBookingsStatus(BookingsVO bookingsVO) {
 
@@ -157,6 +163,11 @@ public class BookingsService {
 		return bookingsDAO.updateBookingsStatus(bookingsModel);
 	}
 	
+	/**
+	 * 
+	 * @param bookingsVO
+	 * @return
+	 */
 	public boolean updateBookingsStatusApproved(BookingsVO bookingsVO) {
 
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);

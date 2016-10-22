@@ -1,4 +1,4 @@
-var landingPage = angular.module('landingPage', ['angular-md5', 'dataShareFactory']);
+var landingPage = angular.module('landingPage', ['ui-notification', 'angular-md5', 'dataShareFactory']);
 
 addEventListener("load", function() {
 		setTimeout(hideURLbar, 0);
@@ -12,13 +12,10 @@ function hideURLbar() {
 if(sessionStorage.length != 0) {
 	window.location = "user/index.html";
 } else {
-	console.log("Here");
 	localStorage.setItem('getSessionStorage', "Getting");
-	console.log(localStorage);
 }
 
 window.addEventListener('storage', function(event) {
-	console.log("Called");
 	if (event.key == 'user' && !sessionStorage.length) {
 		var data = JSON.parse(event.newValue),
 					value;
@@ -28,29 +25,36 @@ window.addEventListener('storage', function(event) {
 	window.location = "user/index.html";
 });
 
-landingPage.controller('loginForm', function($scope, $http, $window, $rootScope, userDetails, md5) {
+landingPage.controller('loginForm', function($scope, $http, $window, $rootScope, userDetails, md5,  Notification) {
 	$scope.user = {};
 	$scope.authenticateLogin = function() {
 		$scope.user.password = md5.createHash($scope.user.password);
+		$('#container_demo').hide();
+		$('h1').hide();
+		$('#spinner').show();
         $http({
             method : 'POST',
             url : 'http://localhost:8080/Project-Authentication/validate/custom',
             data : $scope.user,
             headers : {'Content-Type': 'application/json'}
         }).success(function(response) {
-            console.log(response);
-            //console.log(response.data);
+			$('#container_demo').show();
+			$('#spinner').hide();
+			$('h1').show();
+			
             $scope.user.password = "";
             if(response.status == 200 ) {
             	userDetails.setCurrentUser(response.data);
             	$window.location.href = 'user/index.html';
             } else {
             	$scope.user.password = "";
-				$('#loginError').text(response.errorMessage);
-            	$('#loginError').show();
+				Notification.error({message: response.errorMessage,delay:2000});
             }
         }).error(function(response) {
-			alert("Connection Error");
+			$('#container_demo').show();
+			$('#spinner').hide();
+			$('h1').show();
+			Notification.error({message: "Connection couldn't establish",delay:2000});
 		});
     }
 
@@ -77,19 +81,12 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 				var profileDetails = {};
 				profileDetails.email = profile.getEmail();
 
-				// console.log(id_token);
-				console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-				console.log('Name: ' + profile.getName());
-				console.log('Image URL: ' + profile.getImageUrl());
-				console.log('Email: ' + profile.getEmail());
-				console.log(profileDetails);
 				$http({
 					method : 'POST',
 					url : 'http://localhost:8080/Project-Authentication/validate/custom',
 					data : profileDetails,
 					headers : {'Content-Type': 'application/json'}
 				}).success(function(response) {
-					console.log(response);
 					if(response.status == 200) {
 						userDetails.setCurrentUser(response.data);
 						$window.location.href = 'user/index.html';
@@ -100,7 +97,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 						location = "#toregister";
 					}
 				}).error(function(response) {
-					alert("Connection Error");
+					Notification.error({message: "Connection couldn't establish",delay:2000});
 				});
 
 
@@ -111,8 +108,9 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 
 	$scope.forgotPassword = function(value) {
 		if(value) {
-			console.log("I am here");
-			$("#error").hide();
+			$('h1').hide();
+			$('#container_demo').hide();
+			$('#spinner').show();
 
 			$http({
 	            method : 'POST',
@@ -120,23 +118,23 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
 	            data : $scope.user,
 	            headers : {'Content-Type': 'application/json'}
 	        }).success(function(response) {
-	            console.log(response);
-	            if(response.status == 200 ) {
-	            	console.log("completed");
-	            }
-				$('#loginError').text(response.errorMessage);
-				$('#loginError').show();
+				$('#container_demo').show();
+				$('#spinner').hide();
+				$('h1').show();
+				Notification.success({message: response.errorMessage,delay:2000});
 	        }).error(function(response) {
-				alert("Connection Error");
+				$('#container_demo').show();
+				$('#spinner').hide();
+				$('h1').show();
+				Notification.error({message: response.errorMessage,delay:2000});
 			});
 		} else {
-			$("#error").text("Enter mail ID");
-			$("#error").show();
+			Notification.error({message: "Enter mail id",delay:2000});
 		}
 	}
 });
 
-landingPage.controller('registerForm', function($scope, $http, $window, $rootScope, md5, userDetails) {
+landingPage.controller('registerForm', function($scope, $http, $window, $rootScope, md5, userDetails, Notification) {
 	$scope.user = {};
 	$scope.confirm = {};
 
@@ -145,7 +143,6 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
     });
 
 	$scope.changeEmailBox = function() {
-		console.log("Here");
 		$("input[type='email']").removeAttr('readonly');
 	}
 
@@ -156,38 +153,41 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
 		$(".passwordHide").hide();
 		$("input[type='email']").prop('readonly', "true");
 		$("#name").prop('readonly', "true");
-
-		// $scope.$apply();
-		// $scope.$evalAsync();
 	}
 
 	$scope.createAccount = function() {
 		$scope.user.role = 'user';
 
 		if($scope.confirm.password != $scope.user.password) {
-			$("#error").show();
+			Notification.warning({message: "Password Do not match",delay:2000});
 		} else {
 			if(!angular.isUndefined($scope.user.password)) {
 				$scope.user.password = md5.createHash($scope.user.password);
 				$scope.confirm.password = md5.createHash($scope.confirm.password);
-				$("#error").hide();
-			}
 
+			}
+			$('h1').hide();
+			$('#container_demo').hide();
+			$('#spinner').show();
 			$http({
 	            method : 'POST',
 	            url : 'http://localhost:8080/Project-Authentication/createAccount',
 	            data : $scope.user,
 	            headers : {'Content-Type': 'application/json'}
 	        }).success(function(response) {
-	            console.log(response);
+				$('#container_demo').show();
+				$('h1').show();
+				$('#spinner').hide();
 				if(response.status == 400) {
-					alert(response.message);
+					Notification.error({message: response.errorMessage,delay:2000});
 				} else {
-					//$("input[type='email']").prop('readonly', "false");
 					$window.location.href = "http://localhost:8080/Project-Authentication";
 				}
 	        }).error(function(response) {
-				alert("Connection Error");
+				$('#container_demo').show();
+				$('h1').show();
+				$('#spinner').hide();
+				Notification.error({message: "Couldn't establish connection",delay:2000});
 			});
 		}
 	}
