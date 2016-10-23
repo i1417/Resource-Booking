@@ -110,6 +110,13 @@ public class BookingsDAO {
 		return results;
 	}
 	
+	/**
+	 * Following function fetches the list of all approved bookings corresponding
+	 * to particular employeeID
+	 * 
+	 * @param usersModel(UsersModel) contains user details.
+ 	 * @return the list of all approved bookings corresponding to specific employee ID
+	 */
 	@SuppressWarnings("unchecked")
 	public List<BookingsModel> approvedBookingsListByEmployeeId(
 			UsersModel usersModel) {
@@ -125,7 +132,8 @@ public class BookingsDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
+		
+		//creating Criteria Query
 		Criteria cr = session.createCriteria(BookingsModel.class);
 		cr.add(Restrictions.and(Restrictions.ge("date", date),
 				Restrictions.eq("status", "approved"),
