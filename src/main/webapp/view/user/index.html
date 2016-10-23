@@ -1,42 +1,49 @@
+<!-- Created By - Rohit Singhavi -->
+<!DOCTYPE html>
 <html lang="en">
-
     <head>
-
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
         <meta name="description" content="">
         <meta name="author" content="">
-
         <title>Resource Booking | Home</title>
 
-        <!-- Bootstrap Core CSS -->
+        <!-- Bootstrap CSS File -->
         <link href="ui/css/bootstrap.min.css" rel="stylesheet">
-
         <!-- Custom CSS -->
         <link href="ui/css/sb-admin.css" rel="stylesheet">
-
         <!-- Custom Fonts -->
         <link href="ui/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-        <!--datepicker css  -->
-        <link type="text/css" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css">
+        <!-- Google API -->
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <!-- jQuery -->
+        <script src="ui/js/res/jquery.min.js"></script>
+        <!-- Angular JS -->
+        <script src="ui/js/res/angular.min.js"></script>
+        <!-- Angular Route -->
+        <script src="ui/js/res/angular-route.min.js"></script>
+
+        <!-- Angular UI Notification Files -->
+        <script src="ui/js/res/angular-ui-notification.min.js"></script>
         <link rel="stylesheet" href="ui/css/angular-csp.css">
         <link rel="stylesheet" href="ui/css/angular-ui-notification.min.css">
 
-        <!-- jQuery -->
-
-        <script src="ui/js/res/jquery.min.js"></script>
-        <script src="ui/js/res/angular.min.js"></script>
-        <script src="ui/js/res/angular-route.min.js"></script>
-        <script src="ui/js/res/angular-ui-notification.min.js"></script>
-        <script src="ui/js/controller/dashboardCtrl.js"></script>
+        <!-- Custom Angular JS Files -->
+        <!-- Factory common to web application -->
         <script src="ui/js/factory/factoryProject.js"></script>
+        <!-- Factory to provide some utility functions -->
         <script src="ui/js/factory/factoryDashboard.js"></script>
+        <!-- Controllers for the topbar and sidebar -->
         <script src="ui/js/controller/topbarCtrl.js"></script>
         <script src="ui/js/controller/sidebarCtrl.js"></script>
-        <script src="https://apis.google.com/js/platform.js"></script>
+        <!-- Controller for the page -->
+        <script src="ui/js/controller/dashboardCtrl.js"></script>
+
+        <!--datepicker css  -->
+        <link type="text/css" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css">
 
         <!-- For integrating the calendar -->
         <link href='ui/scheduler/fullcalendar.min.css' rel='stylesheet'/>
@@ -47,8 +54,9 @@
 
         <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.7.0.js"></script>
 
+        <!-- Bootstrap JS File -->
+        <script src="ui/js/res/bootstrap.min.js"></script>
     </head>
-
     <body ng-app="homePageApp">
         <div id="spinner" class="overlay"><img src="ui/images/loader.gif" alt="spinner"></div>
 

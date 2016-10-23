@@ -1,11 +1,11 @@
+// Created By - Arpit Pittie, Rohit Singhavi, Amit Sharma
 angular.module('utilityFunctionsFactory', []).factory('utilityFunctions', function($window) {
     var utilityFunc = {};
 
     var allResources = {};
 
+    // To perform the sign out action
     utilityFunc.performSignOut = function() {
-        // $window.sessionStorage.setItem("signout", "Perform Sign Out");
-        // $window.sessionStorage.clear();
         gapi.load('auth2', function() {
             gapi.auth2.init();
         });
@@ -15,22 +15,24 @@ angular.module('utilityFunctionsFactory', []).factory('utilityFunctions', functi
         gapi.auth2.signOut().then(function() {
             console.log('User signed out.');
         });
-
-        // $window.location.href = "http://localhost:8080/Project-Authentication/";
     }
 
+    // To set all the resources
     utilityFunc.setAllResources = function(data) {
         allResources = data;
     }
 
+    // To get the resoources list
     utilityFunc.getAllResources = function() {
         return allResources;
     }
 
+    // To set the resource details
     utilityFunc.setResourceDetails = function(data) {
         $window.sessionStorage.setItem('resource', angular.toJson(data));
     }
 
+    // To get the resource details
     utilityFunc.getResourceDetails = function() {
         return JSON.parse($window.sessionStorage.getItem('resource'));
     }

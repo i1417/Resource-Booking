@@ -1,3 +1,4 @@
+// Created By - Arpit Pittie
 var landingPage = angular.module('landingPage', ['ui-notification', 'angular-md5', 'dataShareFactory']);
 
 addEventListener("load", function() {
@@ -10,30 +11,23 @@ function hideURLbar() {
     window.scrollTo(0, 1);
 }
 
+// Check if user is already logged in
 if (sessionStorage.length != 0) {
     window.location = "user/index.html";
-} else {
-    localStorage.setItem('getSessionStorage', "Getting");
 }
 
-window.addEventListener('storage', function(event) {
-    if (event.key == 'user' && !sessionStorage.length) {
-        var data = JSON.parse(event.newValue),
-            value;
-        sessionStorage.setItem('user', localStorage.getItem('user'));
-    }
-    localStorage.clear();
-    window.location = "user/index.html";
-});
-
+// Controller for login into the the application
 landingPage.controller('loginForm', function($scope, $http, $window, $rootScope, userDetails, md5, Notification) {
     $scope.user = {};
 
+    // To authenticate the user
     $scope.authenticateLogin = function() {
         $scope.user.password = md5.createHash($scope.user.password);
         $('#container_demo').hide();
         $('h1').hide();
         $('#spinner').show();
+
+        // Request to check the user credentials
         $http({
             method: 'POST',
             url: 'http://localhost:8080/Project-Authentication/validate/custom',
@@ -68,6 +62,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
         });
     }
 
+    // To load the Google Login API
     var googleUser = {};
     $scope.startApp = function() {
         gapi.load('auth2', function() {
@@ -80,6 +75,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
         });
     };
 
+    // Callback function from Google on successful login
     $scope.attachSignin = function(element) {
         auth2.attachClickHandler(element, {}, function(googleUser) {
 
@@ -89,6 +85,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
             var profileDetails = {};
             profileDetails.email = profile.getEmail();
 
+            // Request to check if user already has a account
             $http({
                 method: 'POST',
                 url: 'http://localhost:8080/Project-Authentication/validate/custom',
@@ -97,10 +94,12 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
                     'Content-Type': 'application/json'
                 }
             }).success(function(response) {
+                // User Already has a account
                 if (response.status == 200) {
                     userDetails.setCurrentUser(response.data);
                     $window.location.href = 'user/index.html';
                 } else {
+                    // User does not exist and create a account
                     profileDetails.name = profile.getName();
                     userDetails.setUser(profileDetails);
                     $rootScope.$emit("setUserDetails", {});
@@ -117,12 +116,14 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
         });
     }
 
+    // To generate the link to reset the password
     $scope.forgotPassword = function(value) {
         if (value) {
             $('h1').hide();
             $('#container_demo').hide();
             $('#spinner').show();
 
+            // Request to generate the reset password link for the user
             $http({
                 method: 'POST',
                 url: 'http://localhost:8080/Project-Authentication/forgotPass',
@@ -156,6 +157,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
     }
 });
 
+// Controller to register the user on the web application
 landingPage.controller('registerForm', function($scope, $http, $window, $rootScope, md5, userDetails, Notification) {
     $scope.user = {};
     $scope.confirm = {};
@@ -168,6 +170,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
         $("input[type='email']").removeAttr('readonly');
     }
 
+    // To modify the signup form according to the type of SignUp
     $scope.setUserDetails = function() {
         $scope.user = userDetails.getUser();
 
@@ -177,9 +180,11 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
         $("#name").prop('readonly', "true");
     }
 
+    // To setup a new account for the user
     $scope.createAccount = function() {
         $scope.user.role = 'user';
 
+        // Checking if the password match
         if ($scope.confirm.password != $scope.user.password) {
             Notification.warning({
                 message: "Password Do not match",
@@ -194,6 +199,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
             $('h1').hide();
             $('#container_demo').hide();
             $('#spinner').show();
+            // Request to create a new account
             $http({
                 method: 'POST',
                 url: 'http://localhost:8080/Project-Authentication/createAccount',

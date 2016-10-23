@@ -61,11 +61,11 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
             $('#spinner').hide();
             if (response.status == 200) {
 
-                if (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
-                    userDetails.addCurrentBooking(response.data);
-                } else {
-                    userDetails.editCurrentBooking(response.data);
-                }
+//                if (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
+//                    userDetails.addCurrentBooking(response.data);
+//                } else {
+//                    userDetails.editCurrentBooking(response.data);
+//                }
 
 
                 Notification({
@@ -73,11 +73,11 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
                     title: 'Booking Status',
                     delay: 2000
                 });
-                if(response.data.status == 'Approved' && (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn))) {
+//                if(response.data.status == 'Approved' && (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn))) {
 	                setTimeout(function() {
 	                    $window.location.href = 'index.html';
 	                }, 2500);
-                }
+//                }
 
             }
         }).error(function(response) {

@@ -1,52 +1,55 @@
-<!-- Created By- Amit Sharma
-     Created Date-20-10-2016
- -->
-
+<!-- Created By- Amit Sharma -->
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
         <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
-        <script src="https://apis.google.com/js/platform.js"></script>
+        <title>My Pending Requests</title>
 
-        <title>Resource Booking | My Pending Requests</title>
-
-        <!-- Bootstrap Core CSS -->
+        <!-- Bootstrap CSS File -->
         <link href="ui/css/bootstrap.min.css" rel="stylesheet">
-
         <!-- Custom CSS -->
         <link href="ui/css/sb-admin.css" rel="stylesheet">
-
         <!-- Custom Fonts -->
         <link href="ui/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+        <!-- Google API -->
+        <script src="https://apis.google.com/js/platform.js"></script>
         <!-- jQuery -->
         <script src="ui/js/res/jquery.min.js"></script>
+        <!-- Angular JS -->
         <script src="ui/js/res/angular.min.js"></script>
+        <!-- Angular Route -->
         <script src="ui/js/res/angular-route.min.js"></script>
 
+        <!-- Angular UI Notification Files -->
         <script src="ui/js/res/angular-ui-notification.min.js"></script>
         <link rel="stylesheet" href="ui/css/angular-csp.css">
         <link rel="stylesheet" href="ui/css/angular-ui-notification.min.css">
 
+        <!-- Custom Angular JS Files -->
+        <!-- Factory common to web application -->
         <script src="ui/js/factory/factoryProject.js"></script>
+        <!-- Factory to provide some utility functions -->
         <script src="ui/js/factory/factoryDashboard.js"></script>
+        <!-- Controllers for the topbar and sidebar -->
         <script src="ui/js/controller/topbarCtrl.js"></script>
         <script src="ui/js/controller/sidebarCtrl.js"></script>
+        <!-- Controller for the page -->
         <script src="ui/js/controller/employeePendingRequestsCtrl.js"></script>
 
+        <!-- Bootstrap JS File -->
+        <script src="ui/js/res/bootstrap.min.js"></script>
     </head>
-
     <body ng-app="employeePendingRequestsApp">
+        <!-- Spinner for Background processing -->
         <div id="spinner" class="overlay"><img src="ui/images/loader.gif" alt="spinner"></div>
 
-        <div id="wrapper" ng-controller="employeePendingRequestCtrl">
+        <div id="wrapper" ng-controller="employeePendingRequestCtrl" ng-init="fetchPendingBookingsByEmployeeId()">
 
             <!-- Navigation -->
             <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -86,6 +89,7 @@
                         </div>
                     </div>
 
+                    <!-- Table for Pending Request -->
                     <div id="pending-request-table" class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
 
@@ -137,10 +141,5 @@
 
         </div>
         <!-- /#wrapper -->
-
-        <!-- Bootstrap Core JavaScript -->
-        <script src="ui/js/res/bootstrap.min.js"></script>
-
     </body>
-
 </html>

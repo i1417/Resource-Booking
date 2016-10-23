@@ -1,16 +1,21 @@
+// Created By - Arpit Pittie
 var forgotPasswordPage = angular.module('forgotPasswordApp', ['ui-notification', 'angular-md5']);
 
+// To configure it to open from the email
 forgotPasswordPage.config(['$locationProvider', function($locationProvider) {
     $locationProvider.html5Mode(true);
 }]);
 
+// Controller To change the user's Password
 forgotPasswordPage.controller('forgotPasswordCtrl', function($scope, $window, $location, $http, md5, Notification) {
     $scope.user = {};
 
     $scope.redirect = function() {
         $window.location.href = 'http://localhost:8080/Project-Authentication/';
     }
+
     $scope.changePassword = function() {
+        // Checking if both password match
         if ($scope.confirmPassword != $scope.user.password) {
             Notification.warning({
                 message: "Password Do not match",
@@ -29,6 +34,7 @@ forgotPasswordPage.controller('forgotPasswordCtrl', function($scope, $window, $l
             $('h1').hide();
             $('#container_demo').hide();
             $('#spinner').show();
+            // Request to update the password
             $http({
                 method: 'POST',
                 url: urlToRedirect,

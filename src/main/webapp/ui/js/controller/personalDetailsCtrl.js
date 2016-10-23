@@ -1,9 +1,13 @@
+// Created By - Arpit Pittie
 var personalDetailsPage = angular.module('personalDetailsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp']);
 
+// Cntroller to update the user personal details
 personalDetailsPage.controller('personalDetailsCtrl', function($scope, $http, $window, userDetails, Notification) {
     $scope.currentUser = userDetails.getCurrentUser();
 
+    // To update the user's details
     $scope.updateDetails = function() {
+        // Request to set and update the user personal details
         $http({
             method: 'POST',
             url: 'http://localhost:8080/Project-Authentication/user/update',

@@ -1,10 +1,13 @@
+// Created By - Arpit Pittie, Rohit Singhavi, Amit Sharma
 var sidebarApp = angular.module('sidebarApp', ['ui-notification', 'dataShareFactory', 'utilityFunctionsFactory']);
 
+// Controller to control the sidebar functionality
 sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetails, utilityFunctions, Notification) {
 
     $scope.currentUser = userDetails.getCurrentUser();
     $scope.resources = {};
 
+    // To render the sidebar options according to the user type
     if ($scope.currentUser.role != 'admin') {
         $('#resourcesMgmt').hide();
         $('#inviteUser').hide();
@@ -12,6 +15,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetail
             $('#pendingRequest').hide();
         }
     } else {
+        // Request to fetch all the resources availbale
         $http({
             method: 'GET',
             url: 'http://localhost:8080/Project-Authentication/resources/getAll',
@@ -41,14 +45,15 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetail
     $scope.updatePendingRequest = function(resourceId) {
         utilityFunctions.setResourceDetails(resourceId);
         $window.location.href = "pendingRequests.html";
-
     }
 
+    // To fetch the resource details
     $scope.fetchResourceDetails = function(resource) {
         utilityFunctions.setResourceDetails(resource);
         $window.location.href = "resourceEdit.html";
     }
 
+    // To add a new resource
     $scope.newResource = function() {
         utilityFunctions.setResourceDetails(null);
         $window.location.href = "resourceEdit.html";

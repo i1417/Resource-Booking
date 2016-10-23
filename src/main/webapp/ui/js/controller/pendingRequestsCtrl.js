@@ -1,5 +1,7 @@
+// Created By - Amit Sharma
 var pendingRequestsApp = angular.module('pendingRequestsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp', 'sidebarApp']);
 
+// Controller To handle the pending request resource specific
 pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, userDetails, utilityFunctions, $location, Notification) {
 
     $scope.resources = {};
@@ -8,11 +10,12 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
     var resourceId = utilityFunctions.getResourceDetails();
     $scope.currentUser = userDetails.getCurrentUser();
 
+    // To fetch all the pending request for the resource
     $scope.fetchPendingBookings = function() {
-
         $scope.resources.resourceId = resourceId;
         $('#wrapper').hide();
         $('#spinner').show();
+        // Request fetch the pending booking for that resource
         $http({
             method: 'POST',
             url: 'http://localhost:8080/Project-Authentication/bookings/getPendingbookings',
@@ -54,7 +57,9 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
 
         $('#wrapper').hide();
         $('#spinner').show();
+        // Checking if the status is approved
         if ($scope.updateData.status == 'Approved') {
+            // Request to approve the particular booking
             $http({
                 method: 'POST',
                 url: 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatusApproved',
@@ -86,6 +91,7 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
                 });
             });
         } else {
+            // Request to cancel the particular booking
             $http({
                 method: 'POST',
                 url: 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
@@ -118,9 +124,4 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
             });
         }
     };
-
-    angular.element(document).ready(function() {
-        $scope.fetchPendingBookings();
-    });
-
 });

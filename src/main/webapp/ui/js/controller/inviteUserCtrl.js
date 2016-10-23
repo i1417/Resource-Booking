@@ -1,5 +1,7 @@
+// Created By - Arpit Pittie
 var inviteUserPage = angular.module('inviteUserApp', ['ui-notification', 'ngRoute', 'topbarApp', 'sidebarApp']);
 
+// Controlller for sending the invite to a user
 inviteUserPage.controller('inviteUserCtrl', function($scope, $http, $window, Notification) {
     $scope.user = {};
 
@@ -7,6 +9,7 @@ inviteUserPage.controller('inviteUserCtrl', function($scope, $http, $window, Not
         $('#wrapper').hide();
         $('#spinner').show();
 
+        // Request to send mail for Invitation
         $http({
             method: 'POST',
             url: 'http://localhost:8080/Project-Authentication/user/sendInvitationToUser',
