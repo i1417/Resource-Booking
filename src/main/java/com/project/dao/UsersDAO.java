@@ -33,10 +33,8 @@ public class UsersDAO {
 
 	/**
 	 * To perform the authentication of the user
-	 * 
-	 * @param userCredentials
-	 *            - The user credentials provided
-	 * @return - UsersModel containing information for the user
+	 * @param userCredentials - The user credentials provided
+	 * @return - UsersModel containing information of the user
 	 * @throws Exception
 	 */
 	public UsersModel validateUserCustomLogin(UsersModel userCredentials)
@@ -64,9 +62,7 @@ public class UsersDAO {
 
 	/**
 	 * To create a new user account
-	 * 
-	 * @param userDetails
-	 *            - The UsersModel Object containing the details for the user
+	 * @param userDetails - The UsersModel Object containing the details for the user
 	 * @return - True if account is created successfully else false
 	 */
 	public boolean createUserAccount(UsersModel userDetails) {
@@ -91,10 +87,8 @@ public class UsersDAO {
 	}
 
 	/**
-	 * To get the user details based on his email id
-	 * 
-	 * @param userDetails
-	 *            - The user model having the email id
+	 * To get the user details based on his/her email id
+	 * @param userDetails - The user model having the email id
 	 * @return - The UsersModel object having the user details
 	 */
 	public UsersModel getUserDetailsByEmail(UsersModel userDetails) {
@@ -110,11 +104,18 @@ public class UsersDAO {
 		// Getting the result
 		return (UsersModel) getDetails.uniqueResult();
 	}
-
+	
+	/**
+	 * Following function updates the existing user details 
+	 * @param userDetailsModel(UsersModel) contains the Updated user details.
+	 * @return true/false whether user details have been updated successfully or not.
+	 */
 	public boolean updateUserDetails(UsersModel userDetailsModel) {
+		// Creating a new session
 		Session session = sessionFactory.openSession();
 
 		try {
+			//Starting transaction
 			session.beginTransaction();
 
 			UsersModel objectToUpdate = (UsersModel) session.get(
@@ -124,6 +125,7 @@ public class UsersDAO {
 			objectToUpdate.setDesignation(userDetailsModel.getDesignation());
 			objectToUpdate.setMobileNumber(userDetailsModel.getMobileNumber());
 
+			//Committing transaction
 			session.getTransaction().commit();
 
 			return true;
@@ -135,18 +137,30 @@ public class UsersDAO {
 		}
 	}
 
+	/**
+	 * Following function fetches the list of all the users.
+	 * @return the list of all the users.
+	 */
 	@SuppressWarnings("unchecked")
 	public List<UsersModel> getAllUsers() {
 		// Creating a new session
 		Session session = sessionFactory.openSession();
 
+		//Creating a Criteria Query
 		Criteria cr = session.createCriteria(UsersModel.class);
+		
+		//getting the result containing distinct users.
 		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		return cr.list();
 
 	}
 	
+	/**
+	 * 
+	 * @param userModel
+	 * @return
+	 */
 	public long forgotPassword(UsersModel userModel) {
 		Session session = sessionFactory.openSession();
 		
