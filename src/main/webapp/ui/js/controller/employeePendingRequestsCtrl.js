@@ -1,16 +1,15 @@
-// Created By - Amit Shaarma
 var pendingRequestsApp = angular.module('employeePendingRequestsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp', 'sidebarApp']);
 
-// Controller to Cancel the user's pending requests
 pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $http, userDetails, utilityFunctions, $location, Notification) {
 
     $scope.resources = {};
     $scope.response = {};
     $scope.updateData = {};
-    var resourceId = utilityFunctions.getResourceDetails();
     $scope.currentUser = userDetails.getCurrentUser();
 
-    // method to update pending request status--Cancelled
+    /**
+     * method to update pending request status--Cancelled
+     */
     $scope.updateEmployeeRequest = function(bookingId, employeeId, employeeName, email, mobileNumber, bookingStatus) {
         $scope.updateData.bookingId = bookingId;
         $scope.updateData.userDetails = {};
@@ -22,31 +21,32 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
 
         $('#wrapper').hide();
         $('#spinner').show();
-        // Request to updae the booking status to - Cancelled
         $http({
                 method: 'POST',
-                url: 'http://localhost:8080/Project-Authentication/bookings/updateBookingsStatus',
+                url: 'https://localhost:8443/Project-Authentication/bookings/updateBookingsStatus',
                 data: $scope.updateData,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            .success(function(data, status, headers, config) {
-                $('#wrapper').show();
-                $('#spinner').hide();
-                if (status == 200) {
-                    Notification.success({
-                        message: "Successfully" + bookingStatus,
-                        delay: 2000
-                    });
-                    $scope.fetchPendingBookingsByEmployeeId();
-                } else {
-                    Notification.info({
-                        message: "Can't " + bookingStatus,
-                        delay: 2000
-                    });
-                }
-            })
+            .success(
+                function(data, status, headers, config) {
+                    $('#wrapper').show();
+                    $('#spinner').hide();
+                    if (status == 200) {
+                        Notification.success({
+                            message: "Successfully" + bookingStatus,
+                            delay: 2000
+                        });
+                        $scope
+                            .fetchPendingBookingsByEmployeeId();
+                    } else {
+                        Notification.info({
+                            message: "Can't " + bookingStatus,
+                            delay: 2000
+                        });
+                    }
+                })
             .error(function(data, status, headers, config) {
                 $('#wrapper').show();
                 $('#spinner').hide();
@@ -56,16 +56,17 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
                 });
             });
     };
-
-    // fetches all the pending request for the currently logged in user
+    /**
+     * fetches all the pending request for the currently logged
+     * in user
+     */
     $scope.fetchPendingBookingsByEmployeeId = function() {
 
         $scope.filterData = {};
         $scope.filterData.employeeId = $scope.currentUser.employeeId;
-        // Request to fetch all the pending requests for the user
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/Project-Authentication/bookings/getPendingbookingsByEmployeeId',
+            url: 'https://localhost:8443/Project-Authentication/bookings/getPendingbookingsByEmployeeId',
             data: $scope.filterData,
             headers: {
                 'Content-Type': 'application/json'
@@ -88,4 +89,10 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
             });
         });
     }
+
+    // load pending requests on page load
+    angular.element(document).ready(function() {
+        $scope.fetchPendingBookingsByEmployeeId();
+    });
+
 });
