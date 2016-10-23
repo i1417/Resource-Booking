@@ -61,6 +61,7 @@ public class BookingsDAO {
 				Restrictions.eq("status", "pending"),
 				Restrictions.eq("resourceDetails",
 						bookings.getResourceDetails())));
+		//getting the result set containing distinct results.
 		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		@SuppressWarnings("unchecked")
@@ -101,6 +102,7 @@ public class BookingsDAO {
 		cr.add(Restrictions.and(Restrictions.ge("date", date),
 				Restrictions.eq("status", "pending"),
 				Restrictions.eq("userDetails", usersModel)));
+		//getting the result set containing distinct results.
 		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		@SuppressWarnings("unchecked")
@@ -138,6 +140,7 @@ public class BookingsDAO {
 			// checking for both date and status
 			cr.add(Restrictions.and(Restrictions.ge("date", date),
 					Restrictions.eq("status", "Approved"),Restrictions.ne("userDetails", userModel)));
+			//getting the result set containing distinct results.
 			cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		} catch (ParseException e) {
