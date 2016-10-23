@@ -1,5 +1,5 @@
 /**
- * To perform database interaction.
+ * To perform database interaction for the bookings
  * @author Pratap Singh Ranawat and Vivek Mittal
  */
 package com.project.dao;
@@ -46,16 +46,15 @@ public class BookingsDAO {
 	/**
 	 * Following function fetches the list of all pending bookings corresponding
 	 * to specific resource ID
+	 * 
 	 * @param bookings(BookingsModel) contains information regarding bookings.
-	 * @return the list of all pending bookings corresponding to specific resource ID
+ 	 * @return the list of all pending bookings corresponding to specific resource ID
 	 */
 	public List<BookingsModel> pendingBookingsListById(BookingsModel bookings) {
-
 		//getting session 
 		Session session = this.sessionFactory.getCurrentSession();
-		//using Criteria Query
+
 		Criteria cr = session.createCriteria(BookingsModel.class);
-		
 		//Checking for bookings with pending status.
 		cr.add(Restrictions.and(
 				Restrictions.eq("status", "pending"),
@@ -74,21 +73,21 @@ public class BookingsDAO {
 	/**
 	 * Following function fetches the list of all pending bookings corresponding
 	 * to particular employeeID
+	 * 
 	 * @param usersModel(UsersModel) contains user details.
-	 * @return the list of all pending bookings corresponding to specific employee ID
+ 	 * @return the list of all pending bookings corresponding to specific employee ID
 	 */
 	public List<BookingsModel> pendingBookingsListByEmployeeId(
 			UsersModel usersModel) {
-
 		//getting session
 		Session session = this.sessionFactory.getCurrentSession();
-		
+
 		// Getting the current date and time
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal = Calendar.getInstance();
+		
 		// converting date type data to String format
 		String currentDate = dateFormat.format(cal.getTime());
-		
 		Date date = null;
 		try {
 			date = dateFormat.parse(currentDate);
@@ -96,9 +95,9 @@ public class BookingsDAO {
 			e.printStackTrace();
 		}
 
-		//using Criteria Query
 		Criteria cr = session.createCriteria(BookingsModel.class);
-		//checking for boookings having status as pending.
+		
+		//checking for bookings having status as pending.
 		cr.add(Restrictions.and(Restrictions.ge("date", date),
 				Restrictions.eq("status", "pending"),
 				Restrictions.eq("userDetails", usersModel)));
@@ -110,44 +109,71 @@ public class BookingsDAO {
 		// Getting the result
 		return results;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<BookingsModel> approvedBookingsListByEmployeeId(
+			UsersModel usersModel) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		String currentDate = dateFormat.format(cal.getTime());
+		Date date = null;
+		try {
+			date = dateFormat.parse(currentDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		Criteria cr = session.createCriteria(BookingsModel.class);
+		cr.add(Restrictions.and(Restrictions.ge("date", date),
+				Restrictions.eq("status", "approved"),
+				Restrictions.eq("userDetails", usersModel)));
+		//getting the result set containing distinct results
+		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+		
+		List<BookingsModel> results = cr.list();
+		// Getting the result
+		return results;
+	}
 
 	/**
 	 * Following function fires query to database to get the required result(i.e
 	 * get the list of Approved bookings )
-	 * @param usersModel(UsersModel) contains user details
-	 * @return List of bookings having status = Approved
+ 	 * @param usersModel(UsersModel) contains user details
 	 */
+	@SuppressWarnings("unchecked")
 	public List<BookingsModel> approvedBookingsList(UsersModel userModel) {
 
 		//getting session
 		Session session = this.sessionFactory.getCurrentSession();
 
-		//using Criteria Query
 		Criteria cr = session.createCriteria(BookingsModel.class);
-		
+
 		// Getting the current date and time
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal = Calendar.getInstance();
+		
 		// converting date type data to String type
 		String currentDate = dateFormat.format(cal.getTime());
-
+		System.out.println(currentDate); // DEBUG
 		Date date;
 
 		try {
-			// converting string type data to date type data
+			// converting string data to date
 			date = dateFormat.parse(currentDate);
 
 			// checking for both date and status
 			cr.add(Restrictions.and(Restrictions.ge("date", date),
 					Restrictions.eq("status", "Approved"),Restrictions.ne("userDetails", userModel)));
-			//getting the result set containing distinct results.
 			cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 
-		@SuppressWarnings("unchecked")
 		List<BookingsModel> results = cr.list();
 
 		// Getting the result
@@ -157,18 +183,18 @@ public class BookingsDAO {
 
 	/**
 	 * Following function updates the status of bookings(accepted/cancelled)
+	 * 
 	 * @param bookingsModel contains the information related to the booking status and other attributes
 	 * @return true/false whether booking status has been updated successfully.
 	 */
 	public boolean updateBookingsStatus(BookingsModel bookingsModel) {
-		
 		//getting session
 		Session session = sessionFactory.openSession();
 
 		try {
 			// Starting a new transaction
 			session.beginTransaction();
-			
+
 			//setting the updated status.
 			String status = bookingsModel.getStatus();
 
@@ -176,7 +202,7 @@ public class BookingsDAO {
 					BookingsModel.class, bookingsModel.getBookingId());
 
 			objectToUpdate.setStatus(status);
-
+			
 			//committing transaction
 			session.getTransaction().commit();
 
@@ -206,6 +232,8 @@ public class BookingsDAO {
 				return false;
 			}
 			
+			
+
 			String status = bookingsModel.getStatus();
 			
 			Criteria criteria = session.createCriteria(BookingsModel.class);
@@ -227,7 +255,7 @@ public class BookingsDAO {
 					))));
 			
 			List<BookingsModel> forStatus = criteria.list();
-	
+			
 			if(forStatus.size() != 0) {
 				for (BookingsModel bookings : forStatus) {
 					
@@ -272,14 +300,13 @@ public class BookingsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public BookingsModel createBooking(BookingsModel bookingsModel) {
-		
 		//getting session
 		Session session = sessionFactory.openSession();
 
 		try {
 			//starting a new transaction
 			session.beginTransaction();
-			//using Criteria Query
+
 			Criteria criteria = session.createCriteria(BookingsModel.class);
 			
 			criteria.add(Restrictions.eq("date", bookingsModel.getDate()));
@@ -292,8 +319,7 @@ public class BookingsDAO {
 					.getResourceName() + dt + "-" + (forStatus.size() + 1);
 
 			bookingsModel.setBookingId(idForBooking);
-			
-			//Using Criteria Query
+
 			criteria = session.createCriteria(BookingsModel.class);
 			
 			criteria.add(Restrictions.and(Restrictions.eq("resourceDetails", bookingsModel.getResourceDetails()), Restrictions.eq("date",
@@ -359,6 +385,7 @@ public class BookingsDAO {
 			}
 
 			session.save(bookingsModel);
+			
 			//committing transaction
 			session.getTransaction().commit();
 
@@ -375,7 +402,6 @@ public class BookingsDAO {
 		}
 	}
 
-
 	/**
 	 * Following function edits the existing booking.
 	 * @param bookingsModel(BookingsModel) contains the information regarding edited booking
@@ -383,14 +409,11 @@ public class BookingsDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public BookingsModel editBooking(BookingsModel bookingsModel) {
-		
 		//getting session
 		Session session = sessionFactory.openSession();
-		
 		try {
 			//starting a new transaction
 			session.beginTransaction();
-			
 			BookingsModel bookingsModelDB = (BookingsModel) session.get(
 					BookingsModel.class, bookingsModel.getBookingId());
 
@@ -403,7 +426,6 @@ public class BookingsDAO {
 			bookingsModelDB.setTitle(bookingsModel.getTitle());
 			bookingsModelDB.setDescription(bookingsModel.getDescription());
 
-			//using Criteria Query
 			Criteria criteria = session.createCriteria(BookingsModel.class);
 
 			criteria.add(Restrictions.and(Restrictions.eq("date",
@@ -427,11 +449,11 @@ public class BookingsDAO {
 			}
 			
 			session.update(bookingsModelDB);
-
+			
 			//committing transaction 
 			session.getTransaction().commit();
+			
 			return bookingsModelDB;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
@@ -443,7 +465,6 @@ public class BookingsDAO {
 	@SuppressWarnings("unchecked")
 	public boolean userBookingStatusChange(String bookingId,
 			String newBookingId, String status) {
-		
 		//getting session
 		Session session = sessionFactory.openSession();
 
@@ -471,7 +492,6 @@ public class BookingsDAO {
 				mailService.sendHTMLMail(user, "Booking Status Changed",
 						mailMessage);
 
-				//using Criteria Query
 				Criteria criteria = session.createCriteria(BookingsModel.class);
 
 				criteria.add(Restrictions.and(Restrictions.eq("date",
@@ -504,6 +524,7 @@ public class BookingsDAO {
 
 			//committing transaction
 			session.getTransaction().commit();
+			
 			return true;
 		} catch (Exception e) {
 			session.getTransaction().rollback();
@@ -520,7 +541,6 @@ public class BookingsDAO {
 			//start transaction
 			session.beginTransaction();
 			
-			//using Criteria Query
 			Criteria criteria = session.createCriteria(BookingsModel.class);
 			
 			Calendar cal = Calendar.getInstance();
@@ -535,8 +555,9 @@ public class BookingsDAO {
 				session.update(bookingsModel);
 			}
 			
-			//Committing transaction
+			//committing transaction
 			session.getTransaction().commit();
+			
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

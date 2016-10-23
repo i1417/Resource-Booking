@@ -112,6 +112,36 @@ public class BookingsService {
 		}
 
 	}
+	
+	public List<BookingsVO> approvedBookingsListByEmployeeId(UsersVO usersVO) {
+
+		UsersModel usersModel = context.getBean(UsersModel.class);
+		List<BookingsModel> bookingsList;
+		List<BookingsVO> bookingsVOList = new ArrayList<BookingsVO>();
+
+		BeanUtils.copyProperties(usersVO, usersModel);
+
+		try {
+			// Getting the result from the bookingsDAO
+			bookingsList = bookingsDAO
+					.approvedBookingsListByEmployeeId(usersModel);
+
+			//Converting UserModel to UserVO for sending data back to controller
+			for (BookingsModel bookingsModelLocal : bookingsList) {
+
+				bookingsVOList
+						.add(bookingsModelToBookingsVO(bookingsModelLocal));
+
+			}
+
+			// returns List of BookingsVO
+			return bookingsVOList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
 
 	/**
 	 * To get the list of approved bookings from BookingsDAO class

@@ -224,6 +224,25 @@ public class BookingsAPIController {
 			return new Response(400, "No Pending bookings");
 		}
 	}
+	
+	@RequestMapping(value = "/bookings/getApprovedbookingsByEmployeeId", method = RequestMethod.POST)
+	public @ResponseBody Response getApprovedBookingsListByEmployeeId(
+			@RequestBody UsersVO usersVO) {
+		// Getting the result from the Service Layer
+		System.out.println("pending requests by employee id:"
+				+ usersVO.getEmployeeId());
+		List<BookingsVO> result = bookingsService
+				.approvedBookingsListByEmployeeId(usersVO);
+
+		// Sending back the response to the client
+		if (result != null) {
+			System.out.println("OK");
+			return new Response(200, result);
+		} else {
+			System.out.println("Wrong");
+			return new Response(400, "No Pending bookings");
+		}
+	}
 
 	/**
 	 * To edit the existing booking.

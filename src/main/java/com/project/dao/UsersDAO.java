@@ -33,12 +33,11 @@ public class UsersDAO {
 
 	/**
 	 * To perform the authentication of the user
+	 * 
 	 * @param userCredentials - The user credentials provided
-	 * @return - UsersModel containing information of the user
-	 * @throws Exception
+ +	 * @return - UsersModel containing information of the user
 	 */
-	public UsersModel validateUserCustomLogin(UsersModel userCredentials)
-			throws Exception {
+	public UsersModel validateUserCustomLogin(UsersModel userCredentials) {
 		// Creating a new session
 		Session session = sessionFactory.openSession();
 
@@ -62,6 +61,7 @@ public class UsersDAO {
 
 	/**
 	 * To create a new user account
+	 * 
 	 * @param userDetails - The UsersModel Object containing the details for the user
 	 * @return - True if account is created successfully else false
 	 */
@@ -88,7 +88,7 @@ public class UsersDAO {
 
 	/**
 	 * To get the user details based on his/her email id
-	 * @param userDetails - The user model having the email id
+ 	 * @param userDetails - The user model having the email id
 	 * @return - The UsersModel object having the user details
 	 */
 	public UsersModel getUserDetailsByEmail(UsersModel userDetails) {
@@ -104,7 +104,7 @@ public class UsersDAO {
 		// Getting the result
 		return (UsersModel) getDetails.uniqueResult();
 	}
-	
+
 	/**
 	 * Following function updates the existing user details 
 	 * @param userDetailsModel(UsersModel) contains the Updated user details.
@@ -146,7 +146,6 @@ public class UsersDAO {
 		// Creating a new session
 		Session session = sessionFactory.openSession();
 
-		//Creating a Criteria Query
 		Criteria cr = session.createCriteria(UsersModel.class);
 		
 		//getting the result containing distinct users.

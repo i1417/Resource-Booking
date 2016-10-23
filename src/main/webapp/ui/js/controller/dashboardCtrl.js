@@ -73,9 +73,11 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
                     title: 'Booking Status',
                     delay: 2000
                 });
-                setTimeout(function() {
-                    $window.location.href = 'index.html';
-                }, 2500);
+                if(response.data.status == 'Approved' && (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn))) {
+	                setTimeout(function() {
+	                    $window.location.href = 'index.html';
+	                }, 2500);
+                }
 
             }
         }).error(function(response) {
@@ -211,9 +213,30 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             if (response.status == 200) {
                 $scope.allApprovedBookings = response.data;
             }
-            $scope.showCalendar();
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/Project-Authentication/bookings/getApprovedbookingsByEmployeeId',
+                data: $scope.currentUser,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).success(function(response) {
+                if (response.status == 200) {
+                    $scope.currentUser.bookingsMade = response.data;
+                    userDetails.setCurrentUser($scope.currentUser);
+                }
+                $scope.showCalendar();
+            }).error(function(response) {
+                Notification.error({
+                    message: "Couldn't establish connection",
+                    delay: 2000
+                });
+            });
         }).error(function(response) {
-            alert("Connection Error");
+            Notification.error({
+                message: "Couldn't establish connection",
+                delay: 2000
+            });
         });
     });
 
