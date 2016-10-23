@@ -1,5 +1,5 @@
 /**
- * To perform database interaction.
+ * To perform database interaction for the resources.
  * @author Pratap Singh Ranawat and Vivek Mittal
  */
 package com.project.dao;
