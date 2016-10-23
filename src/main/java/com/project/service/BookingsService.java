@@ -194,7 +194,7 @@ public class BookingsService {
 	}
 	
 	/**
-	 * 
+	 * Following method updates the status of already approved booking to 'Cancelled'
 	 * @param bookingsVO
 	 * @return
 	 */
@@ -233,7 +233,7 @@ public class BookingsService {
 	}
 
 	/**
-	 * Foolowing function edits the existing booking
+	 * Following function edits the existing booking
 	 * @param bookingsVO contains the information of the edited booking.
 	 * @return BookingsVO 
 	 */
@@ -241,26 +241,48 @@ public class BookingsService {
 		BookingsModel bookingsModel;
 		
 		bookingsModel = bookingsVoToModel(bookingsVO);
-		System.out.println("bookingVO to model successful");
 		return  bookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
 	}
 
+	/**
+	 * following function updates the status of a user's 'approved' booking to
+	 * 'cancelled'
+	 * 
+	 * @param bookingId
+	 *            --the booking id of the approved booking
+	 * @param newBookingId
+	 * @param status
+	 * @return
+	 */
 	public boolean userBookingStatusChange(String bookingId,
 			String newBookingId, String status) {
 		return bookingsDAO.userBookingStatusChange(bookingId, newBookingId,
 				status);
 	}
 	
+	/**
+	 * Following function updates the status of the 'Pending' bookings of
+	 * current date to 'Cancelled'
+	 * 
+	 * @return--true if the status is updated successfully else returns false
+	 */
 	public boolean cancelTodayBookings() {
 		return bookingsDAO.cancelTodayBookings();
 	}
-
+	
+	/**
+	 * Following function converts the 'BookingVO' object to 'BookingModel'
+	 * object
+	 * 
+	 * @param bookingsVO
+	 *            ---the 'BookingVO' object to be converted
+	 * @return--the converted 'BookingModel' object
+	 */
 	private BookingsModel bookingsVoToModel(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		UsersModel usersModel = context.getBean(UsersModel.class);
 		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
 
-		System.out.println("bookings vo  bookings id "+ bookingsVO.getBookingId());
 		bookingsModel.setBookingId(bookingsVO.getBookingId());
 		
 		bookingsModel.setTitle(bookingsVO.getTitle());
@@ -293,11 +315,13 @@ public class BookingsService {
 
 		return bookingsModel;
 	}
-
 	/**
-	 * To convert BookingsModel to BookingsVO
+	 * Following function converts the 'BookingModel' object to 'BookingVO'
+	 * object
 	 * 
-	 * @return BookingsVO
+	 * @param bookingsModel
+	 *            --the 'BookingModel' object to be converted
+	 * @return--the converted 'BookingVO' object
 	 */
 	private BookingsVO bookingsModelToBookingsVO(
 			BookingsModel bookingsModel) {
@@ -314,7 +338,6 @@ public class BookingsService {
 
 		ResourcesVO resourcesVO = context.getBean(ResourcesVO.class);
 		BeanUtils.copyProperties(resourcesModel, resourcesVO);
-		System.out.println(resourcesVO.hashCode());
 		bookingsVO.setResourceDetails(resourcesVO); // 2
 
 		// Getting the current date and time
@@ -343,7 +366,6 @@ public class BookingsService {
 		bookingsVO.setTitle(bookingsModel.getTitle());
 		bookingsVO.setDescription(bookingsModel.getDescription());
 
-		System.out.println(bookingsVO);
 		return bookingsVO;
 	}
 }

@@ -38,7 +38,6 @@ public class ResourceService {
 	 * @return - List of all the available resources
 	 * @author Vivek Mittal, Pratap Singh
 	 */
-
 	public List<ResourcesVO> allResourceList() {
 
 		List<ResourcesModel> resourcesModel = new ArrayList<ResourcesModel>();

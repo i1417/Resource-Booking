@@ -49,9 +49,7 @@ public class MailService {
 			emailMessage.setContent(mailMessage, "text/html");
 
 			String emailHost = getPropValues("host");
-			String fromUser = getPropValues("emailUserName"); // just the id alone
-																// without
-																// @gmail.com
+			String fromUser = getPropValues("emailUserName"); // just the id alone without @gmail.com
 			String fromUserEmailPassword = getPropValues("emailPassword");
 			Transport transport = mailSession.getTransport("smtp");
 			
