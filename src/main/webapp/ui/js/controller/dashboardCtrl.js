@@ -1,5 +1,7 @@
+// Created By - Rohit Singhavi
 var homePage = angular.module('homePageApp', ['ngRoute', 'dataShareFactory', 'topbarApp', 'sidebarApp', 'utilityFunctionsFactory', 'ui.bootstrap', 'ui-notification']);
 
+// Controller for the booking modal used for edit and creating a esource booking
 var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userDetails, utilityFunctions, itemObj, Notification) {
 
     $scope.booking = {};
@@ -61,23 +63,14 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
             $('#spinner').hide();
             if (response.status == 200) {
 
-//                if (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn)) {
-//                    userDetails.addCurrentBooking(response.data);
-//                } else {
-//                    userDetails.editCurrentBooking(response.data);
-//                }
-
-
                 Notification({
                     message: 'Your Current Booking is ' + response.data.status + '.',
                     title: 'Booking Status',
                     delay: 2000
                 });
-//                if(response.data.status == 'Approved' && (itemObj.bookBtn == "new" || angular.isUndefined(itemObj.bookBtn))) {
-	                setTimeout(function() {
-	                    $window.location.href = 'index.html';
-	                }, 2500);
-//                }
+                setTimeout(function() {
+                    $window.location.href = 'index.html';
+                }, 2500);
 
             }
         }).error(function(response) {
@@ -149,6 +142,7 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     //end of datetimepicker
 };
 
+// Controller to perform the actions on the main dashboard before loading the calendar
 homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http, $filter, userDetails, utilityFunctions) {
 
     $scope.currentUser = userDetails.getCurrentUser();
@@ -198,6 +192,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http,
 
 });
 
+// Controller for the calendar
 homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, userDetails, utilityFunctions, Notification) {
     $rootScope.$on("populateResources", function() {
         $scope.allResources = utilityFunctions.getAllResources();
@@ -240,6 +235,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
         });
     });
 
+    // To show the calendar with the given options
     $scope.showCalendar = function() {
         $('#calendar').fullCalendar({
             defaultView: 'agendaDay',

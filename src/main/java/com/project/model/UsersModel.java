@@ -32,12 +32,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "users")
 public class UsersModel {
 
-	@Override
-	public String toString() {
-		return "UsersModel [employeeId=" + employeeId + ", name=" + name
-				+ ", email=" + email + "]";
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "employee_id")

@@ -62,18 +62,9 @@ public class UserAPIController {
 	@RequestMapping(value = "createAccount", method = RequestMethod.POST)
 	public @ResponseBody Response createUserAccount(
 			@RequestBody UsersVO userDetails) {
-		/*
-		 * Enumeration en = request.getParameterNames();
-		 * while(en.hasMoreElements()) { Object objOri=en.nextElement(); String
-		 * param=(String)objOri; String value=request.getParameter(param);
-		 * System
-		 * .out.println("Parameter Name is '"+param+"' and Parameter Value is '"
-		 * +value+"'"); }
-		 */
 
 		// Sending the data to the Service Layer for creation of the account
 		boolean result = usersService.createUserAccount(userDetails);
-		// boolean result = true;
 
 		// Sending back the response to the client
 		if (result) {
@@ -141,7 +132,6 @@ public class UserAPIController {
 
 		// Checking if the user exists or not
 		if (result) {
-			// mailService.sendMail(userDetails);
 			return new Response(200, userDetails);
 		} else {
 			return new Response(403, "User details could not be updated");
@@ -153,7 +143,7 @@ public class UserAPIController {
 	 * @return the response object containing the list of all users
 	 * @author- Pratap Singh , Vivek Mittal
 	 */
-	@RequestMapping(value = "/users/getAll", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/getAll", method = RequestMethod.GET)
 	public @ResponseBody Response getAllUsers() {
 		// Getting the result from the Service Layer
 		List<UsersVO> result = usersService.getAllUsers();
@@ -166,11 +156,19 @@ public class UserAPIController {
 		}
 	}
 	
+	/**
+	 * To generate the link to change password for a user
+	 * @param user - The user details who wants to generate a change password link
+	 * @return - Response object confirming the link generation
+	 * @author Arpit Pittie
+	 */
 	@RequestMapping(value = "/forgotPass", method = RequestMethod.POST)
 	public @ResponseBody Response forgotPassword(@RequestBody UsersVO user) {
 		long token = usersService.forgotPassword(user);
 		
-		if(token != 0) {
+		//Checking if the token is generated or not
+		if(token > 0) {
+			//Sending the forgot password emil to the user
 			String mailMessage = "<p>Dear User</p><p>Please follow the below link to change your password" 
 				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
 							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/forgotPassword.html?token="
@@ -182,18 +180,34 @@ public class UserAPIController {
 					"Change Password for Account on Resource Booking", mailMessage);
 					
 			return new Response(200, "Link Generated");
+		} else if(token < 0){
+			return new Response(400, "You had used social login");
 		} else {
 			return new Response(400, "User does not Exist");
 		}
 	}
 	
+	/**
+	 * To update the user password
+	 * @param user - The user details whom the password is to be updated
+	 * @param token - The unique token for the forgot password request
+	 * @return - Response object confirming the password updation
+	 * @author Arpit Pittie
+	 */
 	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
 	public @ResponseBody Response changePassword(@RequestBody UsersVO user, @RequestParam("token") String token) {
 		return new Response(200, usersService.changePassword(user, token));
 	}
 	
+	/**
+	 * To send a mail invite to a person
+	 * @param userToInvite - The user details to invite
+	 * @return - Response object confirming the invite sent
+	 * @author Arpit Pittie
+	 */
 	@RequestMapping(value = "/user/sendInvitationToUser", method = RequestMethod.POST)
 	public @ResponseBody Response sendInvitationToUser(@RequestBody UsersVO userToInvite) {
+		//Sending mail invite to a user for creating an account
 		String mailMessage = "<p>Dear "+ userToInvite.getName() +"</p><p>A friend of your has invited you to join the Resource Booking.</p><p>Please follow the link to create the account</p>" 
 				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
 							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/' >Click Here</a>"

@@ -34,6 +34,7 @@ public class MailService {
 	 *            -- subject of the mail
 	 * @param mailMessage
 	 *            -- message body
+	 * @author Arpit Pittie, Rohit Singhavi
 	 */
 	public void sendHTMLMail(UsersVO userDetails, String mailSubject,String mailMessage) {
 
@@ -49,7 +50,7 @@ public class MailService {
 			emailMessage.setContent(mailMessage, "text/html");
 
 			String emailHost = getPropValues("host");
-			String fromUser = getPropValues("emailUserName"); // just the id alone without @gmail.com
+			String fromUser = getPropValues("emailUserName");
 			String fromUserEmailPassword = getPropValues("emailPassword");
 			Transport transport = mailSession.getTransport("smtp");
 			
@@ -64,6 +65,7 @@ public class MailService {
 
 	/**
 	 * set the javaMail Properties
+	 * @author Arpit Pittie
 	 */
 	private void setProperties() {
 		javaMailProperties = new Properties();
@@ -78,6 +80,7 @@ public class MailService {
 	 * @param propertyName
 	 *            -the parameter whose value is to be retrieved
 	 * @return-the value of parameter requested
+	 * @author Amit Sharma
 	 */
 	public String getPropValues(String propertyName) {
 		String result = "";

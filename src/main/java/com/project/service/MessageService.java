@@ -1,3 +1,7 @@
+/**
+ * send mobile sms to the user on booking status
+ * @author Amit
+ */
 package com.project.service;
 
 import java.net.*;
@@ -6,12 +10,6 @@ import java.io.*;
 
 import org.springframework.stereotype.Component;
 
-/**
- * 
- * send mobile sms to the user on booking status
- * @author Amit
- *
- */
 @Component
 public class MessageService {
 	
@@ -61,6 +59,7 @@ public class MessageService {
 	 * sends a message to a user on booking status
 	 * @param messageBody--the sms body
 	 * @param receiver--mobile number of the receiver with country code
+	 * @author Amit Sharma
 	 */
     public void sendSMS(String messageBody,String receiver)
     {
@@ -98,6 +97,7 @@ public class MessageService {
 	 * @param propertyName
 	 *            -the parameter whose value is to be retrieved
 	 * @return-the value of parameter requested
+	 * @author Amit Sharma
 	 */
 	public String getPropValues(String propertyName) {
 		String result = "";

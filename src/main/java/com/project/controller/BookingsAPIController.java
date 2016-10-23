@@ -83,7 +83,7 @@ public class BookingsAPIController {
 	}
 
 	/**
-	 * Following function updates the status of bookings(accepted/cancelled)
+	 * Following function updates the status of bookings(rejected/cancelled)
 	 * @param bookingsVO(BookingsVO) - contains the information related to the booking
 	 * @return Response object confirming the updation
 	 * @author Vivek Mittal, Pratap Singh
@@ -106,7 +106,7 @@ public class BookingsAPIController {
 			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Status Changed", mailMessage);
 			
-			//messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
+			messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
 
 			return new Response(200, true);
 		} else {
@@ -114,6 +114,12 @@ public class BookingsAPIController {
 		}
 	}
 	
+	/**
+	 * To update the booking status to approve for a pending booking
+	 * @param bookingsVO - The BookingsVO containing information about the booking to be approveed
+	 * @return - Response object confirming the change of status for the booking
+	 * @author Arpit Pittie
+	 */
 	@RequestMapping(value = "/bookings/updateBookingsStatusApproved", method = RequestMethod.POST)
 	public @ResponseBody Response updateBookingsStatusApproved(
 			@RequestBody BookingsVO bookingsVO) {
@@ -132,7 +138,7 @@ public class BookingsAPIController {
 			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Status Changed", mailMessage);
 			
-			//messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
+			messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
 
 			return new Response(200, true);
 		} else {
@@ -166,11 +172,11 @@ public class BookingsAPIController {
 			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
 					"Booking Confirmation", mailMessage);
 			
-			//String message="Dear "+bookingsVO.getUserDetails().getName()+"\n Your booking with ID "+ bookingsVO.getBookingId() + 
-//					"is : " + bookingsVO.getStatus() + 
-//					"\n\nRegards\nResource Booking Team";
+			String message="Dear "+bookingsVO.getUserDetails().getName()+"\n Your booking with ID "+ bookingsVO.getBookingId() + 
+					"is : " + bookingsVO.getStatus() + 
+					"\n\nRegards\nResource Booking Team";
 		
-			//messageService.sendSMS(message,"91"+bookingsVO.getUserDetails().getMobileNumber());
+			messageService.sendSMS(message,"91"+bookingsVO.getUserDetails().getMobileNumber());
 
 			return new Response(200, bookingsVO);
 		} else {
@@ -201,45 +207,43 @@ public class BookingsAPIController {
 	}
 
 	/**
-	 * 
-	 * @param usersVO
-	 * @return
+	 * To get the list of pending bookings for a particular user
+	 * @param usersVO - The UsersVO object containing the information about the user
+	 * @return - Response object containing the list of pending bookings for the user
 	 * @author Amit Sharma
 	 */
 	@RequestMapping(value = "/bookings/getPendingbookingsByEmployeeId", method = RequestMethod.POST)
 	public @ResponseBody Response getPendingBookingsListByEmployeeId(
 			@RequestBody UsersVO usersVO) {
 		// Getting the result from the Service Layer
-		System.out.println("pending requests by employee id:"
-				+ usersVO.getEmployeeId());
 		List<BookingsVO> result = bookingsService
 				.pendingBookingsListByEmployeeId(usersVO);
 
 		// Sending back the response to the client
 		if (result != null) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "No Pending bookings");
 		}
 	}
 	
+	/**
+	 * To get the list of approved bookings for a particular user
+	 * @param usersVO - The UsersVO object containing the information about the user
+	 * @return - Response object containing the list of approved bookings for the user
+	 * @author Arpit Pittie
+	 */
 	@RequestMapping(value = "/bookings/getApprovedbookingsByEmployeeId", method = RequestMethod.POST)
 	public @ResponseBody Response getApprovedBookingsListByEmployeeId(
 			@RequestBody UsersVO usersVO) {
 		// Getting the result from the Service Layer
-		System.out.println("pending requests by employee id:"
-				+ usersVO.getEmployeeId());
 		List<BookingsVO> result = bookingsService
 				.approvedBookingsListByEmployeeId(usersVO);
 
 		// Sending back the response to the client
 		if (result != null) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "No Pending bookings");
 		}
 	}
@@ -253,22 +257,21 @@ public class BookingsAPIController {
 	@RequestMapping(value = "/bookings/editBooking", method = RequestMethod.POST)
 	public @ResponseBody Response editBooking(@RequestBody BookingsVO bookingsVO) {
 
-		System.out.println(bookingsVO);
 		// Getting the result from Service Layer
-		System.out.println("Enter into controller");
 		BookingsVO result = bookingsService.editBooking(bookingsVO);
-		System.out.println("check controller "+ result);
-
 		// Sending back the response to the client
 		if (result!=null) {
-			System.out.println("Edited successfully");
 			return new Response(200, result);
 		} else {
-			System.out.println("Couldn't edit");
 			return new Response(400, "Couldn't create");
 		}
 	}
 
+	/**
+	 * To cancel the pending bookings for today's date
+	 * @return - Response object confirming the operation success
+	 * @author Arpit Pittie
+	 */
 	@RequestMapping(value = "/bookings/cancelTodayBookings")
 	public @ResponseBody Response cancelTodayBookings() {
 		if (bookingsService.cancelTodayBookings()) {

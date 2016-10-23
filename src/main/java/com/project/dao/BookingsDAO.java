@@ -49,6 +49,7 @@ public class BookingsDAO {
 	 * 
 	 * @param bookings(BookingsModel) contains information regarding bookings.
  	 * @return the list of all pending bookings corresponding to specific resource ID
+ 	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public List<BookingsModel> pendingBookingsListById(BookingsModel bookings) {
 		//getting session 
@@ -76,6 +77,7 @@ public class BookingsDAO {
 	 * 
 	 * @param usersModel(UsersModel) contains user details.
  	 * @return the list of all pending bookings corresponding to specific employee ID
+ 	 * @author Amit Sharma
 	 */
 	public List<BookingsModel> pendingBookingsListByEmployeeId(
 			UsersModel usersModel) {
@@ -101,6 +103,7 @@ public class BookingsDAO {
 		cr.add(Restrictions.and(Restrictions.ge("date", date),
 				Restrictions.eq("status", "pending"),
 				Restrictions.eq("userDetails", usersModel)));
+		
 		//getting the result set containing distinct results.
 		cr.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
@@ -115,14 +118,16 @@ public class BookingsDAO {
 	 * to particular employeeID
 	 * 
 	 * @param usersModel(UsersModel) contains user details.
- 	 * @return the list of all approved bookings corresponding to specific employee ID
+	 * @return the list of all approved bookings corresponding to specific employee ID
+	 * @author Arpit Pittie
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BookingsModel> approvedBookingsListByEmployeeId(
 			UsersModel usersModel) {
-
+		//Getting session
 		Session session = this.sessionFactory.getCurrentSession();
 
+		//To get the current date
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal = Calendar.getInstance();
 		String currentDate = dateFormat.format(cal.getTime());
@@ -132,8 +137,7 @@ public class BookingsDAO {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		//creating Criteria Query
+
 		Criteria cr = session.createCriteria(BookingsModel.class);
 		cr.add(Restrictions.and(Restrictions.ge("date", date),
 				Restrictions.eq("status", "approved"),
@@ -148,9 +152,10 @@ public class BookingsDAO {
 	}
 
 	/**
-	 * Following function fires query to database to get the required result(i.e
-	 * get the list of Approved bookings )
- 	 * @param usersModel(UsersModel) contains user details
+	 * To get the approved booking of all the other user
+	 * @param userModel - (UsersModel) contains user details whom booking need not to be fetched
+	 * @return - The list of BookingsModel containing the approved booking for all the other users
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BookingsModel> approvedBookingsList(UsersModel userModel) {
@@ -166,7 +171,6 @@ public class BookingsDAO {
 		
 		// converting date type data to String type
 		String currentDate = dateFormat.format(cal.getTime());
-		System.out.println(currentDate); // DEBUG
 		Date date;
 
 		try {
@@ -194,6 +198,7 @@ public class BookingsDAO {
 	 * 
 	 * @param bookingsModel contains the information related to the booking status and other attributes
 	 * @return true/false whether booking status has been updated successfully.
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public boolean updateBookingsStatus(BookingsModel bookingsModel) {
 		//getting session
@@ -223,8 +228,15 @@ public class BookingsDAO {
 		}
 	}
 	
+	/**
+	 * To change the status of the booking to approve canceling all the clashed bookings
+	 * @param bookingsModel - The booking details whom status need to be changed to approved
+	 * @return - True if the operation is successful else false
+	 * @author Arpit Pittie
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean updateBookingsStatusApproved(BookingsModel bookingsModel) {
+		//Getting Session
 		Session session = sessionFactory.openSession();
 
 		try {
@@ -236,12 +248,11 @@ public class BookingsDAO {
 			
 			Time startTime = new Time(dateFormat.parse(currentTime).getTime());
 			
+			//Checking if the booking start time is less than the current time
 			if(startTime.after(bookingsModel.getStartTime())) {
 				return false;
 			}
 			
-			
-
 			String status = bookingsModel.getStatus();
 			
 			Criteria criteria = session.createCriteria(BookingsModel.class);
@@ -249,6 +260,7 @@ public class BookingsDAO {
 
 			bookingsModel = (BookingsModel) session.get(BookingsModel.class, bookingsModel.getBookingId());
 			
+			//To get the clashing bookings
 			criteria.add(Restrictions.and(Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
 					"approved"), Restrictions.or(
@@ -264,6 +276,7 @@ public class BookingsDAO {
 			
 			List<BookingsModel> forStatus = criteria.list();
 			
+			//To cancel all the bookings which are in clash
 			if(forStatus.size() != 0) {
 				for (BookingsModel bookings : forStatus) {
 					
@@ -272,6 +285,7 @@ public class BookingsDAO {
 					objectToUpdate.setStatus("Rejected");
 					session.update(objectToUpdate);
 					
+					//Sending the cancellation mail
 					String mailMessage = "Dear "+bookings.getUserDetails().getName()+"\nYour booking with ID : "
 							+ bookings.getBookingId()
 							+ "\nThe current booking status is : "
@@ -288,6 +302,7 @@ public class BookingsDAO {
 			objectToUpdate = (BookingsModel) session.get(
 					BookingsModel.class, bookingsModel.getBookingId());
 
+			//Updating the status to approve
 			objectToUpdate.setStatus(status);
 
 			session.getTransaction().commit();
@@ -296,7 +311,6 @@ public class BookingsDAO {
 
 		} catch (Exception e) {
 			session.getTransaction().rollback();
-
 			return false;
 		}
 	}
@@ -305,6 +319,7 @@ public class BookingsDAO {
 	 * Following function creates a new booking.
 	 * @param bookingsModel(BookingsModel) contains the information regarding new booking.
 	 * @return BookingsModel having info regarding booking created.
+	 * @author Vivek Mittal, Pratap Singh, Arpit Pittie
 	 */
 	@SuppressWarnings("unchecked")
 	public BookingsModel createBooking(BookingsModel bookingsModel) {
@@ -330,6 +345,7 @@ public class BookingsDAO {
 
 			criteria = session.createCriteria(BookingsModel.class);
 			
+			//To check if there are any booking which is clashing with the new request
 			criteria.add(Restrictions.and(Restrictions.eq("resourceDetails", bookingsModel.getResourceDetails()), Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
 					"approved"), Restrictions.or(
@@ -345,11 +361,13 @@ public class BookingsDAO {
 
 			forStatus = criteria.list();
 
+			//The slot is empty and automatic approving the booking
 			if (forStatus.size() == 0) {
 				bookingsModel.setStatus("Approved");
 			} else {
 				UsersVO user = context.getBean(UsersVO.class);
 
+				//Sending  mail to the user who made a booking at the same time slot
 				for (BookingsModel bookings : forStatus) {
 					String mailMessage = "<p>Dear "
 							+ bookings.getUserDetails().getName()
@@ -414,6 +432,7 @@ public class BookingsDAO {
 	 * Following function edits the existing booking.
 	 * @param bookingsModel(BookingsModel) contains the information regarding edited booking
 	 * @return BookingsModel having information regarding edited booking.
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@SuppressWarnings("unchecked")
 	public BookingsModel editBooking(BookingsModel bookingsModel) {
@@ -436,6 +455,7 @@ public class BookingsDAO {
 
 			Criteria criteria = session.createCriteria(BookingsModel.class);
 
+			//To check if there are any booking which is clashing with the updated booking request
 			criteria.add(Restrictions.and(Restrictions.eq("date",
 					bookingsModel.getDate()), Restrictions.eq("status",
 					"approved"), Restrictions.ne("bookingId", bookingsModel.getBookingId()), Restrictions.or(
@@ -465,11 +485,19 @@ public class BookingsDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
-			System.out.println("transaction roll back");
 			return null;
 		}
 	}
 
+	/**
+	 * To update the status of the first user approved booking to cancelled
+	 * and the new user pending booking status to approve if there aren't any more clashes
+	 * @param bookingId - The booking id to be cancelled
+	 * @param newBookingId - The booking id to try to approve 
+	 * @param status - The status to which the new booking is to be changed
+	 * @return - True if the operation is successful else false
+	 * @author Arpit Pittie
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean userBookingStatusChange(String bookingId,
 			String newBookingId, String status) {
@@ -485,7 +513,9 @@ public class BookingsDAO {
 			BookingsModel newBooking = (BookingsModel) session.get(
 					BookingsModel.class, newBookingId);
 
+			//Checking if the booking has already been approved or not
 			if (newBooking.getStatus().equalsIgnoreCase("pending")) {
+				//Cancelling the old booking
 				oldBooking.setStatus("Cancelled");
 
 				String mailMessage = "Your booking with ID : "
@@ -502,6 +532,7 @@ public class BookingsDAO {
 
 				Criteria criteria = session.createCriteria(BookingsModel.class);
 
+				//Checking if there are any more clashes with the booking
 				criteria.add(Restrictions.and(Restrictions.eq("date",
 						newBooking.getDate()), Restrictions.eq("status",
 						"approved"), Restrictions.or(
@@ -516,6 +547,7 @@ public class BookingsDAO {
 						))));
 
 				List<BookingsModel> forStatus = criteria.list();
+				//There are no more clashes hence updating the status of request to approve
 				if (forStatus.size() == 0) {
 					newBooking.setStatus("Approved");
 					mailMessage = "Your booking with ID : "
@@ -540,6 +572,10 @@ public class BookingsDAO {
 		}
 	}
 	
+	/**
+	 * To cancel all the remaining pending bookings for the day
+	 * @return - True if the operation is successful else false
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean cancelTodayBookings() {
 		//getting session
@@ -554,10 +590,12 @@ public class BookingsDAO {
 			Calendar cal = Calendar.getInstance();
 			Date date = cal.getTime();
 			
+			//Getting the day's pending requests
 			criteria.add(Restrictions.and(Restrictions.eq("date", date), Restrictions.eq("status", "Pending")));
 			
 			List<BookingsModel> listToUpdate = criteria.list();
 			
+			//Setting the status of all the pending bookings to cancelled
 			for (BookingsModel bookingsModel : listToUpdate) {
 				bookingsModel.setStatus("Cancelled");
 				session.update(bookingsModel);

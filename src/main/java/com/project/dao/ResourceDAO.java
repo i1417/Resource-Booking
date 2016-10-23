@@ -1,5 +1,5 @@
 /**
- * To perform database interaction for the resources.
+ * To perform database interaction regarding resources
  * @author Pratap Singh Ranawat and Vivek Mittal
  */
 package com.project.dao;
@@ -38,8 +38,8 @@ public class ResourceDAO {
 	/**
 	 * Following function fires query to database to get the required result(i.e
 	 * get all the available resources)
-	 * 
 	 * @return the list of all available resources .
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ResourcesModel> allResourceList() {
@@ -56,12 +56,12 @@ public class ResourceDAO {
 	 * 
 	 * @param resourcesModel
 	 *            contains the information of the new resource.
-	 * @return true/false whether resource created successfully or not.
+	 * @return true/false whether resource created successfully or not
+	 * @author Arpit Pittie, Vivek Mittal, Pratap Singh
 	 */
 	public boolean createResource(ResourcesModel resourceModel) {
 		// Creating a new session
 		Session session = sessionFactory.openSession();
-		System.out.println("resmodel"+resourceModel);
 
 		try {
 			// Starting a new transaction
@@ -83,8 +83,10 @@ public class ResourceDAO {
 
 	/**
 	 * Following function helps in updating the existing resource.
+	 * 
 	 * @param resourcesModel(ResourcesModel) contains the information of the resource to be edited.
-	 * @return true/false whether resource edited successfully or not.
+ 	 * @return true/false whether resource edited successfully or not
+ 	 * @author Arpit Pittie
 	 */
 	public boolean editResource(ResourcesModel resourceModel) {
 		//getting session
@@ -97,8 +99,10 @@ public class ResourceDAO {
 			ResourcesModel objectToUpdate = (ResourcesModel) session.get(
 					ResourcesModel.class, resourceModel.getResourceId());
 
+			//Updating the resource details
 			objectToUpdate.setResourceName(resourceModel.getResourceName());
 			objectToUpdate.setCapacity(resourceModel.getCapacity());
+
 			//committing the transaction
 			session.getTransaction().commit();
 			return true;
@@ -108,22 +112,25 @@ public class ResourceDAO {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Following function helps in adding a resource admin/admins to the selected resource ID.
 	 * @param resourceModel(ResourcesModel) contains the information regarding the resource.
 	 * @param userModel(UsersModel) contains the information refarding the new resource admins.
 	 * @return true/false whether new resource admin/admins are added or not.
+	 * @author Arpit Pittie
 	 */
 	public boolean addResourceAdmin(ResourcesModel resourceModel,
 			UsersModel userModel) {
 		//getting session
 		Session session = sessionFactory.openSession();
+
 		//starting transaction
 		session.beginTransaction();
-		//using Criteria Query
+
 		Criteria criteria = session.createCriteria(UsersModel.class);
 
+		//Getting the user details
 		criteria.add(Restrictions.eq("employeeId", userModel.getEmployeeId()));
 
 		UsersModel objectToUpdate = (UsersModel) criteria.uniqueResult();
@@ -132,24 +139,32 @@ public class ResourceDAO {
 			List<ResourcesModel> resourceAdminList = objectToUpdate
 					.getAdminOfResources();
 			boolean result = true;
+			//Checking if the user already has the given resource in his resource admin list
 			for (ResourcesModel resourcesModel : resourceAdminList) {
 				if (resourcesModel.getResourceId() == resourceModel
 						.getResourceId()) {
 					result = false;
 				}
 			}
+			//Updating the user role and the admin list
 			if (result) {
 				objectToUpdate.getAdminOfResources().add(resourceModel);
 				objectToUpdate.setRole("res_admin");
 			}
 
+			//Saving the updates
 			session.saveOrUpdate(objectToUpdate);
+			
 			//committing transaction
 			session.getTransaction().commit();
 			return true;
 		} catch (NonUniqueObjectException e) {
 			e.printStackTrace();
+			
+			//The resource object is not unique in the given session
 			session.merge(objectToUpdate);
+			
+			//committing transaction
 			session.getTransaction().commit();
 			return true;
 		} catch (Exception e) {
@@ -158,11 +173,12 @@ public class ResourceDAO {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Following function helps in deleting the resource admin/admins of the selected resource ID.
 	 * @param resourceModel(ResourcesModel) contains the information of the resource.
 	 * @return true/false whether new resource admin/admins are deleted or not. 
+	 * @author Arpit Pittie
 	 */
 	public boolean deleteResourceAdmin(ResourcesModel resourceModel) {
 		//getting session
@@ -186,6 +202,7 @@ public class ResourceDAO {
 				userModel = listOfAdmin.get(i);
 				flag = true;
 
+				//Checking if a user has been removed from resource admin's list
 				for (UsersModel newUsersModel : updatedListOfAdmin) {
 					if (newUsersModel.getEmployeeId() == userModel
 							.getEmployeeId()) {
@@ -195,22 +212,16 @@ public class ResourceDAO {
 				}
 
 				if (flag) {
-					System.out.println("CAlled Remove admin");
 					userModel.getAdminOfResources().remove(objectToUpdate);
+					//Checking if the user has other resources as admin
 					if (userModel.getAdminOfResources().size() == 0) {
 						userModel.setRole("user");
 					}
 					session.saveOrUpdate(userModel);
-					System.out.println(userModel);
-				} else {
-					// i++;
-					System.out.println("Calling add admin");
-					// objectToUpdate.getResourceAdmins().add(userModel);
 				}
 			}
 
-			//System.out.println("List" + objectToUpdate.getResourceAdmins());
-
+			//Committing the transaction
 			session.getTransaction().commit();
 			return true;
 		} catch (Exception e) {

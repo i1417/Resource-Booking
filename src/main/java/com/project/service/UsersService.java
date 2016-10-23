@@ -165,7 +165,6 @@ public class UsersService {
 
 	/**
 	 * To get the list of all users
-	 * 
 	 * @return - The list of users
 	 * @author Vivek Mittal, Pratap Singh
 	 */

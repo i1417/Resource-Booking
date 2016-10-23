@@ -46,13 +46,6 @@ public class ResourcesModel {
 	@JsonIgnore
 	private List<UsersModel> resourceAdmins;
 
-	@Override
-	public String toString() {
-		return "ResourcesModel [resourceId=" + resourceId + ", resourceName="
-				+ resourceName + ", type=" + type + ", capacity=" + capacity
-				+ ", resourceAdmins=" + resourceAdmins + "]";
-	}
-
 	@OneToMany(mappedBy = "resourceDetails")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JsonBackReference

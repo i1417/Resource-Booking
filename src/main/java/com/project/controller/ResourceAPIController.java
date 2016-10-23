@@ -40,10 +40,8 @@ public class ResourceAPIController {
 
 		// Sending back the response to the client
 		if (result != null) {
-			System.out.println("OK");
 			return new Response(200, result);
 		} else {
-			System.out.println("Wrong");
 			return new Response(400, "No Resource Available");
 		}
 	}

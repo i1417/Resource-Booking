@@ -15,7 +15,7 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
     // Request to get all the user list
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/Project-Authentication/users/getAll',
+        url: 'http://localhost:8080/Project-Authentication/user/getAll',
         data: $scope.currentUser,
         headers: {
             'Content-Type': 'application/json'

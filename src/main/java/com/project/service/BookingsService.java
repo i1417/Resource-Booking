@@ -60,7 +60,7 @@ public class BookingsService {
 			// Getting the result from the database
 			bookingsList = bookingsDAO.pendingBookingsListById(bookingsModel);
 
-			//copying fetched pending booking list in some local bookingsModel and 
+			//copying fetched pending booking list in some local bookingsModel
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 
 				//adding bookingsModelLocal data in bookingsVOList one by one  
@@ -113,6 +113,12 @@ public class BookingsService {
 
 	}
 	
+	/**
+	 * To get all the approved bookings list for the particular user
+	 * @param usersVO - The user details to fetch the bookings
+	 * @return - The BookingsVO list containing the approved bookings
+	 * @author Arpit Pittie
+	 */
 	public List<BookingsVO> approvedBookingsListByEmployeeId(UsersVO usersVO) {
 
 		UsersModel usersModel = context.getBean(UsersModel.class);
@@ -145,7 +151,6 @@ public class BookingsService {
 
 	/**
 	 * To get the list of approved bookings from BookingsDAO class
-	 * 
 	 * @return List of bookings having status = Approved
 	 * @author Vivek Mittal, Pratap Singh
 	 */
@@ -176,7 +181,7 @@ public class BookingsService {
 	}
 
 	/**
-	 * Following function updates the status of bookings(accepted/cancelled)
+	 * Following function updates the status of bookings(rejected/cancelled)
 	 * 
 	 * @param bookingsVO
 	 *            contains the information related to the booking
@@ -194,9 +199,10 @@ public class BookingsService {
 	}
 	
 	/**
-	 * Following method updates the status of already approved booking to 'Cancelled'
-	 * @param bookingsVO
-	 * @return
+	 * Following method updates the booking status to approve for pending booking
+	 * @param bookingsVO - The booking details whose status to be changed to approve
+	 * @return - True if the status is changed successfully else false
+	 * @author Arpit Pittie
 	 */
 	public boolean updateBookingsStatusApproved(BookingsVO bookingsVO) {
 
@@ -211,8 +217,9 @@ public class BookingsService {
 	/**
 	 *  this function is helper service to get BookingsVO and convert it to BookingsModel
 	 *  and call createBookings to create new Booking
-	 * @param bookingsVO contains details for new booking
-	 * @return BookingsVO 
+	 * @param bookingsVO - contains details for new booking
+	 * @return BookingsVO - The BookingsVO containing all the information regarding the new booking
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public BookingsVO createBooking(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel;
@@ -235,24 +242,25 @@ public class BookingsService {
 	/**
 	 * Following function edits the existing booking
 	 * @param bookingsVO contains the information of the edited booking.
-	 * @return BookingsVO 
+	 * @return BookingsVO - The BookingsVO containing all the information regarding the edited booking
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	public BookingsVO editBooking(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel;
 		
+		//Copying the properties of boookingsVO to bookingsModel
 		bookingsModel = bookingsVoToModel(bookingsVO);
 		return  bookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
 	}
 
 	/**
-	 * following function updates the status of a user's 'approved' booking to
-	 * 'cancelled'
-	 * 
-	 * @param bookingId
-	 *            --the booking id of the approved booking
-	 * @param newBookingId
-	 * @param status
-	 * @return
+	 * To change the status of user booking to cancelled in the 
+	 * view of other user's booking to approve
+	 * @param bookingId - The booking to be cancelled
+	 * @param newBookingId - The booking to be approved
+	 * @param status - The status of the new booking to set
+	 * @return - True if the operation is successful else false
+	 * @author Arpit Pittie
 	 */
 	public boolean userBookingStatusChange(String bookingId,
 			String newBookingId, String status) {
@@ -261,28 +269,27 @@ public class BookingsService {
 	}
 	
 	/**
-	 * Following function updates the status of the 'Pending' bookings of
-	 * current date to 'Cancelled'
-	 * 
-	 * @return--true if the status is updated successfully else returns false
+	 * To cancel all the today's pending bookings
+	 * @return - True if the operation is successful else false
+	 * @author Arpit Pittie
 	 */
 	public boolean cancelTodayBookings() {
 		return bookingsDAO.cancelTodayBookings();
 	}
-	
+
 	/**
-	 * Following function converts the 'BookingVO' object to 'BookingModel'
-	 * object
+	 * Following function converts the 'BookingVO' object to 'BookingModel' object
 	 * 
-	 * @param bookingsVO
-	 *            ---the 'BookingVO' object to be converted
-	 * @return--the converted 'BookingModel' object
+	 * @param bookingsVO - the 'BookingVO' object to be converted
+	 * @return - the converted 'BookingModel' object
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	private BookingsModel bookingsVoToModel(BookingsVO bookingsVO) {
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		UsersModel usersModel = context.getBean(UsersModel.class);
 		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
 
+		//Copying all the properties based upon their data types
 		bookingsModel.setBookingId(bookingsVO.getBookingId());
 		
 		bookingsModel.setTitle(bookingsVO.getTitle());
@@ -315,13 +322,12 @@ public class BookingsService {
 
 		return bookingsModel;
 	}
+
 	/**
-	 * Following function converts the 'BookingModel' object to 'BookingVO'
-	 * object
-	 * 
-	 * @param bookingsModel
-	 *            --the 'BookingModel' object to be converted
-	 * @return--the converted 'BookingVO' object
+	 * To convert BookingsModel to BookingsVO
+	 * @param bookingsModel - the 'BookingModel' object to be converted
+	 * @return - the converted 'BookingVO' object
+	 * @author Vivek Mittal, Pratap Singh
 	 */
 	private BookingsVO bookingsModelToBookingsVO(
 			BookingsModel bookingsModel) {
@@ -332,6 +338,7 @@ public class BookingsService {
 
 		BookingsVO bookingsVO = context.getBean(BookingsVO.class);
 
+		//Copying all the properties based upon their data types
 		bookingsVO.setBookingId(bookingsModel.getBookingId()); // 1
 
 		resourcesModel = bookingsModel.getResourceDetails();

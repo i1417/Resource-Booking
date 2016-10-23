@@ -14,14 +14,10 @@ public class PageController {
 	 * To map the landing page of the website
 	 * 
 	 * @return - The name of the landing page
+	 * @author Arpit Pittie
 	 */
 	@RequestMapping("/")
 	public String showIndexPage() {
 		return "index.html";
 	}
-
-	/*
-	 * @RequestMapping("/homeAdmin") public String showLoginHomePage() { return
-	 * "admin/index.html"; }
-	 */
 }
