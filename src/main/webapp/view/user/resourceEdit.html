@@ -1,0 +1,153 @@
+<!-- Created By - Arpit Pittie -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
+        <title>Resource Edit or Creation</title>
+
+        <!-- Bootstrap CSS File -->
+        <link href="ui/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link href="ui/css/sb-admin.css" rel="stylesheet">
+        <!-- Custom Fonts -->
+        <link href="ui/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+        <!-- Google API -->
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <!-- jQuery -->
+        <script src="ui/js/res/jquery.min.js"></script>
+        <!-- Angular JS -->
+        <script src="ui/js/res/angular.min.js"></script>
+        <!-- Angular Route -->
+        <script src="ui/js/res/angular-route.min.js"></script>
+
+        <!-- Angular UI Notification Files -->
+        <script src="ui/js/res/angular-ui-notification.min.js"></script>
+        <link rel="stylesheet" href="ui/css/angular-csp.css">
+        <link rel="stylesheet" href="ui/css/angular-ui-notification.min.css">
+
+        <!-- Custom Angular JS Files -->
+        <!-- Factory common to web application -->
+        <script src="ui/js/factory/factoryProject.js"></script>
+        <!-- Factory to provide some utility functions -->
+        <script src="ui/js/factory/factoryDashboard.js"></script>
+        <!-- Controllers for the topbar and sidebar -->
+        <script src="ui/js/controller/topbarCtrl.js"></script>
+        <script src="ui/js/controller/sidebarCtrl.js"></script>
+        <!-- Controller for the page -->
+        <script src="ui/js/controller/resourceEditCtrl.js"></script>
+
+        <!-- Bootstrap JS File -->
+        <script src="ui/js/res/bootstrap.min.js"></script>
+    </head>
+    <body ng-app="resourceEditApp">
+        <!-- Spinner for Background processing -->
+        <div id="spinner" class="overlay"><img src="ui/images/loader.gif" alt="spinner"></div>
+
+        <div id="wrapper" ng-controller="resourceEditCtrl">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+                <ng-include src="'topbar.html'"></ng-include>
+
+                <ng-include src="'sidebar.html'"></ng-include>
+
+            </nav>
+
+            <div id="page-wrapper">
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="page-header">
+                                {{heading}}
+                            </h1>
+                            <ol class="breadcrumb">
+                                <li>
+                                    <i class="fa fa-dashboard"></i>
+                                    <a href="index.html">Dashboard</a>
+                                </li>
+                                <li class="active">
+                                    <i class="fa fa-database"></i>
+                                    Edit Resource
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- Resource Edit and Creation Form -->
+                    <div class="row">
+                        <div class="col-lg-offset-3 col-lg-6">
+                            <form role="form" ng-submit="updateResource()">
+
+                                <div class="form-group">
+                                    <label for="resourceName">Resource Name</label>
+                                    <input class="form-control" id="resourceName" type="text" pattern="[a-zA-Z0-9-\s]{2,30}" placeholder="Resource Name" ng-model="resource.resourceName" title="It must be between 2-30 characters" required/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="capacity">Capacity</label>
+                                    <input class="form-control" id="capacity" type="number" min="1" placeholder="Capacity" ng-model="resource.capacity" title="It must be 10 digits" required/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="resourceAdmin">Current Resource Admins</label>
+                                    <!-- ng-options="admin as admin.name for admin in resource.resourceAdmins track by admin.email"  -->
+                                    <select class="form-control" id="resourceAdmin" ng-model="resource.resourceAdmins[0].email">
+                                        <option ng-repeat="admin in resource.resourceAdmins" value="{{admin.email}}">{{admin.name}}</option>
+                                    </select>
+                                    <br/>
+                                    <button type="button" id="removeAdminBtn" class="btn btn-danger" ng-click="removeAdmin()">Delete</button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="addAdmin">Add Resource Admins</label>
+                                    <input type="search" id="addAdmin" class="form-control" placeholder="Enter name" ng-model="searchUser"/>
+                                    <br/>
+                                    <select class="form-control" id="userList" readonly multiple>
+                                        <option ng-repeat="user in allUsers | filter : searchUser" value="{{user.email}}">
+                                            {{user.name}}
+                                            ({{user.email}})
+                                        </option>
+                                    </select>
+                                    <br/>
+                                    <button type="button" id="addAdminBtn" class="btn btn-success" ng-click="addAdmin()">Add</button>
+                                </div>
+
+                                <div class="form-group" id="resType">
+                                    <label for="type">Resource Type</label>
+                                    <!-- ng-options="admin as admin.name for admin in resource.resourceAdmins track by admin.email"  -->
+                                    <select class="form-control" id="type" ng-model="resource.type" required>
+                                        <option ng-repeat="res in distinct" value="{{res}}">{{res}}</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="reset" class="btn btn-warning">Reset</button>
+
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- /#page-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+    </body>
+
+</html>

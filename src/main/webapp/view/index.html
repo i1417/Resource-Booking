@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Resource Booking | Home</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
+
+        <link rel="stylesheet" href="ui/css/angular-csp.css">
+        <link rel="stylesheet" href="ui/css/angular-ui-notification.min.css">
+
+        <!-- css files -->
+        <link href="ui/css/animate-custom.css" rel="stylesheet" type="text/css" media="all"/>
+        <!-- <link href="ui/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="all" /> -->
+        <link href="ui/css/style.css" rel="stylesheet" type="text/css" media="all"/>
+        <link href="ui/css/changeStyle.css" rel="stylesheet" type="text/css"/>
+        <link href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
+        <!-- /css files -->
+        <script src="ui/js/res/jquery.min.js"></script>
+        <script src="ui/js/res/angular.min.js"></script>
+        <script src="ui/js/res/angular-ui-notification.min.js"></script>
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <script src="ui/js/factory/factoryProject.js"></script>
+        <script src="ui/js/controller/loginCtrl.js"></script>
+
+        <script src="ui/js/res/angular-md5.js"></script>
+    </head>
+    <body ng-app="landingPage">
+        <div id="spinner" class="overlay"><img src="ui/images/loader.gif" alt="spinner"></div>
+        <h1 class="w3ls" style="color: black;">Resource Booking</h1>
+        <div id="container_demo">
+            <!-- hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
+            <a class="hiddenanchor" id="toregister"></a>
+            <a class="hiddenanchor" id="tologin"></a>
+            <!-- <a class="hiddenanchor" id="toforgot"></a> -->
+            <div id="wrapper">
+
+                <div id="login" class="animate form" ng-controller="loginForm" data-ng-init="startApp()">
+                    <form autocomplete="on" ng-submit="authenticateLogin()" name="login">
+                        <h2>Log in</h2>
+                        <p>
+                            <label for="email">
+                                <span>Your email</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-envelope"></span>
+                                <input id="email" type="email" name="emailid" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
+                            </span>
+                        </p>
+                        <p>
+                            <label for="password">
+                                <span>Your password</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-wrench"></span>
+                                <input id="password" type="password" placeholder="PASSWORD" ng-model="user.password" required/>
+                            </span>
+                        </p>
+                        <p class="login button">
+                            <input type="submit" value="Login"/>
+                        </p>
+                        <p class="login button">
+                            <!-- ng-click="login.emailid.$valid && forgotPassword()" -->
+                            <input type="button" value="Forgot Password" ng-click="forgotPassword(login.emailid.$valid)"/>
+                        </p>
+                        <div id="gSignInWrapper">
+                            <div id="customBtn" class="customGPlusSignIn">
+                                <span class="icon ">Sign In with&nbsp;&nbsp;<span class="fa fa-google-plus"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <p class="change_link">
+                            <span>Not a member yet ?</span>
+                            <a href="#toregister" class="to_register">Register Now</a>
+                        </p>
+                    </form>
+                </div>
+
+                <div id="register" class="animate form" ng-controller="registerForm">
+                    <form ng-submit="createAccount()" autocomplete="on" accept-charset="utf-8">
+                        <h2>
+                            Sign up
+                        </h2>
+                        <p>
+                            <label for="email">
+                                <span>Your email</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-envelope"></span>
+                                <input id="email" type="email" placeholder="EXAMPLE@MAIL.COM" ng-model="user.email" required/>
+                            </span>
+                        </p>
+                        <p class="passwordHide">
+                            <label for="password">
+                                <span>Your password</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-wrench"></span>
+                                <input id="password" type="password" pattern="^[-a-zA-Z0-9!@#]{6,20}" placeholder="PASSWORD" ng-model="user.password" title="It must be between 6-20 characters. Valid characters are !, @, #" required/>
+                            </span>
+                        </p>
+                        <p class="passwordHide">
+                            <label for="passwordConfirm">
+                                <span>Your password</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-wrench"></span>
+                                <input id="passwordConfirm" type="password" pattern="^[-a-zA-Z0-9!@#]{6,20}" placeholder="CONFIRM PASSWORD" ng-model="confirm.password" required/>
+                            </span>
+                        </p>
+                        <p>
+                            <label for="name">
+                                <span>Your Name</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-user"></span>
+                                <input id="name" type="text" pattern="[a-zA-Z\s]{2,30}" placeholder="YOUR NAME" ng-model="user.name" title="It must be between 2-30 characters" required/>
+                            </span>
+                        </p>
+                        <p>
+                            <label for="designation">
+                                <span>Your Designation</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-tags"></span>
+                                <input id="designation" type="text" pattern="[a-zA-Z\s]{2,30}" placeholder="YOUR DESIGNATION" ng-model="user.designation" title="It must be between 2-30 characters" required/>
+                            </span>
+                        </p>
+                        <p>
+                            <label for="mobileNumber">
+                                <span>Your Mobile Number</span>
+                            </label><br/>
+                            <span>
+                                <span class="glyphicon glyphicon-phone"></span>
+                                <input id="mobileNumber" type="tel" pattern="\d{10}" placeholder="YOUR MOBILE NUMBER" ng-model="user.mobileNumber" title="It must be 10 digits" required/>
+                            </span>
+                        </p>
+                        <p class="signin button">
+                            <input type="submit" value="Sign up"/>
+                        </p>
+                        <p class="change_link">
+                            <span>Already a member ?</span>
+                            <a href="#tologin" class="to_register">Log In</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- <p class="agileits">© 2016 Majestic Login Form. All Rights Reserved | Design by <a href="https://w3layouts.com/" target="_blank">w3layouts</a></p> -->
+    </body>
+</html>

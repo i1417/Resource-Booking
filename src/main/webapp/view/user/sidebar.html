@@ -1,0 +1,51 @@
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<div class="collapse navbar-collapse navbar-ex1-collapse" ng-controller="sidebarCtrl">
+    <ul class="nav navbar-nav side-nav" ng-click="changeClass($event)">
+        <li class="active" id="dashboard">
+            <a href="index.html">
+                <i class="fa fa-fw fa-dashboard"></i>
+                Dashboard
+            </a>
+        </li>
+        <li id="employeePendingRequest">
+            <a href="employeePendingRequests.html">
+                <i class="fa fa-exclamation-triangle"></i>
+                My Pending Requests
+            </a>
+        </li>
+        <li id="pendingRequest">
+            <a href="javascript:;" data-toggle="collapse" data-target="#requests">
+                <i class="fa fa-fw fa-check-circle"></i>
+                Pending Requests
+                <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="requests" class="collapse">
+                <li ng-repeat="resource in currentUser.adminOfResources">
+                    <a href="" ng-click="updatePendingRequest(resource.resourceId)">{{resource.resourceName}}</a>
+                </li>
+            </ul>
+        </li>
+        <li id="resourcesMgmt">
+            <a href="javascript:;" data-toggle="collapse" data-target="#resources">
+                <i class="fa fa-fw fa-database"></i>
+                Resources
+                <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="resources" class="collapse">
+                <li ng-repeat="resource in currentUser.adminOfResources">
+                    <a href="" ng-click="fetchResourceDetails(resource)">{{resource.resourceName}}</a>
+                </li>
+                <li>
+                    <a href="" ng-click="newResource()">Create a Resource</a>
+                </li>
+            </ul>
+        </li>
+        <li id="inviteUser">
+            <a href="inviteUser.html">
+                <i class="fa fa-bell"></i>
+                Invite a User
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- /.navbar-collapse -->

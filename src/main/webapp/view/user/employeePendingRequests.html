@@ -1,0 +1,145 @@
+<!-- Created By- Amit Sharma -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta name="google-signin-client_id" content="170024686743-1qm8as78v2sh04k5tfdj9qlai0h9ptv9.apps.googleusercontent.com">
+        <title>My Pending Requests</title>
+
+        <!-- Bootstrap CSS File -->
+        <link href="ui/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link href="ui/css/sb-admin.css" rel="stylesheet">
+        <!-- Custom Fonts -->
+        <link href="ui/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+        <!-- Google API -->
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <!-- jQuery -->
+        <script src="ui/js/res/jquery.min.js"></script>
+        <!-- Angular JS -->
+        <script src="ui/js/res/angular.min.js"></script>
+        <!-- Angular Route -->
+        <script src="ui/js/res/angular-route.min.js"></script>
+
+        <!-- Angular UI Notification Files -->
+        <script src="ui/js/res/angular-ui-notification.min.js"></script>
+        <link rel="stylesheet" href="ui/css/angular-csp.css">
+        <link rel="stylesheet" href="ui/css/angular-ui-notification.min.css">
+
+        <!-- Custom Angular JS Files -->
+        <!-- Factory common to web application -->
+        <script src="ui/js/factory/factoryProject.js"></script>
+        <!-- Factory to provide some utility functions -->
+        <script src="ui/js/factory/factoryDashboard.js"></script>
+        <!-- Controllers for the topbar and sidebar -->
+        <script src="ui/js/controller/topbarCtrl.js"></script>
+        <script src="ui/js/controller/sidebarCtrl.js"></script>
+        <!-- Controller for the page -->
+        <script src="ui/js/controller/employeePendingRequestsCtrl.js"></script>
+
+        <!-- Bootstrap JS File -->
+        <script src="ui/js/res/bootstrap.min.js"></script>
+    </head>
+    <body ng-app="employeePendingRequestsApp">
+        <!-- Spinner for Background processing -->
+        <div id="spinner" class="overlay"><img src="ui/images/loader.gif" alt="spinner"></div>
+
+        <div id="wrapper" ng-controller="employeePendingRequestCtrl" ng-init="fetchPendingBookingsByEmployeeId()">
+
+            <!-- Navigation -->
+            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+                <ng-include src="'topbar.html'"></ng-include>
+
+                <ng-include src="'sidebar.html'"></ng-include>
+
+            </nav>
+
+            <div id="page-wrapper">
+
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h1 class="page-header">Employee Pending Requests</h1>
+                            <ol class="breadcrumb">
+                                <li>
+                                    <i class="fa fa-dashboard"></i>
+                                    <a href="index.html">Dashboard</a>
+                                </li>
+                                <li class="active">
+                                    <i class="fa fa-exclamation-triangle"></i>My Pending Requests</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- No Pending Requests  -->
+                    <div id="no-pending-requests" class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h2 class="text-danger">Sorry
+                                {{currentUser.name}}
+                                ! No pending requests were found</h2>
+                        </div>
+                    </div>
+
+                    <!-- Table for Pending Request -->
+                    <div id="pending-request-table" class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+
+                            <div class="table-responsive table-bordered">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="info">
+                                            <th>Booking #</th>
+                                            <th>Employee Name</th>
+                                            <th>Resource Name</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Participants</th>
+                                            <th>Booking Date</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="success" ng-repeat="resource in response">
+                                            <td class="center">{{resource.bookingId}}</td>
+                                            <td class="center">{{resource.userDetails.name}}</td>
+                                            <td>{{resource.resourceDetails.resourceName}}</td>
+                                            <td>{{resource.title}}</td>
+                                            <td>{{resource.description}}</td>
+                                            <td class="text-justify">{{resource.numberOfParticipants}}</td>
+                                            <td>{{resource.date}}</td>
+                                            <td>{{resource.startTime}}</td>
+                                            <td>{{resource.endTime}}</td>
+                                            <td>
+                                                <button class="btn btn-danger" ng-click="updateEmployeeRequest(resource.bookingId,resource.userDetails.employeeId,resource.userDetails.name,resource.userDetails.email,resource.userDetails.mobileNumber, 'Cancelled')">Cancel</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- /.row -->
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- /#page-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+    </body>
+</html>
