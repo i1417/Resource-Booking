@@ -207,6 +207,10 @@ public class UserAPIController {
 	 */
 	@RequestMapping(value = "/user/sendInvitationToUser", method = RequestMethod.POST)
 	public @ResponseBody Response sendInvitationToUser(@RequestBody UsersVO userToInvite) {
+		
+	 Response result = userExist(userToInvite);
+	 
+	 if(result.getStatus()==403){
 		//Sending mail invite to a user for creating an account
 		String mailMessage = "<p>Dear "+ userToInvite.getName() +"</p><p>A friend of your has invited you to join the Resource Booking.</p><p>Please follow the link to create the account</p>" 
 				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
@@ -217,5 +221,9 @@ public class UserAPIController {
 					"Invitation to join Resource Booking", mailMessage);
 			
 		return new Response(200, "Invitation Sent");
+	 } else{
+		 
+		 return new Response(403, "User already Exist");
+	 }
 	}
 }
