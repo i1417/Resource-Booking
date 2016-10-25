@@ -6,7 +6,7 @@ cancelBookingPage.controller('cancelBookingCtrl', function($http, $window) {
     // Request to cancel the pending booking
     $http({
         method: 'GET',
-        url: '/Project-Authentication/bookings/cancelTodayBookings',
+        url: '/Resource-Booking/bookings/cancelTodayBookings',
         headers: {
             'Content-Type': 'application/json'
         }

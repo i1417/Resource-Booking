@@ -70,7 +70,7 @@ public class UserAPIController {
 		if (result) {
 			String mailMessage = "<p>Dear "+ userDetails.getName() +"</p><p>Your account has been created</p><p>Please follow the link to access your account</p>" 
 					+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
-								+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/' >Click Here</a>"
+								+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Resource-Booking/' >Click Here</a>"
 								+ "</div>"
 						+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
 				mailService.sendHTMLMail(userDetails,
@@ -167,7 +167,7 @@ public class UserAPIController {
 			//Sending the forgot password emil to the user
 			String mailMessage = "<p>Dear User</p><p>Please follow the below link to change your password" 
 				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
-							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/forgotPassword.html?token="
+							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Resource-Booking/forgotPassword.html?token="
 							+ token + "&email="
 							+ user.getEmail() + "' >Change Password</a>"
 							+ "</div>"
@@ -210,7 +210,7 @@ public class UserAPIController {
 		//Sending mail invite to a user for creating an account
 		String mailMessage = "<p>Dear "+ userToInvite.getName() +"</p><p>A friend of your has invited you to join the Resource Booking.</p><p>Please follow the link to create the account</p>" 
 				+ "<div style='display: inline-block; background-color:#5cb85c; padding: 8px 15px; border-radius:5px; margin:8px 15px; border:1px solid white'>"
-							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Project-Authentication/' >Click Here</a>"
+							+ "<a style='color: white; text-decoration: none;' href='http://localhost:8080/Resource-Booking/' >Click Here</a>"
 							+ "</div>"
 					+ "</p><br/><p>Regards</p><p>Resource Booking Team</p>";
 			mailService.sendHTMLMail(userToInvite,

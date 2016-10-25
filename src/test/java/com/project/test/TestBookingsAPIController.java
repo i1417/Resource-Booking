@@ -81,16 +81,16 @@ public class TestBookingsAPIController {
 	public void testUpdateBookingsStatus() throws Exception {
 		resource.setResourceId(100);
 
-		user.setEmployeeId(10011);
-		user.setEmail("anant.sharma@company.com");
+		user.setEmployeeId(10002);
+		user.setEmail("vivek.mittal@metacube.com");
 
-		booking.setBookingId("B3F2C220161021-1");
-		booking.setDate("2016-10-26");
-		booking.setDescription("Meeting with team");
-		booking.setNumberOfParticipants(10);
-		booking.setTitle("Scrum Meeting");
-		booking.setStartTime("11:30:00");
-		booking.setEndTime("12:15:00");
+		booking.setBookingId("B3F2C220161025-2");
+		booking.setDate("2016-10-25");
+		booking.setDescription("Networking in metacube");
+		booking.setNumberOfParticipants(4);
+		booking.setTitle("Meeting");
+		booking.setStartTime("11:45:00");
+		booking.setEndTime("13:30:00");
 		booking.setResourceDetails(resource);
 		booking.setUserDetails(user);
 		booking.setStatus("Rejected");
@@ -109,7 +109,7 @@ public class TestBookingsAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testUpdateBookingsStatusApproved() throws Exception {
-		booking.setBookingId("B3F2C220161021-1");
+		booking.setBookingId("B3F2C220161025-2");
 		booking.setStatus("Approved");
 
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
@@ -129,7 +129,7 @@ public class TestBookingsAPIController {
 		resource.setResourceId(100);
 
 		user.setEmployeeId(10011);
-		user.setEmail("anant.sharma@company.com");
+		user.setEmail("amit.sharma1@metacube.com");
 
 		booking.setDate("2016-10-26");
 		booking.setDescription("Meeting with team");
@@ -157,7 +157,7 @@ public class TestBookingsAPIController {
 		this.mockMvc
 				.perform(
 						get(
-								"/bookings/statusChange?bookingId=B3F2C220161021-1&newBookingId=B3F2C220161026-1&status=Approved")
+								"/bookings/statusChange?bookingId=B3F2C220161024-4&newBookingId=B3F1C520161025-3&status=Approved")
 								.accept(MediaType.APPLICATION_JSON)).andExpect(
 						status().isOk());
 	}
@@ -166,7 +166,7 @@ public class TestBookingsAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testGetPendingBookingsListByEmployeeId() throws Exception {
-		user.setEmployeeId(10011);
+		user.setEmployeeId(10005);
 
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
@@ -182,7 +182,7 @@ public class TestBookingsAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testGetApprovedBookingsListByEmployeeId() throws Exception {
-		user.setEmployeeId(10011);
+		user.setEmployeeId(10005);
 
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
@@ -201,11 +201,11 @@ public class TestBookingsAPIController {
 		resource.setResourceId(100);
 
 		user.setEmployeeId(10011);
+		user.setEmail("amit.sharma1@metacube.com");
 
-		booking.setBookingId("B3F2C220161026-1");
 		booking.setDate("2016-10-26");
 		booking.setDescription("Meeting with team");
-		booking.setNumberOfParticipants(10);
+		booking.setNumberOfParticipants(12);
 		booking.setTitle("Scrum Meeting");
 		booking.setStartTime("11:30:00");
 		booking.setEndTime("12:15:00");

@@ -120,8 +120,8 @@
                                             <td>{{resource.startTime}}</td>
                                             <td>{{resource.endTime}}</td>
                                             <td>
-                                                <button class="btn btn-success" ng-click="updateRequest(resource.bookingId,resource.userDetails.employeeId,resource.userDetails.name,resource.userDetails.email, resource.mobileNumber, 'Approved')">Accept</button>
-                                                <button class="btn btn-danger" ng-click="updateRequest(resource.bookingId,resource.userDetails.employeeId,resource.userDetails.name,resource.userDetails.email, resource.mobileNumber, 'Rejected')">Reject</button>
+                                                <button class="btn btn-success" ng-click="updateRequest(resource, resource.userDetails.employeeId,resource.userDetails.name,resource.userDetails.email, resource.userDetails.mobileNumber, 'Approved')">Accept</button>
+                                                <button class="btn btn-danger" ng-click="updateRequest(resource, resource.userDetails.employeeId,resource.userDetails.name,resource.userDetails.email, resource.userDetails.mobileNumber, 'Rejected')">Reject</button>
                                             </td>
                                         </tr>
                                     </tbody>

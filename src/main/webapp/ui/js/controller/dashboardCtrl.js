@@ -39,11 +39,11 @@ var bookingCtrl = function($scope, $http, $window, $modal, $modalInstance, userD
     	//changing submit button value of booking modal form
         $scope.bookBtn = "Book";
         //setting url value
-        $scope.urlValue = "/Project-Authentication/bookings/createBooking";
+        $scope.urlValue = "/Resource-Booking/bookings/createBooking";
     } else {
         $scope.truefalse = true;
         $scope.bookBtn = "Edit Booking";
-        $scope.urlValue = "/Project-Authentication/bookings/editBooking";
+        $scope.urlValue = "/Resource-Booking/bookings/editBooking";
     }
 
     /**
@@ -193,7 +193,7 @@ homePage.controller('dashboardCtrl', function($rootScope, $scope, $modal, $http,
 
     $http({
         method: 'GET',
-        url: '/Project-Authentication/resources/getAll',
+        url: '/Resource-Booking/resources/getAll',
         headers: {
             'Content-Type': 'application/json'
         }
@@ -244,7 +244,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
 
         $http({
             method: 'GET',
-            url: '/Project-Authentication/bookings/getApprovedBookings?employeeId=' + $scope.currentUser.employeeId,
+            url: '/Resource-Booking/bookings/getApprovedBookings?employeeId=' + $scope.currentUser.employeeId,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -254,7 +254,7 @@ homePage.controller('calendarCtrl', function($rootScope, $scope, $http, $modal, 
             }
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/bookings/getApprovedbookingsByEmployeeId',
+                url: '/Resource-Booking/bookings/getApprovedbookingsByEmployeeId',
                 data: $scope.currentUser,
                 headers: {
                     'Content-Type': 'application/json'

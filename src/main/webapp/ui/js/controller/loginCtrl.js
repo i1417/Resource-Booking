@@ -30,7 +30,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
         // Request to check the user credentials
         $http({
             method: 'POST',
-            url: '/Project-Authentication/validate/custom',
+            url: '/Resource-Booking/validate/custom',
             data: $scope.user,
             headers: {
                 'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
             // Request to check if user already has a account
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/validate/custom',
+                url: '/Resource-Booking/validate/custom',
                 data: profileDetails,
                 headers: {
                     'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ landingPage.controller('loginForm', function($scope, $http, $window, $rootScope,
             // Request to generate the reset password link for the user
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/forgotPass',
+                url: '/Resource-Booking/forgotPass',
                 data: $scope.user,
                 headers: {
                     'Content-Type': 'application/json'
@@ -203,7 +203,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
             // Request to create a new account
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/createAccount',
+                url: '/Resource-Booking/createAccount',
                 data: $scope.user,
                 headers: {
                     'Content-Type': 'application/json'
@@ -218,7 +218,7 @@ landingPage.controller('registerForm', function($scope, $http, $window, $rootSco
                         delay: 2000
                     });
                 } else {
-                    $window.location.href = "/Project-Authentication";
+                    $window.location.href = "/Resource-Booking";
                 }
             }).error(function(response) {
                 $('#container_demo').show();

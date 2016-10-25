@@ -10,7 +10,7 @@ personalDetailsPage.controller('personalDetailsCtrl', function($scope, $http, $w
         // Request to set and update the user personal details
         $http({
             method: 'POST',
-            url: '/Project-Authentication/user/update',
+            url: '/Resource-Booking/user/update',
             data: $scope.currentUser,
             headers: {
                 'Content-Type': 'application/json'

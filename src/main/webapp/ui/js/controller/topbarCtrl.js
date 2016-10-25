@@ -3,7 +3,7 @@ var topbarApp = angular.module('topbarApp', ['utilityFunctionsFactory', 'dataSha
 
 // Checking if user tries to access the page without login
 if (sessionStorage.length == 0) {
-    window.location = '/Project-Authentication/';
+    window.location = '/Resource-Booking/';
 }
 
 // Controller to control the topbar functionality
@@ -22,7 +22,7 @@ topbarApp.controller('topbarCtrl', function($scope, $window, userDetails, utilit
         var auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function() {
             sessionStorage.clear();
-            $window.location.href = '/Project-Authentication/';
+            $window.location.href = '/Resource-Booking/';
         });
 
     }

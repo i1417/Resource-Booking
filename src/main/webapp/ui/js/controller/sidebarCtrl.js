@@ -18,7 +18,7 @@ sidebarApp.controller('sidebarCtrl', function($scope, $http, $window, userDetail
         // Request to fetch all the resources availbale
         $http({
             method: 'GET',
-            url: '/Project-Authentication/resources/getAll',
+            url: '/Resource-Booking/resources/getAll',
             data: $scope.currentUser,
             headers: {
                 'Content-Type': 'application/json'

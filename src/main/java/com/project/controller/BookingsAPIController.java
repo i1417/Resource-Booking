@@ -111,8 +111,6 @@ public class BookingsAPIController {
 					+ "\nThe current booking status is : "
 					+ bookingsVO.getStatus()
 					+ "\nRegards\nResource Booking Team";
-			mailService.sendHTMLMail(bookingsVO.getUserDetails(),
-					"Booking Status Changed", mailMessage);
 			
 			messageService.sendSMS(mailMessage, "91"+bookingsVO.getUserDetails().getMobileNumber());
 

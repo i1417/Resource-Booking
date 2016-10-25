@@ -48,8 +48,8 @@ public class TestUserAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testCustomLoginStatus() throws Exception {
-		user.setEmail("jack.dan@company.com");
-		user.setPassword("93c731f1c3a84ef05cd54d044c379eaa");
+		user.setEmail("avinash.chopra@metacube.com");
+		user.setPassword("4d09f5764e116ea1ff75527943be258f");
 
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
@@ -66,7 +66,7 @@ public class TestUserAPIController {
 	@Transactional
 	public void testCreateUserAccount() throws Exception {
 		user.setEmail("yash.jain@metacube.com");
-		user.setPassword("93c731f1c3a84ef05cd54d044c379eaa");
+		user.setPassword("4d09f5764e116ea1ff75527943be258f");
 		user.setDesignation("GET");
 		user.setRole("user");
 		user.setMobileNumber(Long.parseLong("6547893211"));
@@ -84,7 +84,7 @@ public class TestUserAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testUpdateUserDetails() throws Exception {
-		user.setEmail("anant.sharma@company.com");
+		user.setEmail("vivek.mittal@metacube.com");
 		user.setDesignation("Developer");
 		user.setMobileNumber(Long.parseLong("998855644"));
 
@@ -110,7 +110,7 @@ public class TestUserAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testForgotPassword() throws Exception {
-		user.setEmail("anant.sharma@company.com");
+		user.setEmail("amit.sharma1@metacube.com");
 
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
@@ -125,8 +125,8 @@ public class TestUserAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testChangePassword() throws Exception {
-		user.setEmail("anant.sharma@company.com");
-		user.setPassword("93c731f1c3a84ef05cd54d044c379eaa");
+		user.setEmail("amit.sharma@metacube.com");
+		user.setPassword("4d09f5764e116ea1ff75527943be258f");
 
 		mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();

@@ -25,7 +25,7 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
         // Request to updae the booking status to - Cancelled
         $http({
                 method: 'POST',
-                url: '/Project-Authentication/bookings/updateBookingsStatus',
+                url: '/Resource-Booking/bookings/updateBookingsStatus',
                 data: $scope.updateData,
                 headers: {
                     'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
         // Request to fetch all the pending requests for the user
         $http({
             method: 'POST',
-            url: '/Project-Authentication/bookings/getPendingbookingsByEmployeeId',
+            url: '/Resource-Booking/bookings/getPendingbookingsByEmployeeId',
             data: $scope.filterData,
             headers: {
                 'Content-Type': 'application/json'

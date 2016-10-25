@@ -15,7 +15,7 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
     // Request to get all the user list
     $http({
         method: 'GET',
-        url: '/Project-Authentication/user/getAll',
+        url: '/Resource-Booking/user/getAll',
         data: $scope.currentUser,
         headers: {
             'Content-Type': 'application/json'
@@ -108,17 +108,21 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
 
     // To update or create the resourcee
     $scope.updateResource = function() {
+    	$('#wrapper').hide();
+        $('#spinner').show();
         // Checking if the resource is for edit or creation
         if (utilityFunctions.getResourceDetails() == null) {
             // Request to create a resource
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/resources/createResource',
+                url: '/Resource-Booking/resources/createResource',
                 data: $scope.resource,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).success(function(response) {
+            	$('#wrapper').show();
+                $('#spinner').hide();
                 Notification.success({
                     message: "Resource Creation Successfull",
                     delay: 2000
@@ -127,6 +131,8 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
                     $window.location.href = 'index.html';
                 }, 2500);
             }).error(function(response) {
+            	$('#wrapper').show();
+                $('#spinner').hide();
                 Notification.error({
                     message: "Couldn't establish connection",
                     delay: 2000
@@ -136,12 +142,14 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
             // Request to update a resource
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/resources/editResource',
+                url: '/Resource-Booking/resources/editResource',
                 data: $scope.resource,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).success(function(response) {
+            	$('#wrapper').show();
+                $('#spinner').hide();
                 Notification.success({
                     message: "Resource Edit Successfull",
                     delay: 2000
@@ -150,6 +158,8 @@ resourceEdit.controller('resourceEditCtrl', function($scope, $http, $window, $fi
                     $window.location.href = 'index.html';
                 }, 2500);
             }).error(function(response) {
+            	$('#wrapper').show();
+                $('#spinner').hide();
                 Notification.error({
                     message: "Couldn't establish connection",
                     delay: 2000

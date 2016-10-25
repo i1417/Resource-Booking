@@ -164,7 +164,7 @@ public class BookingsService {
 
 		try {
 			// Getting the result from the database
-			bookingsList = bookingsDAO.approvedBookingsList(userModel);
+			bookingsList = bookingsDAO.approvedBookingsListOtherUsers(userModel);
 
 			//Converting BookingsModel to BookingsVO for sending data back to controller
 			for (BookingsModel bookingsModelLocal : bookingsList) {
@@ -208,7 +208,8 @@ public class BookingsService {
 
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		// copying the bookingsVO data to the bookingsModel
-		BeanUtils.copyProperties(bookingsVO, bookingsModel);
+		bookingsModel = bookingsVoToModel(bookingsVO);
+		bookingsModel.setStatus(bookingsVO.getStatus());
 		// getting the result from the database
 
 		return bookingsDAO.updateBookingsStatusApproved(bookingsModel);

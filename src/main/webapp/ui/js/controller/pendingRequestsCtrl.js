@@ -18,7 +18,7 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
         // Request fetch the pending booking for that resource
         $http({
             method: 'POST',
-            url: '/Project-Authentication/bookings/getPendingbookings',
+            url: '/Resource-Booking/bookings/getPendingbookings',
             data: $scope.resources,
             headers: {
                 'Content-Type': 'application/json'
@@ -45,9 +45,13 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
     }
 
     //method to update pending request status--Approved or Rejected
-    $scope.updateRequest = function(bookingId, employeeId, employeeName, email, mobileNumber, bookingStatus) {
+    $scope.updateRequest = function(booking, employeeId, employeeName, email, mobileNumber, bookingStatus) {
 
-        $scope.updateData.bookingId = bookingId;
+        $scope.updateData.bookingId = booking.bookingId;
+        $scope.updateData.date = booking.date;
+        $scope.updateData.startTime = booking.startTime+":00";
+        $scope.updateData.endTime = booking.endTime+":00";
+        $scope.updateData.resourceDetails = booking.resourceDetails;
         $scope.updateData.userDetails = {};
         $scope.updateData.userDetails.employeeId = employeeId;
         $scope.updateData.userDetails.name = employeeName;
@@ -62,7 +66,7 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
             // Request to approve the particular booking
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/bookings/updateBookingsStatusApproved',
+                url: '/Resource-Booking/bookings/updateBookingsStatusApproved',
                 data: $scope.updateData,
                 headers: {
                     'Content-Type': 'application/json'
@@ -94,7 +98,7 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
             // Request to cancel the particular booking
             $http({
                 method: 'POST',
-                url: '/Project-Authentication/bookings/updateBookingsStatus',
+                url: '/Resource-Booking/bookings/updateBookingsStatus',
                 data: $scope.updateData,
                 headers: {
                     'Content-Type': 'application/json'

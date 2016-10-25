@@ -8,7 +8,7 @@ statusChangePage.config(['$locationProvider', function($locationProvider) {
 
 // Controller to change the status to Pending for today's pending booking list
 statusChangePage.controller('statusChangeCtrl', function($scope, $location, $window, $http) {
-    var urlToRedirect = '/Project-Authentication/bookings/statusChange?status=' + $location.search().status +
+    var urlToRedirect = '/Resource-Booking/bookings/statusChange?status=' + $location.search().status +
         '&bookingId=' + $location.search().bookingId + '&newBookingId=' + $location.search().newBookingId;
 
     // Request to cancel the bookings for today's day

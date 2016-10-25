@@ -60,7 +60,7 @@ public class TestResourceAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testCreateResource() throws Exception {
-		resource.setResourceName("B4F4C1");
+		resource.setResourceName("B8F5C1");
 		resource.setType("Conference");
 		resource.setCapacity(30);
 		resource.setResourceAdmins(new ArrayList());
@@ -80,8 +80,8 @@ public class TestResourceAPIController {
 	@Rollback(true)
 	@Transactional
 	public void testEditResource() throws Exception {
-		resource.setResourceId(106);
-		resource.setResourceName("B3C2");
+		resource.setResourceId(102);
+		resource.setResourceName("B3F2C1");
 		resource.setType("Conference");
 		resource.setCapacity(100);
 		resource.setResourceAdmins(new ArrayList());

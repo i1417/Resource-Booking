@@ -17,7 +17,7 @@ inviteUserPage
                 // Request to send mail for Invitation
                 $http({
                     method: 'POST',
-                    url: '/Project-Authentication/user/sendInvitationToUser',
+                    url: '/Resource-Booking/user/sendInvitationToUser',
                     data: $scope.user,
                     headers: {
                         'Content-Type': 'application/json'

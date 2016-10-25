@@ -11,7 +11,7 @@ forgotPasswordPage.controller('forgotPasswordCtrl', function($scope, $window, $l
     $scope.user = {};
 
     $scope.redirect = function() {
-        $window.location.href = '/Project-Authentication/';
+        $window.location.href = '/Resource-Booking/';
     }
 
     $scope.changePassword = function() {
@@ -29,7 +29,7 @@ forgotPasswordPage.controller('forgotPasswordCtrl', function($scope, $window, $l
 
             $scope.user.email = 'anant.sharma@company.com';
 
-            var urlToRedirect = '/Project-Authentication/changePassword?token=' + $location.search().token;
+            var urlToRedirect = '/Resource-Booking/changePassword?token=' + $location.search().token;
 
             $('h1').hide();
             $('#container_demo').hide();
