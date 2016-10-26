@@ -1,5 +1,5 @@
 // Created By - Amit Sharma
-var pendingRequestsApp = angular.module('pendingRequestsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp', 'sidebarApp']);
+var pendingRequestsApp = angular.module('pendingRequestsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp', 'sidebarApp','ui.bootstrap']);
 
 // Controller To handle the pending request resource specific
 pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, userDetails, utilityFunctions, $location, Notification) {
@@ -7,11 +7,19 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
     $scope.resources = {};
     $scope.response = {};
     $scope.updateData = {};
-    var resourceId = utilityFunctions.getResourceDetails();
+    var resourceToBeFetched = utilityFunctions.getResourceDetails();
+    var resourceId=resourceToBeFetched.resourceId;
+    $scope.resourceName=resourceToBeFetched.resourceName;
     $scope.currentUser = userDetails.getCurrentUser();
-
+    	 
     // To fetch all the pending request for the resource
     $scope.fetchPendingBookings = function() {
+    	
+      //pagination 
+      $scope.currentPage = 4;
+   	  $scope.itemsPerPage = 2;//items per page
+   	  $scope.maxSize = 5; //Number of pager buttons to show
+   	  
         $scope.resources.resourceId = resourceId;
         $('#wrapper').hide();
         $('#spinner').show();
@@ -30,7 +38,8 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
                 $('#no-pending-requests').show();
                 $('#pending-request-table').hide();
             } else {
-                $('#no-pending-requests').hide();
+            	 $scope.totalItems = response.data.length;
+            	 $('#no-pending-requests').hide();
                 $('#pending-request-table').show();
             }
             $scope.response = response.data;
@@ -45,13 +54,10 @@ pendingRequestsApp.controller('pendingRequestCtrl', function($scope, $http, user
     }
 
     //method to update pending request status--Approved or Rejected
-    $scope.updateRequest = function(booking, employeeId, employeeName, email, mobileNumber, bookingStatus) {
+    $scope.updateRequest = function(bookingId, employeeId, employeeName, email, mobileNumber, bookingStatus) {
 
-        $scope.updateData.bookingId = booking.bookingId;
-        $scope.updateData.date = booking.date;
-        $scope.updateData.startTime = booking.startTime+":00";
-        $scope.updateData.endTime = booking.endTime+":00";
-        $scope.updateData.resourceDetails = booking.resourceDetails;
+    	alert(mobileNumber);
+        $scope.updateData.bookingId = bookingId;
         $scope.updateData.userDetails = {};
         $scope.updateData.userDetails.employeeId = employeeId;
         $scope.updateData.userDetails.name = employeeName;

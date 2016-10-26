@@ -1,5 +1,5 @@
-// Created By - Amit Shaarma
-var pendingRequestsApp = angular.module('employeePendingRequestsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp', 'sidebarApp']);
+// Created By - Amit Sharma
+var pendingRequestsApp = angular.module('employeePendingRequestsApp', ['ui-notification', 'ngRoute', 'dataShareFactory', 'utilityFunctionsFactory', 'topbarApp', 'sidebarApp','ui.bootstrap']);
 
 // Controller to Cancel the user's pending requests
 pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $http, userDetails, utilityFunctions, $location, Notification) {
@@ -7,9 +7,8 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
     $scope.resources = {};
     $scope.response = {};
     $scope.updateData = {};
-    var resourceId = utilityFunctions.getResourceDetails();
     $scope.currentUser = userDetails.getCurrentUser();
-
+    
     // method to update pending request status--Cancelled
     $scope.updateEmployeeRequest = function(bookingId, employeeId, employeeName, email, mobileNumber, bookingStatus) {
         $scope.updateData.bookingId = bookingId;
@@ -22,11 +21,11 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
 
         $('#wrapper').hide();
         $('#spinner').show();
-        // Request to updae the booking status to - Cancelled
+        // Request to update the booking status to - Cancelled
         $http({
                 method: 'POST',
                 url: '/Resource-Booking/bookings/updateBookingsStatus',
-                data: $scope.updateData,
+			                data : $scope.updateData,
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -56,9 +55,15 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
                 });
             });
     };
-
+    
+    
     // fetches all the pending request for the currently logged in user
     $scope.fetchPendingBookingsByEmployeeId = function() {
+    	 	
+          //pagination 
+    	  $scope.currentPage = 4;
+     	  $scope.itemsPerPage = 2;//items per page
+     	  $scope.maxSize = 5; //Number of pager buttons to show
 
         $scope.filterData = {};
         $scope.filterData.employeeId = $scope.currentUser.employeeId;
@@ -78,6 +83,8 @@ pendingRequestsApp.controller('employeePendingRequestCtrl', function($scope, $ht
                 $('#pending-request-table').hide();
             } else {
                 $scope.response = response.data;
+                $scope.totalItems = response.data.length;
+                
                 $('#no-pending-requests').hide();
                 $('#pending-request-table').show();
             }
