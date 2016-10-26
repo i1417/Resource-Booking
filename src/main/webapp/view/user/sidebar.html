@@ -8,7 +8,7 @@
             </a>
         </li>
         <li id="employeePendingRequest">
-            <a href="employeePendingRequests.html">
+            <a href="employeePendingRequests.html" >
                 <i class="fa fa-exclamation-triangle"></i>
                 My Pending Requests
             </a>
@@ -21,7 +21,7 @@
             </a>
             <ul id="requests" class="collapse">
                 <li ng-repeat="resource in currentUser.adminOfResources">
-                    <a href="" ng-click="updatePendingRequest(resource.resourceId)">{{resource.resourceName}}</a>
+                    <a href="" ng-click="updatePendingRequest(resource)">{{resource.resourceName}}</a>
                 </li>
             </ul>
         </li>
