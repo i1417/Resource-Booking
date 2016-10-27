@@ -1,0 +1,67 @@
+<!-- Created By - Rohit Singhavi -->
+<div class="modal-dialog" ng-init="pickDateTime()">
+    <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">Schedule Booking</h4>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+
+            <!-- Resource Booking Form -->
+            <form role="form" ng-submit="bookResource()">
+                <div class="form-group">
+                    <select id="resSelect" class="selectpicker form-control" ng-model="resourceValue" ng-disabled="{{truefalse}}" required>
+                        <option data-hidden="true" value="">Select a Resource</option>
+                        <option data-ng-repeat="r in allResources" value="{{r.resourceId}}">{{r.resourceName}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class='input-group date' id='datePicker'>
+                        <input type='text' id="datePickerInput" class="form-control" placeholder="Booking date" value="" ng-model="dateFormat" required readonly/>
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class='input-group date' id='startTime'>
+                        <input type='text' id="startTimeInput" class="form-control" placeholder="Select start time" value="" ng-model="sTime" required readonly/>
+                        <span class="input-group-addon">
+                            <span class="fa fa-clock-o"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class='input-group date' id='endTime'>
+                        <input type='text' id="endTimeInput" class="form-control" placeholder="Select end time" value="" ng-model="eTime" required readonly/>
+                        <span class="input-group-addon">
+                            <span class="fa fa-clock-o"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Purpose of Booking" id="myid" ng-model="booking.title" required/>
+                </div>
+
+                <div class="form-group">
+                    <textarea row="3" class="form-control" placeholder="Describe your purpose" ng-model="booking.description" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" pattern="[0-9]{1,}" class="form-control" placeholder="Current number of Participants:{{noOfParticipants}}" ng-model="booking.numberOfParticipants" required/>
+                </div>
+
+                <button type="submit" class="btn btnClass btn-block btn-primary">{{bookBtn}}</button>
+                <button type="button" class="btn btnClass btn-block btn-default" data-dismiss="modal" ng-click="cancel()">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!--Model End -->
