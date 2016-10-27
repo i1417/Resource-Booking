@@ -37,6 +37,9 @@ public class BookingsService {
 	// To get the beans
 	@Autowired
 	private ApplicationContext context;
+	
+	@Autowired
+	private Converters converter;
 
 	/**
 	 * To get the list of pending bookings using resource id
@@ -65,7 +68,7 @@ public class BookingsService {
 
 				//adding bookingsModelLocal data in bookingsVOList one by one  
 				bookingsVOList
-						.add(bookingsModelToBookingsVO(bookingsModelLocal));
+						.add(converter.bookingsModelToBookingsVO(bookingsModelLocal));
 
 			}
 
@@ -100,7 +103,7 @@ public class BookingsService {
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 
 				bookingsVOList
-						.add(bookingsModelToBookingsVO(bookingsModelLocal));
+						.add(converter.bookingsModelToBookingsVO(bookingsModelLocal));
 
 			}
 
@@ -136,7 +139,7 @@ public class BookingsService {
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 
 				bookingsVOList
-						.add(bookingsModelToBookingsVO(bookingsModelLocal));
+						.add(converter.bookingsModelToBookingsVO(bookingsModelLocal));
 
 			}
 
@@ -169,7 +172,7 @@ public class BookingsService {
 			//Converting BookingsModel to BookingsVO for sending data back to controller
 			for (BookingsModel bookingsModelLocal : bookingsList) {
 				bookingsVOList
-						.add(bookingsModelToBookingsVO(bookingsModelLocal));
+						.add(converter.bookingsModelToBookingsVO(bookingsModelLocal));
 			}
 
 			// returns List ofBookingsVO
@@ -208,7 +211,7 @@ public class BookingsService {
 
 		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
 		// copying the bookingsVO data to the bookingsModel
-		bookingsModel = bookingsVoToModel(bookingsVO);
+		bookingsModel = converter.bookingsVoToModel(bookingsVO);
 		bookingsModel.setStatus(bookingsVO.getStatus());
 		// getting the result from the database
 
@@ -226,12 +229,12 @@ public class BookingsService {
 		BookingsModel bookingsModel;
 
 		// converts BookingsVO to BookingsModel
-		bookingsModel = bookingsVoToModel(bookingsVO);
+		bookingsModel = converter.bookingsVoToModel(bookingsVO);
 		bookingsModel = bookingsDAO.createBooking(bookingsModel);
 
 		if (bookingsModel != null) {
 			//converts back to BookingsVO from BookingsModels
-			bookingsVO = bookingsModelToBookingsVO(bookingsModel);
+			bookingsVO = converter.bookingsModelToBookingsVO(bookingsModel);
 			return bookingsVO;
 		} else {
 			return null;
@@ -250,8 +253,8 @@ public class BookingsService {
 		BookingsModel bookingsModel;
 		
 		//Copying the properties of boookingsVO to bookingsModel
-		bookingsModel = bookingsVoToModel(bookingsVO);
-		return  bookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
+		bookingsModel = converter.bookingsVoToModel(bookingsVO);
+		return  converter.bookingsModelToBookingsVO(bookingsDAO.editBooking(bookingsModel));
 	}
 
 	/**
@@ -276,104 +279,5 @@ public class BookingsService {
 	 */
 	public boolean cancelTodayBookings() {
 		return bookingsDAO.cancelTodayBookings();
-	}
-
-	/**
-	 * Following function converts the 'BookingVO' object to 'BookingModel' object
-	 * 
-	 * @param bookingsVO - the 'BookingVO' object to be converted
-	 * @return - the converted 'BookingModel' object
-	 * @author Vivek Mittal, Pratap Singh
-	 */
-	private BookingsModel bookingsVoToModel(BookingsVO bookingsVO) {
-		BookingsModel bookingsModel = context.getBean(BookingsModel.class);
-		UsersModel usersModel = context.getBean(UsersModel.class);
-		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
-
-		//Copying all the properties based upon their data types
-		bookingsModel.setBookingId(bookingsVO.getBookingId());
-		
-		bookingsModel.setTitle(bookingsVO.getTitle());
-		bookingsModel.setDescription(bookingsVO.getDescription());
-
-		bookingsModel.setNumberOfParticipants(bookingsVO
-				.getNumberOfParticipants());
-
-		BeanUtils.copyProperties(bookingsVO.getUserDetails(), usersModel);
-		BeanUtils.copyProperties(bookingsVO.getResourceDetails(),
-				resourcesModel);
-
-		bookingsModel.setUserDetails(usersModel);
-		bookingsModel.setResourceDetails(resourcesModel);
-
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			bookingsModel.setDate(new Date(dateFormat.parse(
-					bookingsVO.getDate()).getTime()));
-
-			dateFormat = new SimpleDateFormat("HH:mm:ss");
-			bookingsModel.setStartTime(new Time(dateFormat.parse(
-					bookingsVO.getStartTime()).getTime()));
-			bookingsModel.setEndTime(new Time(dateFormat.parse(
-					bookingsVO.getEndTime()).getTime()));
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return bookingsModel;
-	}
-
-	/**
-	 * To convert BookingsModel to BookingsVO
-	 * @param bookingsModel - the 'BookingModel' object to be converted
-	 * @return - the converted 'BookingVO' object
-	 * @author Vivek Mittal, Pratap Singh
-	 */
-	private BookingsVO bookingsModelToBookingsVO(
-			BookingsModel bookingsModel) {
-
-		ResourcesModel resourcesModel = context.getBean(ResourcesModel.class);
-		UsersModel usersModel = context.getBean(UsersModel.class);
-		UsersVO usersVO = context.getBean(UsersVO.class);
-
-		BookingsVO bookingsVO = context.getBean(BookingsVO.class);
-
-		//Copying all the properties based upon their data types
-		bookingsVO.setBookingId(bookingsModel.getBookingId()); // 1
-
-		resourcesModel = bookingsModel.getResourceDetails();
-
-		ResourcesVO resourcesVO = context.getBean(ResourcesVO.class);
-		BeanUtils.copyProperties(resourcesModel, resourcesVO);
-		bookingsVO.setResourceDetails(resourcesVO); // 2
-
-		// Getting the current date and time
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-		String date = dateFormat.format(bookingsModel.getDate());
-		bookingsVO.setDate(date); // 3
-
-		dateFormat = new SimpleDateFormat("HH:mm");
-
-		date = dateFormat.format(bookingsModel.getStartTime());
-		bookingsVO.setStartTime(date); // 4
-
-		date = dateFormat.format(bookingsModel.getEndTime());
-		bookingsVO.setEndTime(date); // 5
-
-		bookingsVO.setNumberOfParticipants(bookingsModel
-				.getNumberOfParticipants()); // 6
-
-		usersModel = bookingsModel.getUserDetails();
-		BeanUtils.copyProperties(usersModel, usersVO);
-		bookingsVO.setUserDetails(usersVO); // 7
-
-		bookingsVO.setStatus(bookingsModel.getStatus()); // 8
-
-		bookingsVO.setTitle(bookingsModel.getTitle());
-		bookingsVO.setDescription(bookingsModel.getDescription());
-
-		return bookingsVO;
 	}
 }
